@@ -37,7 +37,7 @@ This repo does not have a licence. This means that by default, it is All Rights 
 
 ## Mod Pages
 - Cosmos Industry on [CurseForge](https://www..curseforge.com/minecraft/mc-mods/cosmos-industry)
-- Cosmos Industry on [Modrinth](https://www.modrinth)
+- Cosmos Industry on [Modrinth](https://www.modrinth.com/mod/cosmos-industry)
 
 
 ## The Cosmos Series
