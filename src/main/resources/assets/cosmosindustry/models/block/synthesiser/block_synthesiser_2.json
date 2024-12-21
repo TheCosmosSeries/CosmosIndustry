@@ -1,0 +1,14 @@
+{
+    "parent": "cosmosindustry:block/synthesiser/block_synthesiser",
+    "textures": {
+        "particle": "cosmosindustry:block/processing/synthesiser/base_top",
+        
+        "base_top": "cosmosindustry:block/processing/synthesiser/base_top",
+        "base_bottom": "cosmosindustry:block/processing/synthesiser/base_bottom",
+        "side": "cosmosindustry:block/processing/synthesiser/side/side_2",
+        "special": "cosmosindustry:block/processing/synthesiser/internals",
+        
+        "top_bottom": "cosmosindustry:block/processing/synthesiser/top_bottom",
+        "top_top": "cosmosindustry:block/processing/synthesiser/top_top"
+    }
+}

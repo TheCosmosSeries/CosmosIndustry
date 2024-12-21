@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "cosmosindustry:item/base/tool/machine_wrench"
+    }
+}

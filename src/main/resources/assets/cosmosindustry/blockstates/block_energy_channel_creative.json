@@ -1,0 +1,28 @@
+{
+    "variants": {
+        "": {
+            "model": "cosmosindustry:block/channel/energy/creative",
+            "transform": "forge:default-block"
+        }
+    },
+    "multipart": [
+        {   "when": { "north": "true" },
+            "apply": { "model": "cosmosindustry:block/channel/energy/creative" }
+        },
+        {   "when": { "east": "true" },
+            "apply": { "model": "cosmosindustry:block/channel/energy/creative" }
+        },
+        {   "when": { "south": "true" },
+            "apply": { "model": "cosmosindustry:block/channel/energy/creative" }
+        },
+        {   "when": { "west": "true" },
+            "apply": { "model": "cosmosindustry:block/channel/energy/creative" }
+        },
+        {   "when": { "up": "true" },
+            "apply": { "model": "cosmosindustry:block/channel/energy/creative" }
+        },
+        {   "when": { "down": "true" },
+            "apply": { "model": "cosmosindustry:block/channel/energy/creative" }
+        }
+    ]
+}
