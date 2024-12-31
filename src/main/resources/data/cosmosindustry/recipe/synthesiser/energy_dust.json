@@ -1,0 +1,28 @@
+{
+	"type": "cosmosindustry:synthesising",
+	"focus": {
+		"item": "minecraft:glowstone_dust"
+	},
+	"inputs": [
+		{
+			"item": "minecraft:redstone"
+		},
+		{
+			"item": "minecraft:redstone"
+		},
+		{
+			"item": "minecraft:redstone"
+		},
+		{
+			"item": "minecraft:redstone"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:energy_dust",
+		"count": 8
+	},
+	"processTime": 50,
+	"recipeColour": {
+		"index": 14
+	}
+}

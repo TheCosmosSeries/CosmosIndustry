@@ -1,9 +1,10 @@
 package com.tcn.cosmosindustry;
 
-import com.tcn.cosmosindustry.core.management.ModConfigManager;
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
-import com.tcn.cosmosindustry.core.management.ModSoundManager;
+import com.tcn.cosmosindustry.core.management.IndustryConfigManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustrySoundManager;
+import com.tcn.cosmosindustry.core.management.IndustryWorldgenManager;
 import com.tcn.cosmoslibrary.common.runtime.CosmosConsoleManager;
 
 import net.neoforged.bus.api.IEventBus;
@@ -22,25 +23,25 @@ public class CosmosIndustry {
 	public static CosmosConsoleManager CONSOLE = new CosmosConsoleManager(CosmosIndustry.MOD_ID, true, true);
 	
 	public CosmosIndustry(ModContainer container, IEventBus bus) {
-		container.registerConfig(ModConfig.Type.COMMON, ModConfigManager.SPEC, "cosmosindustry-common.toml");
+		container.registerConfig(ModConfig.Type.COMMON, IndustryConfigManager.SPEC, "cosmosindustry-common.toml");
 		
-		ModRegistrationManager.register(bus);
-//		ModWorldgenManager.register(bus);
-		ModRecipeManager.register(bus);
-		ModSoundManager.register(bus);
+		IndustryRegistrationManager.register(bus);
+		IndustryWorldgenManager.register(bus);
+		IndustryRecipeManager.register(bus);
+		IndustrySoundManager.register(bus);
 		
 		bus.addListener(this::onFMLCommonSetup);
 		bus.addListener(this::onFMLClientSetup);
 	}
 
 	public void onFMLCommonSetup(final FMLCommonSetupEvent event) {
-		CONSOLE = new CosmosConsoleManager(CosmosIndustry.MOD_ID, ModConfigManager.getInstance().getDebugMessage(), true);
+		CONSOLE = new CosmosConsoleManager(CosmosIndustry.MOD_ID, IndustryConfigManager.getInstance().getDebugMessage(), true);
 		
 		CONSOLE.startup("CommonSetup complete.");
 	}
 
 	public void onFMLClientSetup(final FMLClientSetupEvent event) {
-		ModRegistrationManager.onFMLClientSetup(event);
+		IndustryRegistrationManager.onFMLClientSetup(event);
 		
 		CONSOLE.startup("ClientSetup complete.");
 	}

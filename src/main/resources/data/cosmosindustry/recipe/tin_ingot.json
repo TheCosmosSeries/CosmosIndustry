@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "cosmosindustry:block_tin"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:tin_ingot",
+		"count": 9
+	}
+}

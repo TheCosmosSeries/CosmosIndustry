@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.TRANSPORT;
 import com.tcn.cosmosindustry.transport.core.fluid.blockentity.AbstractBlockEntityFluidChannel;
 import com.tcn.cosmoslibrary.common.block.CosmosBlockRemovable;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
@@ -47,7 +46,7 @@ abstract public class AbstractBlockFluidChannel extends CosmosBlockRemovable imp
 	public AbstractBlockFluidChannel(Block.Properties properties, boolean surge) {
 		super(properties);
 		
-		this.BOUNDING_BOXES = surge ? IndustryReference.RESOURCE.TRANSPORT.BOUNDING_BOXES_STANDARD_SURGE : IndustryReference.RESOURCE.TRANSPORT.BOUNDING_BOXES_STANDARD;
+		this.BOUNDING_BOXES = surge ? IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD_SURGE : IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD;
 		
 		this.registerDefaultState(this.defaultBlockState().setValue(NORTH, false).setValue(SOUTH, false).setValue(EAST, false)
 				.setValue(WEST, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
@@ -150,7 +149,7 @@ abstract public class AbstractBlockFluidChannel extends CosmosBlockRemovable imp
 				}
 				
 				if (state.isInterface() || state.equals(EnumChannelSideState.DISABLED)) {
-					shapesInterface[dir.get3DDataValue()] = TRANSPORT.BOUNDING_BOXES_INTERFACE[dir.get3DDataValue()];
+					shapesInterface[dir.get3DDataValue()] = IndustryReference.Resource.Transport.BOUNDING_BOXES_INTERFACE[dir.get3DDataValue()];
 				}
 			}
 		}

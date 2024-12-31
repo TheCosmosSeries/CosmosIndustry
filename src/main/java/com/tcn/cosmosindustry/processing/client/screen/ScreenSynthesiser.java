@@ -3,12 +3,11 @@ package com.tcn.cosmosindustry.processing.client.screen;
 import java.util.Arrays;
 
 import com.ibm.icu.text.DecimalFormat;
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.PROCESSING;
+import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerSynthesiser;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntitySynthesiser;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.IS_HOVERING;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntity;
+import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -18,18 +17,20 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ScreenSynthesiser extends CosmosScreenBlockEntity<ContainerSynthesiser> {
+public class ScreenSynthesiser extends CosmosScreenUIModeBE<ContainerSynthesiser> {
 		
 	public ScreenSynthesiser(ContainerSynthesiser containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);
 		
 		this.setImageDims(176, 177);
-		this.setTexture(PROCESSING.SYNTHESISER_LOC_GUI);
+		this.setLight(IndustryReference.Resource.Processing.Gui.SYNTHESISER_LIGHT);
+		this.setDark(IndustryReference.Resource.Processing.Gui.SYNTHESISER_DARK);
+		this.setUIModeButtonIndex(159, 5);
+		
 		this.setTitleLabelDims(38, 4);
 		this.setInventoryLabelDims(8, 85);
 	}
@@ -48,31 +49,26 @@ public class ScreenSynthesiser extends CosmosScreenBlockEntity<ContainerSynthesi
 	protected void renderBg(GuiGraphics graphicsIn, float ticks, int mouseX, int mouseY) {
 		super.renderBg(graphicsIn, ticks, mouseX, mouseY);
 		
-		BlockEntity entity = this.getBlockEntity();
-		
-		if (entity instanceof BlockEntitySynthesiser blockEntity) {
-			CosmosUISystem.renderStaticElementToggled(graphicsIn, PROCESSING.SYNTHESISER_LOC_GUI, this.getScreenCoords(), 96,  16, 176, 36, 18, 18, blockEntity.isSetupFourWay());
-			CosmosUISystem.renderStaticElementToggled(graphicsIn, PROCESSING.SYNTHESISER_LOC_GUI, this.getScreenCoords(), 116, 16, 176, 0,  18, 18, blockEntity.isSetupFourWay());
-			CosmosUISystem.renderStaticElementToggled(graphicsIn, PROCESSING.SYNTHESISER_LOC_GUI, this.getScreenCoords(), 96,  60, 176, 18, 18, 18, blockEntity.isSetupEightWay());
-			CosmosUISystem.renderStaticElementToggled(graphicsIn, PROCESSING.SYNTHESISER_LOC_GUI, this.getScreenCoords(), 116, 60, 176, 0,  18, 18, blockEntity.isSetupEightWay());
+		if (this.getBlockEntity() instanceof BlockEntitySynthesiser blockEntity) {
+			CosmosUISystem.Render.renderStaticElementToggled(graphicsIn, this.getScreenCoords(), 96,  16, 176, 36, 18, 18, blockEntity.isSetupFourWay(), IndustryReference.Resource.Processing.Gui.SYNTHESISER_LIGHT);
+			CosmosUISystem.Render.renderStaticElementToggled(graphicsIn, this.getScreenCoords(), 116, 16, 176, 0,  18, 18, blockEntity.isSetupFourWay(), IndustryReference.Resource.Processing.Gui.SYNTHESISER_LIGHT);
+			CosmosUISystem.Render.renderStaticElementToggled(graphicsIn, this.getScreenCoords(), 96,  60, 176, 18, 18, 18, blockEntity.isSetupEightWay(), IndustryReference.Resource.Processing.Gui.SYNTHESISER_LIGHT);
+			CosmosUISystem.Render.renderStaticElementToggled(graphicsIn, this.getScreenCoords(), 116, 60, 176, 0,  18, 18, blockEntity.isSetupEightWay(), IndustryReference.Resource.Processing.Gui.SYNTHESISER_LIGHT);
 			
-			CosmosUISystem.renderEnergyDisplay(graphicsIn, ComponentColour.RED, blockEntity, getScreenCoords(), 43, 17, 16, 60, false);
+			CosmosUISystem.Render.renderEnergyDisplay(graphicsIn, ComponentColour.RED, blockEntity, getScreenCoords(), 43, 17, 16, 60, false);
 		}
 	}
 	
 	@Override
-	public void renderComponentHoverEffect(GuiGraphics graphicsIn, Style style, int mouseX, int mouseY) {
-		BlockEntity entity = this.getBlockEntity();
-		
-		if (entity instanceof BlockEntitySynthesiser) {
-			BlockEntitySynthesiser blockEntity = (BlockEntitySynthesiser) entity;
-			
-			if (IS_HOVERING.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 43, this.getScreenCoords()[0] + 43 + 15, this.getScreenCoords()[1] + 17, this.getScreenCoords()[1] + 17 + 59)) {
+	public void renderStandardHoverEffect(GuiGraphics graphicsIn, Style style, int mouseX, int mouseY) {
+		if (this.getBlockEntity() instanceof BlockEntitySynthesiser blockEntity) {
+			if (CosmosUISystem.Hovering.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 43, this.getScreenCoords()[0] + 43 + 15, this.getScreenCoords()[1] + 17, this.getScreenCoords()[1] + 17 + 59)) {
 				DecimalFormat formatter = new DecimalFormat("#,###,###,###");
 				String amount_string = formatter.format(blockEntity.getEnergyStored());
 				String capacity_string = formatter.format(blockEntity.getMaxEnergyStored());
 				
-				Component[] comp = new Component[] { ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
+				Component[] comp = new Component[] { 
+					ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
 					ComponentHelper.style2(ComponentColour.RED, amount_string + " / " + capacity_string, "cosmoslibrary.gui.energy_bar.suff") 
 				};
 				

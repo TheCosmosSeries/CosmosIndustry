@@ -1,7 +1,7 @@
 package com.tcn.cosmosindustry.processing.client.container;
 
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.client.container.slot.SlotCompactor;
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.client.container.slot.SlotUpgrade;
@@ -26,7 +26,7 @@ public class ContainerCompactor extends CosmosContainerMenuBlockEntity {
 	}
 	
 	public ContainerCompactor(int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModRegistrationManager.CONTAINER_TYPE_COMPACTOR.get(), indexIn, playerInventoryIn, accessIn, posIn);
+		super(IndustryRegistrationManager.CONTAINER_TYPE_COMPACTOR.get(), indexIn, playerInventoryIn, accessIn, posIn);
 
 		/**@Inputslot*/
 		this.addSlot(new Slot(contentsIn, 0, 78, 39));
@@ -38,9 +38,9 @@ public class ContainerCompactor extends CosmosContainerMenuBlockEntity {
 		this.addSlot(new SlotCompactor(contentsIn, 1, 124, 39));
 
 		/**@Upgradeslots*/
-		this.addSlot(new SlotUpgrade(contentsIn, 2, 32, 17, ModRegistrationManager.UPGRADE_SPEED.get()));
-		this.addSlot(new SlotUpgrade(contentsIn, 3, 32, 39, ModRegistrationManager.UPGRADE_CAPACITY.get()));
-		this.addSlot(new SlotUpgrade(contentsIn, 4, 32, 61, ModRegistrationManager.UPGRADE_EFFICIENCY.get()));
+		this.addSlot(new SlotUpgrade(contentsIn, 2, 32, 17, IndustryRegistrationManager.UPGRADE_SPEED.get()));
+		this.addSlot(new SlotUpgrade(contentsIn, 3, 32, 39, IndustryRegistrationManager.UPGRADE_CAPACITY.get()));
+		this.addSlot(new SlotUpgrade(contentsIn, 4, 32, 61, IndustryRegistrationManager.UPGRADE_EFFICIENCY.get()));
 		
 		/**@Inventory*/
 		for (int y = 0; y < 3; y++) {
@@ -78,7 +78,7 @@ public class ContainerCompactor extends CosmosContainerMenuBlockEntity {
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModRegistrationManager.BLOCK_COMPACTOR.get());
+		return stillValid(this.access, playerIn, IndustryRegistrationManager.BLOCK_COMPACTOR.get());
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class ContainerCompactor extends CosmosContainerMenuBlockEntity {
 					}
 				}
 				
-				else if (this.getLevel().getRecipeManager().getRecipeFor(ModRecipeManager.RECIPE_TYPE_COMPACTING.get(), new SingleRecipeInput(itemstack), getLevel()).isPresent()) {
+				else if (this.getLevel().getRecipeManager().getRecipeFor(IndustryRecipeManager.RECIPE_TYPE_COMPACTING.get(), new SingleRecipeInput(itemstack), getLevel()).isPresent()) {
 					if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
 						return ItemStack.EMPTY;
 					}

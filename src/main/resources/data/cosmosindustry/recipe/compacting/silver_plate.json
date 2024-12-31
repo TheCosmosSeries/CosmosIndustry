@@ -1,0 +1,9 @@
+{
+	"type": "cosmosindustry:compacting",
+	"input": {
+		"item": "cosmosindustry:silver_ingot"
+	},
+	"result": {
+		"id": "cosmosindustry:silver_plate"
+	}
+}

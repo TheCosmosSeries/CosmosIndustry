@@ -5,14 +5,17 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.core.recipe.GrinderRecipe;
 import com.tcn.cosmosindustry.processing.client.container.ContainerGrinder;
 import com.tcn.cosmosindustry.processing.core.block.BlockGrinder;
-import com.tcn.cosmoslibrary.client.interfaces.IBlockEntityClientUpdated.ProcessingRecipe;
+import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated.ProcessingRecipe;
+import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -29,7 +32,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,7 +53,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, ProcessingRecipe, Container, WorldlyContainer, MenuProvider, IEnergyEntity, RecipeCraftingHolder {
+public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, ProcessingRecipe, WorldlyContainer, MenuProvider, IEnergyEntity, RecipeCraftingHolder, IBEUIMode {
 
 	private static final int[] SLOTS_TOP = new int[] { 0 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 2, 1 };
@@ -61,30 +63,32 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 
 	private int update = 0;
 	private int process_time;
-	private int process_speed = IndustryReference.RESOURCE.PROCESSING.SPEED_RATE[0];
+	private int process_speed = IndustryReference.Resource.Processing.SPEED_RATE[0];
 	
 	private int energy_stored = 0;
-	private int energy_capacity = IndustryReference.RESOURCE.PROCESSING.CAPACITY[0];
-	private int energy_max_receive = IndustryReference.RESOURCE.PROCESSING.MAX_INPUT[0];
-	private int rf_tick_rate = IndustryReference.RESOURCE.PROCESSING.RF_TICK_RATE[0];
+	private int energy_capacity = IndustryReference.Resource.Processing.CAPACITY[0];
+	private int energy_max_receive = IndustryReference.Resource.Processing.MAX_INPUT[0];
+	private int rf_tick_rate = IndustryReference.Resource.Processing.RF_TICK_RATE[0];
 
 	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
 	protected final RecipeType<GrinderRecipe> recipeType;
 	
+	private EnumUIMode uiMode = EnumUIMode.DARK;
+	
 	public BlockEntityGrinder(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_GRINDER.get(), posIn, stateIn);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_GRINDER.get(), posIn, stateIn);
 
-		this.recipeType = ModRecipeManager.RECIPE_TYPE_GRINDING.get();
+		this.recipeType = IndustryRecipeManager.RECIPE_TYPE_GRINDING.get();
 	}
 	
 	public void sendUpdates() {
-		if (level != null) {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			
-			level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 2 | 4);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 2 | 4);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState());
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState());
 			}
 		}
 	}
@@ -106,6 +110,8 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 			compoundnbt.putInt(location.toString(), inte);
 		});
 		compound.put("RecipesUsed", compoundnbt);
+
+		compound.putInt("ui_mode", this.uiMode.getIndex());
 	}
 
 	@Override
@@ -126,6 +132,8 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 		for (String s : compoundnbt.getAllKeys()) {
 			this.recipesUsed.put(ResourceLocation.parse(s), compoundnbt.getInt(s));
 		}
+
+		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 	}
 
 	@Override
@@ -185,7 +193,6 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 						entityIn.processItem(recipe, provider);
 					}
 				}
-				
 			} else {
 				entityIn.process_time = 0;
 			}
@@ -215,13 +222,13 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 		}
 		
 		int i = entityIn.inventoryItems.get(3).getCount();
-		entityIn.process_speed = IndustryReference.RESOURCE.PROCESSING.SPEED_RATE[i];
+		entityIn.process_speed = IndustryReference.Resource.Processing.SPEED_RATE[i];
 		
 		int j = entityIn.inventoryItems.get(4).getCount();
-		entityIn.energy_capacity = IndustryReference.RESOURCE.PROCESSING.CAPACITY[j];
+		entityIn.energy_capacity = IndustryReference.Resource.Processing.CAPACITY[j];
 
 		int k = entityIn.inventoryItems.get(5).getCount();
-		entityIn.rf_tick_rate = IndustryReference.RESOURCE.PROCESSING.RF_TICK_RATE[i] - IndustryReference.RESOURCE.PROCESSING.RF_EFF_RATE[k];
+		entityIn.rf_tick_rate = IndustryReference.Resource.Processing.RF_TICK_RATE[i] - IndustryReference.Resource.Processing.RF_EFF_RATE[k];
 		
 		boolean flag = entityIn.update > 0;
 		
@@ -365,12 +372,16 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 	}
 
 	@Override
+	public int getMaxStackSize() {
+		return 64;
+	}
+
+	@Override
 	public void setItem(int index, ItemStack stack) {
 		this.inventoryItems.set(index, stack);
 		if (stack.getCount() > this.getMaxStackSize()) {
 			stack.setCount(this.getMaxStackSize());
 		}
-		
 		this.sendUpdates();
 	}
 
@@ -548,9 +559,9 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 		BlockState state = this.getLevel().getBlockState(this.getBlockPos());
 		
 		if (state.getBlock() instanceof BlockGrinder) {
-			Direction facing = state.getValue(BlockGrinder.FACING).getOpposite();
+			Direction facing = state.getValue(BlockGrinder.FACING);
 
-			if (directionIn.equals(Direction.DOWN)) {
+			if (directionIn.equals(Direction.UP)) {
 				return false;
 			} else if (directionIn.equals(facing)) {
 				return false;
@@ -610,4 +621,31 @@ public class BlockEntityGrinder extends BlockEntity implements IBlockInteract, P
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;
 	}
+
+	@Override
+	public EnumUIMode getUIMode() {
+		return this.uiMode;
+	}
+
+	@Override
+	public void setUIMode(EnumUIMode modeIn) {
+		this.uiMode = modeIn;
+	}
+
+	@Override
+	public void cycleUIMode() {
+		this.uiMode = EnumUIMode.getNextStateFromState(this.uiMode);
+	}
+
+	@Override
+	public EnumUIHelp getUIHelp() {
+		return EnumUIHelp.HIDDEN;
+	}
+
+	@Override
+	public void setUIHelp(EnumUIHelp modeIn) { }
+
+	@Override
+	public void cycleUIHelp() { }
+	
 }

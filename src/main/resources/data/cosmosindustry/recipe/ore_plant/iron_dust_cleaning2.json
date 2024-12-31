@@ -1,0 +1,17 @@
+{
+	"type": "cosmosindustry:ore_plant",
+	"input": {
+		"item": "minecraft:deepslate_iron_ore"
+	},
+	"result": {
+		"id": "cosmosindustry:iron_dust_clean",
+		"count": 3
+	},
+	"fluid":{
+		"id": "minecraft:water",
+		"amount": 250
+	},
+	"mode": {
+		"index": 0
+	}
+}

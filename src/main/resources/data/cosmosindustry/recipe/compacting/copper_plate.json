@@ -1,0 +1,9 @@
+{
+	"type": "cosmosindustry:compacting",
+	"input": {
+		"item": "minecraft:copper_ingot"
+	},
+	"result": {
+		"id": "cosmosindustry:copper_plate"
+	}
+}

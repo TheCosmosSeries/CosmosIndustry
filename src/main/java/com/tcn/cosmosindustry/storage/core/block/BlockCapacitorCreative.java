@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.storage.core.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.storage.core.blockentity.AbstractBlockEntityCapacitor;
 import com.tcn.cosmosindustry.storage.core.blockentity.BlockEntityCapacitorCreative;
 
@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class BlockCapacitorCreative extends BlockCapacitorBase {
+public class BlockCapacitorCreative extends AbstractBlockCapacitor {
 
 	public BlockCapacitorCreative(Block.Properties properties) {
 		super(properties);
@@ -27,7 +27,7 @@ public class BlockCapacitorCreative extends BlockCapacitorBase {
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR_CREATIVE.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR_CREATIVE.get());
 	}
 
 	@Nullable

@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.processing.core.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityLaserCutter;
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
 
@@ -47,7 +47,7 @@ public class BlockLaserCutter extends CosmosBlockRemovableNBT implements EntityB
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_LASER_CUTTER.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_LASER_CUTTER.get());
 	}
 
 	@Nullable
@@ -56,20 +56,20 @@ public class BlockLaserCutter extends CosmosBlockRemovableNBT implements EntityB
 	}
 	
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player playerIn) { 
-	BlockEntity entity = worldIn.getBlockEntity(pos);
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player playerIn) { 
+	BlockEntity entity = levelIn.getBlockEntity(pos);
 		
 		if (entity instanceof BlockEntityLaserCutter blockEntity) {
-			blockEntity.attack(state, worldIn, pos, playerIn);
+			blockEntity.attack(state, levelIn, pos, playerIn);
 		}
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity entity = worldIn.getBlockEntity(pos);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		BlockEntity entity = levelIn.getBlockEntity(pos);
 		
 		if (entity instanceof BlockEntityLaserCutter blockEntity) {
-			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
+			return blockEntity.useItemOn(stackIn, state, levelIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.FAIL;
 	}
@@ -85,7 +85,7 @@ public class BlockLaserCutter extends CosmosBlockRemovableNBT implements EntityB
 	}
 	
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {	
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {	
 		return stateIn.setValue(FACING, stateIn.getValue(FACING));
 	}
 	
@@ -95,19 +95,19 @@ public class BlockLaserCutter extends CosmosBlockRemovableNBT implements EntityB
 	}
 	
 	@Override
-	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		worldIn.setBlockAndUpdate(pos, state.setValue(FACING, placer.getDirection().getOpposite()));
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		levelIn.setBlockAndUpdate(pos, state.setValue(FACING, placer.getDirection().getOpposite()));
 	}
 
 	@Override
-	public BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
-		return p_185499_1_.setValue(FACING, p_185499_2_.rotate(p_185499_1_.getValue(FACING)));
+	public BlockState rotate(BlockState stateIn, Rotation rotationIn) {
+		return stateIn.setValue(FACING, rotationIn.rotate(stateIn.getValue(FACING)));
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
-		return p_185471_1_.rotate(p_185471_2_.getRotation(p_185471_1_.getValue(FACING)));
+	public BlockState mirror(BlockState stateIn, Mirror mirrorIn) {
+		return stateIn.rotate(mirrorIn.getRotation(stateIn.getValue(FACING)));
 	}
 
 }

@@ -1,0 +1,9 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "cosmosindustry:tin_ingot"
+	},
+	"result": {
+		"id": "cosmosindustry:tin_dust"
+	}
+}

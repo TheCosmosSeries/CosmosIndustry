@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"HI"
+	],
+	"key": {
+		"H": {
+			"item": "cosmosindustry:machine_hammer"
+		},
+		"I": {
+			"item": "minecraft:coal"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:coal_dust"
+	}
+}

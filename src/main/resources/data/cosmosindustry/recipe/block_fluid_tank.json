@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"GBG",
+		"BCB",
+		"GBG"
+	],
+	"key": {
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"B": {
+			"item": "minecraft:bucket"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_fluid_tank"
+	}
+}

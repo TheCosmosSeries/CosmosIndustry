@@ -1,6 +1,6 @@
 package com.tcn.cosmosindustry.processing.core.blockentity;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.block.BlockSynthesiserStand;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -14,7 +14,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,13 +26,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class BlockEntitySynthesiserStand extends BlockEntity implements IBlockInteract, Container, WorldlyContainer {
+public class BlockEntitySynthesiserStand extends BlockEntity implements IBlockInteract, WorldlyContainer {
 
 	private static final int[] SLOTS_ACC = { 0 };
 	private NonNullList<ItemStack> inventoryItems = NonNullList.<ItemStack>withSize(1, ItemStack.EMPTY);
 
 	public BlockEntitySynthesiserStand(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_SYNTHESISER_STAND.get(), posIn, stateIn);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_SYNTHESISER_STAND.get(), posIn, stateIn);
 	}
 
 	public void sendUpdates() {
@@ -150,11 +149,6 @@ public class BlockEntitySynthesiserStand extends BlockEntity implements IBlockIn
 	}
 
 	@Override
-	public int getMaxStackSize() {
-		return 1;
-	}
-
-	@Override
 	public ItemStack getItem(int index) {
 		return this.inventoryItems.get(index);
 	}
@@ -169,6 +163,11 @@ public class BlockEntitySynthesiserStand extends BlockEntity implements IBlockIn
 	public ItemStack removeItemNoUpdate(int index) {
 		this.sendUpdates();
 		return ContainerHelper.takeItem(this.inventoryItems, index);
+	}
+
+	@Override
+	public int getMaxStackSize() {
+		return 1;
 	}
 
 	@Override

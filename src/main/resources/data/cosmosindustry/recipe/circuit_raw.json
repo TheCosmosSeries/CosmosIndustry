@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"SSS",
+		"CCC",
+		"III"
+	],
+	"key": {
+		"S": {
+			"item": "cosmosindustry:silicon_refined"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"C": {
+			"item": "minecraft:copper_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:circuit_raw"
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"ILI",
+		"LSL",
+		"ILI"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"L": {
+			"item": "cosmosindustry:lapis_ingot"
+		},
+		"S": {
+			"item": "cosmosindustry:steel_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:upgrade_base",
+		"count": 2
+	}
+}

@@ -1,9 +1,10 @@
 package com.tcn.cosmosindustry.storage.core.blockentity;
 
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.STORAGE;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.IndustryReference;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.storage.client.container.ContainerCapacitorCreative;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
 import net.minecraft.core.BlockPos;
@@ -17,12 +18,12 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BlockEntityCapacitorCreative extends AbstractBlockEntityCapacitor {
 
 	public BlockEntityCapacitorCreative(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR_CREATIVE.get(), posIn, stateIn, STORAGE.ENERGY_CREATIVE, EnumIndustryTier.CREATIVE);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR_CREATIVE.get(), posIn, stateIn, IndustryReference.Resource.Storage.ENERGY_CREATIVE, EnumIndustryTier.CREATIVE);
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return ComponentHelper.title("cosmosindustry.gui.capacitor_creative");
+		return ComponentHelper.style(ComponentColour.MAGENTA, "", "cosmosindustry.gui.capacitor_creative");
 	}
 	
 	@Override

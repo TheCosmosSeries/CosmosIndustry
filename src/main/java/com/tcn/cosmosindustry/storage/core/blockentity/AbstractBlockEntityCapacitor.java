@@ -1,26 +1,29 @@
 package com.tcn.cosmosindustry.storage.core.blockentity;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 
-import com.tcn.cosmoslibrary.client.interfaces.IBlockEntityClientUpdated;
+import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumSideState;
+import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntitySided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBESided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
+import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
-import com.tcn.cosmoslibrary.energy.interfaces.ICosmosEnergyItem;
+import com.tcn.cosmoslibrary.energy.CosmosEnergyUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +35,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,7 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-abstract public class AbstractBlockEntityCapacitor extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, IEnergyEntity, IBlockEntitySided, IBlockEntityClientUpdated.Storage {
+abstract public class AbstractBlockEntityCapacitor extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, IEnergyEntity, IBESided, IBEUpdated.Storage, IBEUIMode {
 
 	private static final int[] SLOTS_TOP = new int[] { 0, 1 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 0, 1 };
@@ -58,6 +60,9 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	private EnumSideState[] SIDE_STATE_ARRAY = EnumSideState.getStandardArray();
 	
 	private EnumIndustryTier tier;
+	private final int chargeRate = 50000;
+	
+	private EnumUIMode uiMode = EnumUIMode.DARK;
 
 	public AbstractBlockEntityCapacitor(BlockEntityType<?> typeIn, BlockPos posIn, BlockState stateIn, int[] energyInfoIn, EnumIndustryTier tierIn) {
 		super(typeIn, posIn, stateIn);
@@ -68,17 +73,23 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 		this.tier = tierIn;
 	}
 
-	public void sendUpdates(boolean update) {
-		if (level != null) {
+	@Override
+	public void sendUpdates() {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			BlockState state = this.getBlockState();
 			
-			level.sendBlockUpdated(this.getBlockPos(), state, state, 3);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, 3);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, this.getLevel(), this.getBlockPos(), this.getBlockPos()));
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, this.getLevel(), this.getBlockPos(), this.getBlockPos()));
 			}
 		}
+	}
+
+	@Override
+	public void sendUpdates(boolean update) {
+		sendUpdates();
 	}
 	
 	@Override
@@ -95,8 +106,30 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 		compound.putInt("east", this.SIDE_STATE_ARRAY[5].getIndex());
 		
 		compound.putInt("energy", this.energy_stored);
+		compound.putInt("maxEnergy", this.energy_capacity);
+
+		compound.putInt("ui_mode", this.uiMode.getIndex());
 	}
 
+	public static CompoundTag getNBT(String regName) {
+		CompoundTag tag = new CompoundTag();
+		tag.putString("id", regName);
+		
+		tag.put("Items", new ListTag());
+		
+		tag.putInt("down", 0);
+		tag.putInt("up", 0);
+		tag.putInt("north", 0);
+		tag.putInt("south", 0);
+		tag.putInt("east", 0);
+		tag.putInt("west", 0);
+		
+		tag.putInt("energy", 0);
+		tag.putInt("maxEnergy", 0);
+		
+		return tag;
+	}
+	
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
 		super.loadAdditional(compound, provider);
@@ -112,6 +145,8 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 		this.setSide(Direction.values()[5], EnumSideState.getStateFromIndex(compound.getInt("east")), false);
 		
 		this.energy_stored = compound.getInt("energy");
+
+		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 	}
 	
 	@Override
@@ -154,35 +189,16 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	}
 	
 	public static void tick(Level levelIn, BlockPos posIn, BlockState stateIn, AbstractBlockEntityCapacitor entityIn) {
-		entityIn.drainItem();
-		entityIn.chargeItem();
+		entityIn.drainItem(0);
+		entityIn.chargeItem(1);
 		
 		if (!entityIn.getLevel().isClientSide()) {
-			Arrays.stream(Direction.values()).parallel().forEach((d) -> {
-				BlockPos otherPos = posIn.offset(d.getNormal());
-				BlockEntity entity = entityIn.getLevel().getBlockEntity(otherPos);
-				
-				if (entity != null && !entity.isRemoved()) {
-					if (entityIn.hasEnergy()) {
-						if (entityIn.getSide(d) == EnumSideState.INTERFACE_OUTPUT) {
-							Object object = entityIn.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, d);
-							
-							if (object != null) {
-								if (object instanceof IEnergyStorage storage) {
-									if (storage.canReceive()) {
-										int extract = entityIn.extractEnergy(d, entityIn.getMaxExtract(), true);
-										int actualExtract = storage.receiveEnergy(extract, true);
-										
-										if (actualExtract > 0) {
-											entityIn.extractEnergy(d, storage.receiveEnergy(actualExtract, false), false);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			});
+			entityIn.pushEnergy(Direction.DOWN);
+			entityIn.pushEnergy(Direction.UP);
+			entityIn.pushEnergy(Direction.NORTH);
+			entityIn.pushEnergy(Direction.SOUTH);
+			entityIn.pushEnergy(Direction.EAST);
+			entityIn.pushEnergy(Direction.WEST);
 		}
 		
 		if (entityIn.tier.equals(EnumIndustryTier.CREATIVE)) {
@@ -191,60 +207,100 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 			}
 		}
 	}
+	
+	public void pushEnergy(Direction directionIn) {
+		BlockPos otherPos = this.getBlockPos().offset(directionIn.getNormal());
+		BlockEntity entity = this.getLevel().getBlockEntity(otherPos);
+		
+		if (entity != null && !entity.isRemoved()) {
+			if (this.hasEnergy() && this.canExtract(directionIn)) {
+				if (this.getSide(directionIn) == EnumSideState.INTERFACE_OUTPUT) {
+					Object object = this.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, directionIn.getOpposite());
+					
+					if (object != null) {
+						if (object instanceof IEnergyStorage storage) {
+							if (storage.canReceive()) {
+								int extract = this.extractEnergy(directionIn, this.getMaxExtract(), true);
+								int actualExtract = storage.receiveEnergy(extract, true);
+								
+								if (actualExtract > 0) {
+									this.extractEnergy(directionIn, storage.receiveEnergy(actualExtract, false), false);
+								}
+							}
+						}
+					}
+				}
+			} else {
+				return;
+			}
+		} else {
+			return;
+		}
+	}
 
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) { }
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player player) { }
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos posIn, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
 		if (!playerIn.isShiftKeyDown()) {
 			if (CosmosUtil.holdingWrench(playerIn)) {
 				this.cycleSide(hit.getDirection(), playerIn, true);
 				return ItemInteractionResult.SUCCESS;
 			}
 		
-			if (worldIn.isClientSide) {
-				return ItemInteractionResult.sidedSuccess(worldIn.isClientSide);
+			if (levelIn.isClientSide()) {
+				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
 			} else {
 				if (playerIn instanceof ServerPlayer serverPlayer) {
 					serverPlayer.openMenu(this, (packetBuffer) -> { packetBuffer.writeBlockPos(this.getBlockPos()); });
-					return ItemInteractionResult.sidedSuccess(worldIn.isClientSide);
+					return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
 				}
+			}
+		} else {
+			if (CosmosUtil.holdingWrench(playerIn)) {
+				if (!levelIn.isClientSide()) {
+					CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+					CosmosUtil.setToAir(levelIn, posIn);
+				}
+				ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
 		}
 		return ItemInteractionResult.FAIL;
 	}
 
-	public void drainItem() {
-		if (!this.getItem(0).isEmpty()) {
-			ItemStack stackIn = this.getItem(0);
-			Item item = stackIn.getItem();
-		
-			if (item instanceof ICosmosEnergyItem energyItem) {
-				if (energyItem.hasEnergy(stackIn)) {
-					if (energyItem.canExtractEnergy(stackIn)) {
-						energyItem.extractEnergy(stackIn, this.receiveEnergy(Direction.DOWN, Math.min(this.getMaxReceive(), energyItem.getMaxExtract(stackIn)), false), false);
-					}
-				}
-			}
-		}
-	}
-
-	public void chargeItem() {
-		if (!this.getItem(1).isEmpty()) {
-			ItemStack stackIn = this.getItem(1);
-			Item item = stackIn.getItem();
-		
-			if (item instanceof ICosmosEnergyItem energyItem) {
-				if (this.hasEnergy()) {
-					if (energyItem.canReceiveEnergy(stackIn)) {
-						energyItem.receiveEnergy(stackIn, this.extractEnergy(Direction.DOWN, Math.min(this.getMaxExtract(), energyItem.getMaxReceive(stackIn)), false), false);
+	public void chargeItem(int indexIn) {
+		if (!this.getItem(indexIn).isEmpty()) {
+			Object object = this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM);
+			
+			if (object instanceof IEnergyStorage energyItem) {
+				if (this.chargeRate > 0) {
+					if (this.hasEnergy()) {
+						if (energyItem.canReceive()) {
+							energyItem.receiveEnergy(this.extractEnergy(Direction.DOWN, Math.min(this.getMaxReceive(), this.chargeRate), false), false);
+						}
 					}
 				}
 			}
 		}
 	}
 	
+	public void drainItem(int indexIn) {
+		if (!this.getItem(indexIn).isEmpty()) {
+			Object object = this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM);
+		
+			if (object instanceof IEnergyStorage energyItem) {
+				if (this.chargeRate > 0) {
+					if (CosmosEnergyUtil.hasEnergy(energyItem)) {
+						if (energyItem.canExtract()) {
+							energyItem.extractEnergy(this.receiveEnergy(Direction.DOWN, Math.min(this.getMaxExtract(), this.chargeRate), false), false);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public void clearContent() { }
 
@@ -418,10 +474,7 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 
 		if (!simulate) {
 			this.energy_stored += storedReceived;
-			
-			if (storedReceived > 0) {
-				this.sendUpdates(true);
-			}
+			this.sendUpdates(true);
 		}
 		
 		return storedReceived;
@@ -435,10 +488,7 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 			if (this.tier.notCreative()) {
 				this.energy_stored -= storedExtracted;
 			}
-			
-			if (storedExtracted > 0) {
-				this.sendUpdates(true);
-			}
+			this.sendUpdates(true);
 		}
 		
 		return storedExtracted;
@@ -466,7 +516,7 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	
 	@Override
 	public boolean canExtract(Direction directionIn) {
-		if (this.getSide(directionIn.getOpposite()).equals(EnumSideState.DISABLED) || this.getSide(directionIn.getOpposite()).equals(EnumSideState.INTERFACE_INPUT)) {
+		if (this.getSide(directionIn).equals(EnumSideState.DISABLED) || this.getSide(directionIn).equals(EnumSideState.INTERFACE_INPUT)) {
 			return false;
 		}
 		
@@ -475,7 +525,7 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 
 	@Override
 	public boolean canReceive(Direction directionIn) {
-		if (this.getSide(directionIn.getOpposite()).equals(EnumSideState.DISABLED) || this.getSide(directionIn.getOpposite()).equals(EnumSideState.INTERFACE_OUTPUT)) {
+		if (this.getSide(directionIn).equals(EnumSideState.DISABLED) || this.getSide(directionIn).equals(EnumSideState.INTERFACE_OUTPUT)) {
 			return false;
 		}
 		
@@ -581,4 +631,31 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;
 	}
+
+	@Override
+	public EnumUIMode getUIMode() {
+		return this.uiMode;
+	}
+
+	@Override
+	public void setUIMode(EnumUIMode modeIn) {
+		this.uiMode = modeIn;
+	}
+
+	@Override
+	public void cycleUIMode() {
+		this.uiMode = EnumUIMode.getNextStateFromState(this.uiMode);
+	}
+
+	@Override
+	public EnumUIHelp getUIHelp() {
+		return EnumUIHelp.HIDDEN;
+	}
+
+	@Override
+	public void setUIHelp(EnumUIHelp modeIn) { }
+
+	@Override
+	public void cycleUIHelp() { }
+	
 }

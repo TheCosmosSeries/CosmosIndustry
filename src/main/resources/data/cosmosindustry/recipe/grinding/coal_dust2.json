@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "minecraft:charcoal"
+	},
+	"result": {
+		"id": "cosmosindustry:coal_dust",
+		"count": 1
+	}
+}

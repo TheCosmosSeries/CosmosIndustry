@@ -1,10 +1,9 @@
 package com.tcn.cosmosindustry.integration.jei;
 
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.PROCESSING;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.IndustryReference;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.core.recipe.SynthesiserRecipe;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.FONT;
+import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -31,138 +30,34 @@ public class CategorySynthesiser implements IRecipeCategory<SynthesiserRecipe> {
 	
 	private final IDrawable laser[][] = new IDrawable[8][8];
 
-	private final ResourceLocation jeiLoc = PROCESSING.SYNTHESISER_LOC_GUI_JEI;
-	private final ResourceLocation laserLoc = PROCESSING.SYNTHESISER_LOC_GUI_JEI_LASER;
+	private final ResourceLocation jeiLoc = IndustryReference.Resource.Processing.Gui.SYNTHESISER_JEI;
+	private final ResourceLocation laserLoc = IndustryReference.Resource.Processing.Gui.SYNTHESISER_JEI_LASER;
 	
 	/**
-	 *  UP 0
-	 *  DOWN 1
-	 *  LEFT 2 
-	 *  RIGHT 3
-	 *  TOP_LEFT 4
-	 *  TOP_RIGHT 5
-	 *  BOTTOM_LEFT 6
-	 *  BOTTOM_RIGHT 7 
-	 * 
-	*/
+	 *  UP 0 DOWN 1 LEFT 2  RIGHT 3 TOP_LEFT 4 TOP_RIGHT 5 BOTTOM_LEFT 6 BOTTOM_RIGHT 7
+	 */
 	private final int[][][] laserArray = new int[][][] {
-		new int[][] { 
-			new int[] { 0, 0 }
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 60, 0 },
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 120, 60 },
-			new int[] { 180, 60 },
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 60, 0 },
-			new int[] { 120, 0 },
-			new int[] { 180, 0 },
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 60, 0 },
-			new int[] { 120, 0 },
-			new int[] { 180, 0 },
-			new int[] { 0, 60 },
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 60, 0 },
-			new int[] { 120, 0 },
-			new int[] { 180, 0 },
-			new int[] { 0, 60 },
-			new int[] { 180, 60 },
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 60, 0 },
-			new int[] { 120, 0 },
-			new int[] { 180, 0 },
-			new int[] { 0, 60 },
-			new int[] { 180, 60 },
-			new int[] { 60, 60 },
-		},
-		new int[][] { 
-			new int[] { 0, 0 },
-			new int[] { 60, 0 },
-			new int[] { 120, 0 },
-			new int[] { 180, 0 },
-			new int[] { 0, 60 },
-			new int[] { 180, 60 },
-			new int[] { 60, 60 },
-			new int[] { 120, 60 },
-		}
+		new int[][] { new int[] { 0, 0 } },
+		new int[][] { new int[] { 0, 0 }, new int[] { 60,  0 }, },
+		new int[][] { new int[] { 0, 0 }, new int[] { 120, 60 }, new int[] { 180, 60 }, },
+		new int[][] { new int[] { 0, 0 }, new int[] { 60,  0 },  new int[] { 120, 0 }, new int[] { 180, 0 }, },
+		new int[][] { new int[] { 0, 0 }, new int[] { 60,  0 },  new int[] { 120, 0 }, new int[] { 180, 0 }, new int[] { 0, 60 }, },
+		new int[][] { new int[] { 0, 0 }, new int[] { 60,  0 },  new int[] { 120, 0 }, new int[] { 180, 0 }, new int[] { 0, 60 }, new int[] { 180, 60 }, },
+		new int[][] { new int[] { 0, 0 }, new int[] { 60,  0 },  new int[] { 120, 0 }, new int[] { 180, 0 }, new int[] { 0, 60 }, new int[] { 180, 60 }, new int[] { 60, 60 }, },
+		new int[][] { new int[] { 0, 0 }, new int[] { 60,  0 },  new int[] { 120, 0 }, new int[] { 180, 0 }, new int[] { 0, 60 }, new int[] { 180, 60 }, new int[] { 60, 60 }, new int[] { 120, 60 }, }
 	};
 	
 	/**
-	 *  UP 0
-	 *  DOWN 1
-	 *  LEFT 2 
-	 *  RIGHT 3
-	 *  TOP_LEFT 4
-	 *  TOP_RIGHT 5
-	 *  BOTTOM_LEFT 6
-	 *  BOTTOM_RIGHT 7
-	*/
+	 *  UP 0 DOWN 1 LEFT 2  RIGHT 3 TOP_LEFT 4 TOP_RIGHT 5 BOTTOM_LEFT 6 BOTTOM_RIGHT 7
+	 */
 	private final int[][][] slotArray = new int[][][] { 
-		new int[][] { 
-			new int[] { 54, 22 }
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 54, 106 },
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 20, 98 },
-			new int[] { 88, 98 },
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 54, 106 },
-			new int[] { 12, 64 },
-			new int[] { 96, 64 },
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 54, 106 },
-			new int[] { 12, 64 },
-			new int[] { 96, 64 },
-			new int[] { 20, 30 },
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 54, 106 },
-			new int[] { 12, 64 },
-			new int[] { 96, 64 },
-			new int[] { 20, 30 },
-			new int[] { 88, 98 },
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 54, 106 },
-			new int[] { 12, 64 },
-			new int[] { 96, 64 },
-			new int[] { 20, 30 },
-			new int[] { 88, 98 },
-			new int[] { 88, 30 },
-		},
-		new int[][] { 
-			new int[] { 54, 22 },
-			new int[] { 54, 106 },
-			new int[] { 12, 64 },
-			new int[] { 96, 64 },
-			new int[] { 20, 30 },
-			new int[] { 88, 98 },
-			new int[] { 88, 30 },
-			new int[] { 20, 98 },
-		}
+		new int[][] { new int[] { 54, 22 } }, new int[][] { new int[] { 54, 22 }, new int[] { 54, 106 }, },
+		new int[][] { new int[] { 54, 22 },   new int[] { 20,  98 }, new int[] { 88, 98 }, },
+		new int[][] { new int[] { 54, 22 },   new int[] { 54, 106 }, new int[] { 12, 64 }, new int[] { 96, 64 }, },
+		new int[][] { new int[] { 54, 22 },   new int[] { 54, 106 }, new int[] { 12, 64 }, new int[] { 96, 64 }, new int[] { 20, 30 }, },
+		new int[][] { new int[] { 54, 22 },   new int[] { 54, 106 }, new int[] { 12, 64 }, new int[] { 96, 64 }, new int[] { 20, 30 }, new int[] { 88, 98 }, },
+		new int[][] { new int[] { 54, 22 },   new int[] { 54, 106 }, new int[] { 12, 64 }, new int[] { 96, 64 }, new int[] { 20, 30 }, new int[] { 88, 98 }, new int[] { 88, 30 }, },
+		new int[][] { new int[] { 54, 22 },   new int[] { 54, 106 }, new int[] { 12, 64 }, new int[] { 96, 64 }, new int[] { 20, 30 }, new int[] { 88, 98 }, new int[] { 88, 30 }, new int[] { 20, 98 }, }
 	};
 	
 	
@@ -189,7 +84,7 @@ public class CategorySynthesiser implements IRecipeCategory<SynthesiserRecipe> {
 
 	@Override
 	public IDrawable getIcon() {
-		return this.helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModRegistrationManager.BLOCK_SYNTHESISER));
+		return this.helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IndustryRegistrationManager.BLOCK_SYNTHESISER));
 	}
 	
 	@Override
@@ -201,21 +96,21 @@ public class CategorySynthesiser implements IRecipeCategory<SynthesiserRecipe> {
 		this.helper.createDrawable(jeiLoc, 182, size < 5 ? 0 : 32, 32, 32).draw(graphicsIn, 140, 19);
 		this.helper.createDrawable(jeiLoc, 182, 0, 32, 32).draw(graphicsIn, 140, 54);
 		
-		CosmosUISystem.setTextureColour(recipe.getRecipeColour());
+		CosmosUISystem.Setup.setTextureColour(recipe.getRecipeColour());
 		this.drawLaserArray(graphicsIn, size);
 		
-		CosmosUISystem.setTextureColour(ComponentColour.WHITE);
+		CosmosUISystem.Setup.setTextureColour(ComponentColour.WHITE);
 
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 135, 5, false, ComponentHelper.style2(ComponentColour.BLACK, "cosmosindustry.integration.jei.synthesiser_time", Integer.toString(recipe.getProcessTime())));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 135, 5, false, ComponentHelper.style2(ComponentColour.BLACK, "cosmosindustry.integration.jei.synthesiser_time", Integer.toString(recipe.getProcessTime())));
 		
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 5, 5, false, ComponentHelper.style(ComponentColour.BLACK, "cosmosindustry.integration.jei.synthesiser_category"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 5, 5, false, ComponentHelper.style(ComponentColour.BLACK, "cosmosindustry.integration.jei.synthesiser_category"));
 		
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 150, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.one"));
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 160, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.two"));
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 170, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.three"));
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 180, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.four"));
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 190, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.five"));
-		FONT.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 200, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.six"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 150, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.one"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 160, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.two"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 170, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.three"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 180, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.four"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 190, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.five"));
+		CosmosUISystem.FontRenderer.drawString(graphicsIn, font, new int[] { 0, 0 }, 6, 200, false, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.synthesiser.jei.six"));
 	}
 
 	@Override

@@ -1,0 +1,26 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"GGG",
+		"LDL",
+		"WWW"
+	],
+	"key": {
+		"G": {
+			"item": "minecraft:glass_pane"
+		},
+		"L": {
+			"item": "cosmosindustry:lapis_ingot"
+		},
+		"D": {
+			"item": "cosmosindustry:diamond_plate"
+		},
+		"W": {
+			"item": "cosmosindustry:silicon_wafer"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:solar_module",
+		"count": 2
+	}
+}

@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "cosmosindustry:block/block_structure_model" }
+        "": { "model": "cosmosindustry:block/processing/block_structure_model" }
     }
 }

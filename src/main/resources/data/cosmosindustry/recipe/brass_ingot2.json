@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "cosmosindustry:block_brass"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:brass_ingot",
+		"count": 9
+	}
+}

@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.processing.core.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntitySeparator;
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
 
@@ -47,7 +47,7 @@ public class BlockSeparator extends CosmosBlockRemovableNBT implements EntityBlo
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_SEPARATOR.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_SEPARATOR.get());
 	}
 
 	@Nullable

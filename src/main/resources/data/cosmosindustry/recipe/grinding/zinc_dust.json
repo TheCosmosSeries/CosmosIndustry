@@ -1,0 +1,9 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "cosmosindustry:zinc_ingot"
+	},
+	"result": {
+		"id": "cosmosindustry:zinc_dust"
+	}
+}

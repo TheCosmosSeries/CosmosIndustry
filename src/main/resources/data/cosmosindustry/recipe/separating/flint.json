@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "minecraft:gravel"
+	},
+	"result": {
+		"id": "minecraft:flint",
+		"count": 2
+	}
+}

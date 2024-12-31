@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "minecraft:gravel"
+	},
+	"result": {
+		"id": "minecraft:sand",
+		"count": 2
+	}
+}

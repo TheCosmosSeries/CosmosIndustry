@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"SSS",
+		"SSS",
+		"SSS"
+	],
+	"key": {
+		"S": {
+			"item": "cosmosindustry:silicon_refined"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:silicon_wafer",
+		"count": 2
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"type": "cosmosindustry:fluid_crafter",
+	"input": {
+		"item": "minecraft:redstone"
+	},
+	"fluid":{
+		"id": "cosmosindustry:energized_redstone",
+		"amount": 100
+	},
+	"mode": {
+		"index": 1
+	}
+}

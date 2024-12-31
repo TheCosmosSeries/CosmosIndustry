@@ -1,0 +1,62 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "cosmosindustry:item/storage/cell_base"
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"energy": 0
+			},
+			"model": "cosmosindustry:item/energy_cell_0"
+		},
+		{
+			"predicate": {
+				"energy": 1
+			},
+			"model": "cosmosindustry:item/energy_cell_1"
+		},
+		{
+			"predicate": {
+				"energy": 2
+			},
+			"model": "cosmosindustry:item/energy_cell_2"
+		},
+		{
+			"predicate": {
+				"energy": 3
+			},
+			"model": "cosmosindustry:item/energy_cell_3"
+		},
+		{
+			"predicate": {
+				"energy": 4
+			},
+			"model": "cosmosindustry:item/energy_cell_4"
+		},
+		{
+			"predicate": {
+				"energy": 5
+			},
+			"model": "cosmosindustry:item/energy_cell_5"
+		},
+		{
+			"predicate": {
+				"energy": 6
+			},
+			"model": "cosmosindustry:item/energy_cell_6"
+		},
+		{
+			"predicate": {
+				"energy": 7
+			},
+			"model": "cosmosindustry:item/energy_cell_7"
+		},
+		{
+			"predicate": {
+				"energy": 8
+			},
+			"model": "cosmosindustry:item/energy_cell_8"
+		}
+	]
+}

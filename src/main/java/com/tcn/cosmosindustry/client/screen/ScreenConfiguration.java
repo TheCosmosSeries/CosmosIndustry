@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.client.screen;
 
 import java.io.File;
 
-import com.tcn.cosmosindustry.core.management.ModConfigManager;
+import com.tcn.cosmosindustry.core.management.IndustryConfigManager;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionBoolean;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionBoolean.TYPE;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptions;
@@ -53,8 +53,8 @@ public final class ScreenConfiguration extends Screen {
 		this.optionsRowList.addBig(
 			new CosmosOptionBoolean(
 				ComponentColour.CYAN, "", "cosmosindustry.gui.config.messages", TYPE.ON_OFF,
-				ModConfigManager.getInstance().getDebugMessage(),
-				(newValue) -> ModConfigManager.getInstance().setDebugMessage(newValue)
+				IndustryConfigManager.getInstance().getDebugMessage(),
+				(newValue) -> IndustryConfigManager.getInstance().setDebugMessage(newValue)
 			)
 		);
 		
@@ -80,6 +80,6 @@ public final class ScreenConfiguration extends Screen {
     @Override
     public void onClose() {
     	this.minecraft.setScreen(parent);
-        ModConfigManager.save();
+        IndustryConfigManager.save();
     }
 }

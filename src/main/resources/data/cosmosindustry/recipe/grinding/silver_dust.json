@@ -1,0 +1,9 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "cosmosindustry:silver_ingot"
+	},
+	"result": {
+		"id": "cosmosindustry:silver_dust"
+	}
+}

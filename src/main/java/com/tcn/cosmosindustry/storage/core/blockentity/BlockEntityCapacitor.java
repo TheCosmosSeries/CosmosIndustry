@@ -1,7 +1,7 @@
 package com.tcn.cosmosindustry.storage.core.blockentity;
 
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.STORAGE;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.IndustryReference;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.storage.client.container.ContainerCapacitor;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -18,7 +18,7 @@ public class BlockEntityCapacitor extends AbstractBlockEntityCapacitor {
 
 
 	public BlockEntityCapacitor(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR.get(), posIn, stateIn, STORAGE.ENERGY, EnumIndustryTier.NORMAL);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR.get(), posIn, stateIn, IndustryReference.Resource.Storage.ENERGY, EnumIndustryTier.NORMAL);
 	}
 
 	@Override

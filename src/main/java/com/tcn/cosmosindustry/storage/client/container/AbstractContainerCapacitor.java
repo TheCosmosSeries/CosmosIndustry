@@ -2,7 +2,6 @@ package com.tcn.cosmosindustry.storage.client.container;
 
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.client.container.slot.SlotEnergyItem;
-import com.tcn.cosmoslibrary.energy.interfaces.ICosmosEnergyItem;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,6 +14,8 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 abstract public class AbstractContainerCapacitor extends CosmosContainerMenuBlockEntity {
 
@@ -24,22 +25,22 @@ abstract public class AbstractContainerCapacitor extends CosmosContainerMenuBloc
 	public AbstractContainerCapacitor(MenuType<?> typeIn, int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerLevelAccess accessIn, BlockPos posIn) {
 		super(typeIn, indexIn, playerInventoryIn, accessIn, posIn);
 		
-		//Input Item
-		this.addSlot(new SlotEnergyItem(contentsIn, 0, 93, 17));
-		
-		//Output Item
-		this.addSlot(new SlotEnergyItem(contentsIn, 1, 93, 61));
+		/** @Drain Item */
+		this.addSlot(new SlotEnergyItem(contentsIn, 0, 93, 19));
+
+		/** @Fill Item */
+		this.addSlot(new SlotEnergyItem(contentsIn, 1, 93, 63));
 
 		//Player Inventory
 		for (int k = 0; k < 3; ++k) {
 			for (int i1 = 0; i1 < 9; ++i1) {
-				this.addSlot(new Slot(playerInventoryIn, i1 + k * 9 + 9, 8 + i1 * 18, 94 + k * 18));
+				this.addSlot(new Slot(playerInventoryIn, i1 + k * 9 + 9, 8 + i1 * 18, 95 + k * 18));
 			}
 		}
 
 		//Player Hotbar
 		for (int l = 0; l < 9; ++l) {
-			this.addSlot(new Slot(playerInventoryIn, l, 8 + l * 18, 152));
+			this.addSlot(new Slot(playerInventoryIn, l, 8 + l * 18, 153));
 		}
 	}
 		
@@ -85,7 +86,7 @@ abstract public class AbstractContainerCapacitor extends CosmosContainerMenuBloc
 					}
 				}
 			} else if (indexIn >= 3 && indexIn < this.slots.size()) {
-				if (itemstack.getItem() instanceof ICosmosEnergyItem) {
+				if (itemstack.getCapability(Capabilities.EnergyStorage.ITEM) instanceof IEnergyStorage) {
 					if (!this.moveItemStackTo(itemstack, 0, 2, false)) {
 						return ItemStack.EMPTY;
 					}

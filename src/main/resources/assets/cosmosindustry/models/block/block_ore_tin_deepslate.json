@@ -1,0 +1,6 @@
+{
+    "parent": "cosmoslibrary:block/modblock",
+    "textures": {
+    	"all": "cosmosindustry:block/base/world/tin_ore_deepslate"
+    }
+}

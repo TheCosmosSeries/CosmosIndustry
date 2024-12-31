@@ -1,0 +1,28 @@
+{
+	"type": "cosmosindustry:synthesising",
+	"focus": {
+		"item": "cosmosindustry:silicon_ingot"
+	},
+	"inputs": [
+		{
+			"item": "cosmosindustry:silicon_refined"
+		},
+		{
+			"item": "cosmosindustry:silicon_refined"
+		},
+		{
+			"item": "cosmosindustry:silicon_refined"
+		},
+		{
+			"item": "cosmosindustry:silicon_refined"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:silicon_wafer",
+		"count": 2
+	},
+	"processTime": 100,
+	"recipeColour": {
+		"index": 0
+	}
+}

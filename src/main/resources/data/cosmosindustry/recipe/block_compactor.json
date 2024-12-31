@@ -1,0 +1,26 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"   ",
+		"FSF",
+		"CWC"
+	],
+	"key": {
+		"F": {
+			"item": "minecraft:piston"
+		},
+		"S": {
+			"item": "cosmosindustry:block_structure"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_compactor"
+	}
+}

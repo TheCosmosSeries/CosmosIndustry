@@ -10,44 +10,30 @@ import net.minecraft.world.level.block.Blocks;
 public class SynthesiserRecipeManager {
 
 	public void addAllRecipes() {
-		this.addRecipe(new ItemStack(ModRegistrationManager.UPGRADE_SPEED.get()), new ItemStack(ModRegistrationManager.UPGRADE_BASE.get()),
+		this.addRecipe(new ItemStack(IndustryRegistrationManager.UPGRADE_SPEED.get()), new ItemStack(IndustryRegistrationManager.UPGRADE_BASE.get()),
 			160, EnumBERColour.YELLOW, new Object[] {
 			new ItemStack(Blocks.GLOWSTONE), new ItemStack(Blocks.GLOWSTONE),
 			new ItemStack(Blocks.REDSTONE_BLOCK), new ItemStack(Blocks.REDSTONE_BLOCK),
-			new ItemStack(ModRegistrationManager.ENERGY_WAFER.get()), new ItemStack(ModRegistrationManager.ENERGY_WAFER.get()),
-			new ItemStack(ModRegistrationManager.CIRCUIT.get()), new ItemStack(ModRegistrationManager.CIRCUIT.get())
+			new ItemStack(IndustryRegistrationManager.ENERGY_WAFER.get()), new ItemStack(IndustryRegistrationManager.ENERGY_WAFER.get()),
+			new ItemStack(IndustryRegistrationManager.CIRCUIT.get()), new ItemStack(IndustryRegistrationManager.CIRCUIT.get())
 		});
 		
-		this.addRecipe(new ItemStack(ModRegistrationManager.UPGRADE_FLUID_SPEED.get()), new ItemStack(ModRegistrationManager.UPGRADE_SPEED.get()),
+		this.addRecipe(new ItemStack(IndustryRegistrationManager.UPGRADE_FLUID_SPEED.get()), new ItemStack(IndustryRegistrationManager.UPGRADE_SPEED.get()),
 			160, EnumBERColour.RED, new Object[] {
 			new ItemStack(Blocks.REDSTONE_BLOCK), new ItemStack(Blocks.REDSTONE_BLOCK),
 			new ItemStack(Blocks.GLOWSTONE), new ItemStack(Blocks.GLOWSTONE),
 			new ItemStack(Items.WATER_BUCKET), new ItemStack(Items.WATER_BUCKET),
-			new ItemStack(ModRegistrationManager.CIRCUIT.get()), new ItemStack(ModRegistrationManager.CIRCUIT.get())
+			new ItemStack(IndustryRegistrationManager.CIRCUIT.get()), new ItemStack(IndustryRegistrationManager.CIRCUIT.get())
 		});
 		
-		this.addRecipe(new ItemStack(ModRegistrationManager.CIRCUIT_ADVANCED.get()), new ItemStack(ModRegistrationManager.CIRCUIT_ADVANCED_RAW.get()),
-			200, EnumBERColour.ORANGE, new Object[] { 
-			new ItemStack(Blocks.REDSTONE_BLOCK), new ItemStack(Blocks.REDSTONE_BLOCK),
-			new ItemStack(ModRegistrationManager.CIRCUIT.get()), new ItemStack(ModRegistrationManager.CIRCUIT.get()),
-			new ItemStack(Items.DIAMOND), new ItemStack(Items.DIAMOND),
-			new ItemStack(ModRegistrationManager.ENERGY_WAFER.get()), new ItemStack(ModRegistrationManager.ENERGY_WAFER.get())
-		});
-		
-		this.addRecipe(new ItemStack(ModRegistrationManager.ENERGY_INGOT.get()), new ItemStack(Items.IRON_INGOT),
+		this.addRecipe(new ItemStack(IndustryRegistrationManager.ENERGY_INGOT.get()), new ItemStack(Items.IRON_INGOT),
 			80, EnumBERColour.PURPLE, new Object[] { 
 			new ItemStack(Items.REDSTONE), new ItemStack(Items.REDSTONE),
-			new ItemStack(ModRegistrationManager.ENERGY_DUST.get()), new ItemStack(ModRegistrationManager.ENERGY_DUST.get())
-		});
-		
-		this.addRecipe(new ItemStack(ModRegistrationManager.BLOCK_STRUCTURE), new ItemStack(Blocks.IRON_BLOCK),
-			140, EnumBERColour.GRAY, new Object[] {
-			new ItemStack(ModRegistrationManager.CIRCUIT.get()), new ItemStack(ModRegistrationManager.CIRCUIT.get()),
-			new ItemStack(ModRegistrationManager.ENERGY_INGOT.get()), new ItemStack(ModRegistrationManager.ENERGY_INGOT.get())
+			new ItemStack(IndustryRegistrationManager.ENERGY_DUST.get()), new ItemStack(IndustryRegistrationManager.ENERGY_DUST.get())
 		});
 	}
 
-	public void addRecipe(ItemStack output, ItemStack focus, Integer process_time, EnumBERColour colour, Object... inputs) {
+	private void addRecipe(ItemStack output, ItemStack focus, Integer process_time, EnumBERColour colour, Object... inputs) {
 		
 	}
 }

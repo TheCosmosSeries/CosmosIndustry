@@ -1,10 +1,8 @@
 package com.tcn.cosmosindustry.transport.core.energy.block;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.TRANSPORT;
 import com.tcn.cosmosindustry.transport.core.energy.blockentity.AbstractBlockEntityEnergyChannel;
 import com.tcn.cosmoslibrary.common.block.CosmosBlockRemovable;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
@@ -47,10 +45,9 @@ public abstract class AbstractBlockEnergyChannel extends CosmosBlockRemovable im
 	public AbstractBlockEnergyChannel(Block.Properties properties, boolean surge) {
 		super(properties);
 		
-		this.BOUNDING_BOXES = surge ? IndustryReference.RESOURCE.TRANSPORT.BOUNDING_BOXES_STANDARD_SURGE : IndustryReference.RESOURCE.TRANSPORT.BOUNDING_BOXES_STANDARD;
+		this.BOUNDING_BOXES = surge ? IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD_SURGE : IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD;
 		
-		this.registerDefaultState(this.defaultBlockState().setValue(NORTH, false).setValue(SOUTH, false).setValue(EAST, false)
-				.setValue(WEST, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
+		this.registerDefaultState(this.defaultBlockState().setValue(NORTH, false).setValue(SOUTH, false).setValue(EAST, false).setValue(WEST, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
 	}
 	
 	@Override
@@ -65,18 +62,14 @@ public abstract class AbstractBlockEnergyChannel extends CosmosBlockRemovable im
 	
 	@Override
 	public void attack(BlockState state, Level worldIn, BlockPos pos, Player playerIn) { 
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		
-		if (tileEntity instanceof AbstractBlockEntityEnergyChannel blockEntity) {
+		if (worldIn.getBlockEntity(pos) instanceof AbstractBlockEntityEnergyChannel blockEntity) {
 			blockEntity.attack(state, worldIn, pos, playerIn);
 		}
 	}
 
 	@Override
 	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		
-		if (tileEntity instanceof AbstractBlockEntityEnergyChannel blockEntity) {
+		if (worldIn.getBlockEntity(pos) instanceof AbstractBlockEntityEnergyChannel blockEntity) {
 			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -89,6 +82,13 @@ public abstract class AbstractBlockEnergyChannel extends CosmosBlockRemovable im
 			
 			worldIn.sendBlockUpdated(pos, state, newState, 3);
 			worldIn.setBlockAndUpdate(pos, newState);
+		}
+	}
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+		if (levelIn.getBlockEntity(pos) instanceof AbstractBlockEntityEnergyChannel blockEntity) {
+			blockEntity.neighborChanged(state, levelIn, pos, blockIn, fromPos, isMoving);
 		}
 	}
 
@@ -131,8 +131,7 @@ public abstract class AbstractBlockEnergyChannel extends CosmosBlockRemovable im
 			if (entity instanceof AbstractBlockEntityEnergyChannel blockEntity) {
 				EnumChannelSideState state = blockEntity.getStateForConnection(dir);
 				
-				Collection<Property<?>> props = blockState.getProperties();
-				ArrayList<Property<?>> propArray = new ArrayList<>(props);
+				ArrayList<Property<?>> propArray = new ArrayList<>(blockState.getProperties());
 				
 				for (int i = 0; i < propArray.size(); i++) {
 					Property<?> rawProp = propArray.get(i);
@@ -143,14 +142,13 @@ public abstract class AbstractBlockEnergyChannel extends CosmosBlockRemovable im
 						if (dir.getName().equals(propName)) {
 							if (blockState.getValue(prop).booleanValue()) {
 								shapes[dir.get3DDataValue() + 1] = BOUNDING_BOXES[dir.get3DDataValue() + 1];
-
 							}
 						}
 					}
 				}
 				
 				if (state.isInterface() || state.equals(EnumChannelSideState.DISABLED)) {
-					shapesInterface[dir.get3DDataValue()] = TRANSPORT.BOUNDING_BOXES_INTERFACE[dir.get3DDataValue()];
+					shapesInterface[dir.get3DDataValue()] = IndustryReference.Resource.Transport.BOUNDING_BOXES_INTERFACE[dir.get3DDataValue()];
 				}
 			}
 		}
@@ -178,7 +176,7 @@ public abstract class AbstractBlockEnergyChannel extends CosmosBlockRemovable im
 		BlockEntity blockEntityOffset = world.getBlockEntity(pos.relative(dir));
 		
 		if (blockEntityOffset != null) {
-			Object object = blockEntityOffset.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(dir), dir);
+			Object object = blockEntityOffset.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, pos.relative(dir), dir.getOpposite());
 			
 			if (object != null) {
 				if (object instanceof IEnergyStorage storage) {

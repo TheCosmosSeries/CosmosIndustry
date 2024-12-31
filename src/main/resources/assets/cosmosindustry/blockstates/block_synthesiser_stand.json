@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "cosmosindustry:block/block_synthesiser_stand" }
+        "": { "model": "cosmosindustry:block/processing/block_synthesiser_stand" }
     }
 }

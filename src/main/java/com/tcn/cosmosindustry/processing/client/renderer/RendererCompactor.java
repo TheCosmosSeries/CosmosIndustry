@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.block.BlockCompactor;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityCompactor;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -38,7 +38,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("unused")
 public class RendererCompactor implements BlockEntityRenderer<BlockEntityCompactor> {
-	private static final ResourceLocation TEXTURE = IndustryReference.RESOURCE.PROCESSING.COMPACTOR_LOC_BER;
+	private static final ResourceLocation TEXTURE = IndustryReference.Resource.Processing.Render.COMPACTOR;
 	private static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
 
 	private Internals internals;
@@ -57,7 +57,7 @@ public class RendererCompactor implements BlockEntityRenderer<BlockEntityCompact
 		Level level = blockEntity.getLevel();
 		BlockState state = blockEntity.getBlockState();
 		
-		if (state.getBlock().equals(ModRegistrationManager.BLOCK_COMPACTOR.get())) {
+		if (state.getBlock().equals(IndustryRegistrationManager.BLOCK_COMPACTOR.get())) {
 			Direction dir = state.getValue(BlockCompactor.FACING);
 			
 			poseStackIn.pushPose();

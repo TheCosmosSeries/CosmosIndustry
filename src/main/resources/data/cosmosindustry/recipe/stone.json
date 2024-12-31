@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DDD",
+		"DDD",
+		"DDD"
+	],
+	"key": {
+		"D": {
+			"item": "cosmosindustry:stone_dust"
+		}
+	},
+	"result": {
+		"id": "minecraft:stone"
+	}
+}

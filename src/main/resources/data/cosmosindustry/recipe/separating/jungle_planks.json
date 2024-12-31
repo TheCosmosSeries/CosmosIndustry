@@ -1,0 +1,14 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "minecraft:jungle_log"
+	},
+	"result": {
+		"id": "minecraft:jungle_planks",
+		"count": 5
+	},
+	"secondaryResult": {
+		"id": "cosmosindustry:bark",
+		"count": 2
+	}
+}

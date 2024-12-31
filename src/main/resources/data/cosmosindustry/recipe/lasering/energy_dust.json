@@ -1,0 +1,13 @@
+{
+	"type": "cosmosindustry:lasering",
+	"input": {
+		"item": "minecraft:redstone"
+	},
+	"result": {
+		"id": "cosmosindustry:energy_dust",
+		"count": 2
+	},
+	"recipeColour": {
+		"index": 14
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"PDP",
+		"CTC",
+		"SWS"
+	],
+	"key": {
+		"T": {
+			"item": "cosmosindustry:block_synthesiser_stand"
+		},
+		"P": {
+			"item": "cosmosindustry:iron_plate"
+		},
+		"S": {
+			"item": "cosmosindustry:steel_plate"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit_advanced"
+		},
+		"D": {
+			"item": "cosmosindustry:diamond_plate"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_synthesiser"
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		" P ",
+		"ILI",
+		"VSV"
+	],
+	"key": {
+		"L": {
+			"item": "minecraft:lapis_block"
+		},
+		"P": {
+			"item": "cosmosindustry:iron_plate"
+		},
+		"V": {
+			"item": "cosmosindustry:steel_plate"
+		},
+		"S": {
+			"item": "cosmosindustry:block_steel"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_synthesiser_stand"
+	}
+}

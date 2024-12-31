@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.processing.core.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityKiln;
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
 
@@ -34,12 +34,12 @@ import net.minecraft.world.phys.BlockHitResult;
 public class BlockKiln extends CosmosBlockRemovableNBT implements EntityBlock {
 	
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-	public static final BooleanProperty LIT = BooleanProperty.create("lit");
+	public static final BooleanProperty ON = BooleanProperty.create("on");
 	
 	public BlockKiln(Block.Properties properties) {
 		super(properties);
 		
-		this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(LIT, false));
+		this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(ON, false));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class BlockKiln extends CosmosBlockRemovableNBT implements EntityBlock {
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_KILN.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_KILN.get());
 	}
 
 	@Nullable
@@ -84,35 +84,11 @@ public class BlockKiln extends CosmosBlockRemovableNBT implements EntityBlock {
 	
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING, LIT);
-	}
-	
-	public BlockState updateState(BlockState stateIn, LevelAccessor levelIn, BlockPos currentPos) {
-		if (!levelIn.isClientSide()) {
-			BlockEntity entity = levelIn.getBlockEntity(currentPos);
-			
-			if (entity instanceof BlockEntityKiln) {
-				BlockEntityKiln blockEntity = (BlockEntityKiln) entity;
-				
-				return stateIn.setValue(FACING, stateIn.getValue(FACING)).setValue(LIT, blockEntity.isProcessing());
-			}
-		}
-		
-		return stateIn.setValue(FACING, stateIn.getValue(FACING));
+		builder.add(FACING, ON);
 	}
 	
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {
-		if (!levelIn.isClientSide()) {
-			BlockEntity entity = levelIn.getBlockEntity(currentPos);
-			
-			if (entity instanceof BlockEntityKiln) {
-				BlockEntityKiln blockEntity = (BlockEntityKiln) entity;
-				
-				return stateIn.setValue(FACING, stateIn.getValue(FACING)).setValue(LIT, blockEntity.isProcessing());
-			}
-		}
-		
 		return stateIn.setValue(FACING, stateIn.getValue(FACING));
 	}
 	

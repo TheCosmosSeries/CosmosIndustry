@@ -1,0 +1,12 @@
+{
+	"type": "cosmosindustry:ore_plant",
+	"input": {
+		"item": "cosmosindustry:gold_dust_clean"
+	},
+	"result": {
+		"id": "cosmosindustry:gold_dust_refine"
+	},
+	"mode": {
+		"index": 1
+	}
+}

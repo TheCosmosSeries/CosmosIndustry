@@ -11,8 +11,9 @@ import com.tcn.cosmoslibrary.common.enums.EnumConnectionType;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumRenderType;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelSided;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelType.IChannelFluid;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelType.IChannelFluid;
+import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -34,12 +35,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 @SuppressWarnings("unused")
-abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implements IBlockInteract, IBlockEntityChannelSided, IChannelFluid, IFluidHandler {
+abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implements IBlockInteract, IBEChannelSided, IChannelFluid, IFluidHandler {
 	
 	private EnumChannelSideState[] SIDE_STATE_ARRAY = EnumChannelSideState.getStandardArray();
 	
@@ -52,9 +54,8 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 	public Direction last_facing;
 	
 	private EnumIndustryTier tier;
-	private EnumRenderType transparent;
 	
-	public AbstractBlockEntityFluidChannel(BlockEntityType<?> typeIn, BlockPos posIn, BlockState stateIn, int[] fluidInfoIn, EnumIndustryTier tierIn, EnumRenderType transparentIn) {
+	public AbstractBlockEntityFluidChannel(BlockEntityType<?> typeIn, BlockPos posIn, BlockState stateIn, int[] fluidInfoIn, EnumIndustryTier tierIn) {
 		super(typeIn, posIn, stateIn);
 		
 		this.fluid_capacity = fluidInfoIn[0];
@@ -62,7 +63,6 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 		this.fluid_max_receive = fluidInfoIn[1];
 		
 		this.tier = tierIn;
-		this.transparent = transparentIn;
 		this.tank = new ObjectFluidTankCustom(new FluidTank(fluid_capacity), 0);
 	}
 	
@@ -113,14 +113,14 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 
 	@Override
 	public void updateRenders() {
-		if (level != null) {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			BlockState state = this.getBlockState();
 			
-			level.sendBlockUpdated(this.getBlockPos(), state, state, 3);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, 3);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, level, this.getBlockPos(), this.getBlockPos()));
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, level, this.getBlockPos(), this.getBlockPos()));
 			}
 		}
 	}
@@ -209,47 +209,81 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 	
 	public static void tick(Level levelIn, BlockPos posIn, BlockState stateIn, AbstractBlockEntityFluidChannel entityIn) {
 		if (!levelIn.isClientSide()) {
-			Arrays.stream(Direction.values()).parallel().forEach((d) -> {
-				
-			});
+			entityIn.pushFluid(Direction.DOWN);
+			entityIn.pushFluid(Direction.UP);
+			entityIn.pushFluid(Direction.NORTH);
+			entityIn.pushFluid(Direction.SOUTH);
+			entityIn.pushFluid(Direction.EAST);
+			entityIn.pushFluid(Direction.WEST);
 		}
 	}
-	
+
+	public void pushFluid(Direction directionIn) {
+		BlockPos otherPos = this.getBlockPos().offset(directionIn.getNormal());
+		BlockEntity entity = this.getLevel().getBlockEntity(otherPos);
+
+		if (directionIn != this.last_facing) {
+			if (entity != null && !entity.isRemoved()) {
+				if (!this.getSide(directionIn).equals(EnumChannelSideState.INTERFACE_INPUT) && !this.getSide(directionIn).equals(EnumChannelSideState.DISABLED)) {
+					Object object = this.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, otherPos, directionIn);
+				
+					if (object != null) {
+						if (object instanceof IFluidHandler storage) {
+							if (storage.isFluidValid(0, this.getFluidInTank(0))) {
+								FluidStack stack = this.drain(1000, FluidAction.SIMULATE);
+								int lost = storage.fill(stack, FluidAction.SIMULATE);
+								
+								if (!stack.isEmpty()) {
+									if (lost > 0) {
+										storage.fill(stack, FluidAction.EXECUTE);
+										this.drain(lost, FluidAction.EXECUTE);
+									}
+								}
+							}
+						}
+					}
+				} else {
+					return;
+				}
+			} else {
+				return;
+			}
+		} else {
+			return;
+		}
+	}
+
 	@Override
 	public EnumChannelSideState getStateForConnection(Direction facing) {
 		return TransportUtil.getStateForConnection(facing, this.getBlockPos(), this.getLevel(), this);
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		if (CosmosUtil.holdingWrench(playerIn) && !playerIn.isShiftKeyDown()) {
-			Direction dir = TransportUtil.getDirectionFromHit(pos, hit);
-			if (dir != null) {
-				this.cycleSide(dir, playerIn);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos posIn, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (CosmosUtil.holdingWrench(playerIn)) {
+			if (!playerIn.isShiftKeyDown()) {
+				Direction dir = TransportUtil.getDirectionFromHit(posIn, hit);
+				if (dir != null) {
+					this.cycleSide(dir, playerIn);
+				} else {
+					this.cycleSide(hit.getDirection(), playerIn);
+				}
+				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			} else {
-				this.cycleSide(hit.getDirection(), playerIn);
+				if (!levelIn.isClientSide()) {
+					CompatHelper.spawnStack(CompatHelper.generateItemStackFromBlock(state), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+					CosmosUtil.setToAir(levelIn, posIn);
+				}
+				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
-			return ItemInteractionResult.SUCCESS;
 		}
 		return ItemInteractionResult.FAIL;
 	}
 
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) { }
-/*
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-		if (!this.remove && facing != null) {
-			if (capability == ForgeCapabilities.FLUID_HANDLER) {
-				return this.createFluidProxy(facing).cast();
-			}
-		}
-		
-		return super.getCapability(capability, facing);
-	}
-	*/
-
-	private IFluidHandler createFluidProxy(@Nullable Direction directionIn) {
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player player) { }
+	
+	public IFluidHandler createFluidProxy(@Nullable Direction directionIn) {
 		return new IFluidHandler() {
 
 			@Override
@@ -287,6 +321,7 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 			@Override
 			public int fill(FluidStack resource, FluidAction action) {
 				if (!AbstractBlockEntityFluidChannel.this.getSide(directionIn.getOpposite()).equals(EnumChannelSideState.DISABLED)) {
+					AbstractBlockEntityFluidChannel.this.setLastFacing(directionIn.getOpposite());
 					return AbstractBlockEntityFluidChannel.this.fill(resource, action);
 				}
 				return 0;
@@ -323,7 +358,7 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 	}
 	
 	public EnumRenderType getRenderType() {
-		return this.transparent;
+		return EnumRenderType.OPAQUE;
 	}
 
 	@Override

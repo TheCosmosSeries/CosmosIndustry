@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:silver_dust"
+	},
+	"result": {
+		"id": "cosmosindustry:silver_ingot"
+	},
+	"experience": 0.35,
+	"cookingtime": 200
+}

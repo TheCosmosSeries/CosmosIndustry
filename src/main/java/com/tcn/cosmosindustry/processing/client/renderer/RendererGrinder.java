@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.block.BlockGrinder;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityGrinder;
 
@@ -37,7 +37,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("unused")
 public class RendererGrinder implements BlockEntityRenderer<BlockEntityGrinder> {
-	private static final ResourceLocation TEXTURE = IndustryReference.RESOURCE.PROCESSING.GRINDER_LOC_BER;
+	private static final ResourceLocation TEXTURE = IndustryReference.Resource.Processing.Render.GRINDER;
 	private static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
 	
 	private Internals internals;
@@ -56,7 +56,7 @@ public class RendererGrinder implements BlockEntityRenderer<BlockEntityGrinder> 
 		Level level = blockEntity.getLevel();
 		BlockState state = blockEntity.getBlockState();
 		
-		if (state.getBlock().equals(ModRegistrationManager.BLOCK_GRINDER.get())) {
+		if (state.getBlock().equals(IndustryRegistrationManager.BLOCK_GRINDER.get())) {
 			Direction dir = state.getValue(BlockGrinder.FACING);
 			
 			poseStackIn.pushPose();

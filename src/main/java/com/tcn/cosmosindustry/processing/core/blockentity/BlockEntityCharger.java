@@ -3,16 +3,19 @@ package com.tcn.cosmosindustry.processing.core.blockentity;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.client.container.ContainerCharger;
-import com.tcn.cosmoslibrary.client.interfaces.IBlockEntityClientUpdated;
+import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
 import com.tcn.cosmoslibrary.common.enums.EnumEnergyState;
+import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
-import com.tcn.cosmoslibrary.energy.interfaces.ICosmosEnergyItem;
+import com.tcn.cosmoslibrary.energy.CosmosEnergyUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,15 +37,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class BlockEntityCharger extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, IBlockEntityClientUpdated.Charge, IEnergyEntity {
+public class BlockEntityCharger extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, IBEUpdated.Minimal, IEnergyEntity, IBEUIMode {
 	
 	private static final int[] SLOTS_TOP = new int[] { 0 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 2, 1 };
@@ -52,26 +55,28 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 
 	private int update = 0;
 	private int energy_stored = 0;
-	private int energy_capacity = IndustryReference.RESOURCE.PROCESSING.CAPACITY[0];
-	private int energy_max_receive = IndustryReference.RESOURCE.PROCESSING.MAX_INPUT[0];
-	private int energy_max_extract = IndustryReference.RESOURCE.PROCESSING.MAX_INPUT[0];
-	private int chargeRate = 10000;
-	private final int maxChargeRate = 20000;
+	private int energy_capacity = IndustryReference.Resource.Processing.CAPACITY[0];
+	private int energy_max_receive = IndustryReference.Resource.Processing.MAX_INPUT[0];
+	private int energy_max_extract = IndustryReference.Resource.Processing.MAX_INPUT[0];
+	private int chargeRate = 100000;
 	private EnumEnergyState energy_state = EnumEnergyState.FILL;
+
+	private EnumUIMode uiMode = EnumUIMode.DARK;
 	
 	public BlockEntityCharger(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_CHARGER.get(), posIn, stateIn);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CHARGER.get(), posIn, stateIn);
 	}
-	
+
+	@Override
 	public void sendUpdates() {
-		if (this.level != null) {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			BlockState state = this.getBlockState();
 
-			level.sendBlockUpdated(this.getBlockPos(), state, state, 3);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, 3);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), state);
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), state);
 			}
 		}
 	}
@@ -86,6 +91,8 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 		compound.putInt("energy_state", this.energy_state.getIndex());
 
 		compound.putInt("energy", this.energy_stored);
+		
+		compound.putInt("ui_mode", this.uiMode.getIndex());
 	}
 
 	@Override
@@ -99,6 +106,8 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 		this.energy_state = EnumEnergyState.getStateFromIndex(compound.getInt("energy_state"));
 
 		this.energy_stored = compound.getInt("energy");
+
+		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 	}
 	
 	@Override
@@ -171,39 +180,28 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos posIn, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
 		if (playerIn.isShiftKeyDown()) {
 			if (CosmosUtil.holdingWrench(playerIn)) {
-				if (!levelIn.isClientSide) {
+				if (!levelIn.isClientSide()) {
 					CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
 					CosmosUtil.setToAir(levelIn, posIn);
 				}
-				ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+				ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
 		} else {
 			if (playerIn instanceof ServerPlayer serverPlayer) {
 				serverPlayer.openMenu(this, (packetBuffer) -> packetBuffer.writeBlockPos(this.getBlockPos()));
 			}
 		}
-		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
 	
 	public void chargeItem(int indexIn) {
 		if (!this.getItem(indexIn).isEmpty()) {
-			ItemStack stackIn = this.getItem(indexIn);
-			Item item = stackIn.getItem();
-		
-			if (item instanceof ICosmosEnergyItem) {
-				ICosmosEnergyItem energyItem = (ICosmosEnergyItem) item;
-				
-				if (this.chargeRate > 0) {
-					if (this.hasEnergy()) {
-						if (energyItem.canReceiveEnergy(stackIn)) {
-							if (!this.level.isClientSide) {
-								this.extractEnergy(Direction.DOWN, this.chargeRate, false);
-							}
-							
-							energyItem.receiveEnergy(stackIn, this.extractEnergy(Direction.DOWN, this.chargeRate, true), false);
-							
-							this.sendUpdates();
-						}
+			Object object = this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM);
+			
+			if (object instanceof IEnergyStorage energyItem) {
+				if (this.hasEnergy()) {
+					if (energyItem.canReceive()) {
+						energyItem.receiveEnergy(this.extractEnergy(Direction.DOWN, this.chargeRate, false), false);
 					}
 				}
 			}
@@ -212,23 +210,12 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 	
 	public void drainItem(int indexIn) {
 		if (!this.getItem(indexIn).isEmpty()) {
-			ItemStack stackIn = this.getItem(indexIn);
-			Item item = stackIn.getItem();
+			Object object = this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM);
 		
-			if (item instanceof ICosmosEnergyItem) {
-				ICosmosEnergyItem energyItem = (ICosmosEnergyItem) item;
-				
-				if (this.chargeRate > 0) {
-					if (energyItem.hasEnergy(stackIn)) {
-						if (energyItem.canExtractEnergy(stackIn)) {
-							if (!this.level.isClientSide) {
-								this.receiveEnergy(Direction.DOWN, this.chargeRate, false);
-							}
-
-							energyItem.extractEnergy(stackIn, this.receiveEnergy(Direction.DOWN, this.chargeRate, true), false);
-							
-							this.sendUpdates();
-						}
+			if (object instanceof IEnergyStorage energyItem) {
+				if (CosmosEnergyUtil.hasEnergy(energyItem)) {
+					if (energyItem.canExtract()) {
+						energyItem.extractEnergy(this.receiveEnergy(Direction.DOWN, this.chargeRate, false), false);
 					}
 				}
 			}
@@ -269,14 +256,18 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 		this.setChanged();
 		return ContainerHelper.takeItem(this.inventoryItems, index);
 	}
+	
+	@Override
+	public int getMaxStackSize() {
+		return 64;
+	}
 
 	@Override
 	public void setItem(int index, ItemStack stack) {
 		this.inventoryItems.set(index, stack);
-		if (stack.getCount() > this.getContainerSize()) {
-			stack.setCount(this.getContainerSize());
+		if (stack.getCount() > this.getMaxStackSize()) {
+			stack.setCount(this.getMaxStackSize());
 		}
-		
 		this.setChanged();
 	}
 
@@ -469,7 +460,7 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 
 	@Override
 	public boolean canReceive(Direction directionIn) {
-		if (directionIn.getOpposite().equals(Direction.DOWN)) {
+		if (directionIn.equals(Direction.DOWN)) {
 			return true;
 		} else {
 			return false;
@@ -477,45 +468,34 @@ public class BlockEntityCharger extends BlockEntity implements IBlockInteract, C
 	}
 	
 	@Override
-	public int getChargeRate() {
-		return this.chargeRate;
-	}
-
-	@Override
-	public void setChargeRate(int chargeRate) {
-		this.chargeRate = chargeRate;
-	}
-
-	@Override
-	public void increaseChargeRate() {
-		if (this.chargeRate < this.maxChargeRate) {
-			this.chargeRate = this.chargeRate += 1000;
-		}
-		
-		this.sendUpdates();
-	}
-
-	@Override
-	public void decreaseChargeRate() {
-		if (this.chargeRate > 0) {
-			this.chargeRate = this.chargeRate -= 1000;
-		}
-		
-		this.sendUpdates();
-	}
-
-	@Override
-	public boolean canIncrease() {
-		return this.chargeRate < this.maxChargeRate;
-	}
-
-	@Override
-	public boolean canDecrease() {
-		return this.chargeRate > 0;
-	}
-
-	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;
 	}
+
+	@Override
+	public EnumUIMode getUIMode() {
+		return this.uiMode;
+	}
+
+	@Override
+	public void setUIMode(EnumUIMode modeIn) {
+		this.uiMode = modeIn;
+	}
+
+	@Override
+	public void cycleUIMode() {
+		this.uiMode = EnumUIMode.getNextStateFromState(this.uiMode);
+	}
+
+	@Override
+	public EnumUIHelp getUIHelp() {
+		return EnumUIHelp.HIDDEN;
+	}
+
+	@Override
+	public void setUIHelp(EnumUIHelp modeIn) { }
+
+	@Override
+	public void cycleUIHelp() { }
+	
 }

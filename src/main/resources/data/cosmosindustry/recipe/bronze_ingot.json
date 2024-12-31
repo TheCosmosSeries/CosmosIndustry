@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"CC",
+		"CT"
+	],
+	"key": {
+		"C": {
+			"item": "minecraft:copper_ingot"
+		},
+		"T": {
+			"item": "cosmosindustry:tin_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:bronze_ingot",
+		"count": 3
+	}
+}

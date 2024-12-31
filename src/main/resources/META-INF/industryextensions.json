@@ -1,0 +1,22 @@
+{
+    "entries": [
+        {
+            "enum": "net/minecraft/world/item/Rarity",
+            "name": "COSMOSINDUSTRY_SURGE",
+            "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+            "parameters": {
+                "class": "com/tcn/cosmosindustry/core/item/IndustryItemRarity",
+                "field": "SURGE"
+            }
+        },
+        {
+            "enum": "net/minecraft/world/item/Rarity",
+            "name": "COSMOSINDUSTRY_CREATIVE",
+            "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+            "parameters": {
+                "class": "com/tcn/cosmosindustry/core/item/IndustryItemRarity",
+                "field": "CREATIVE"
+            }
+        }
+    ]
+}

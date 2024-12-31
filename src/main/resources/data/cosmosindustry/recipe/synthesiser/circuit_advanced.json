@@ -1,0 +1,40 @@
+{
+	"type": "cosmosindustry:synthesising",
+	"focus": {
+		"item": "cosmosindustry:diamond_plate"
+	},
+	"inputs": [
+		{
+			"item": "cosmosindustry:circuit"
+		},
+		{
+			"item": "cosmosindustry:circuit"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:silicon_wafer"
+		},
+		{
+			"item": "cosmosindustry:silicon_wafer"
+		},
+		{
+			"item": "cosmosindustry:energy_wafer"
+		},
+		{
+			"item": "cosmosindustry:energy_wafer"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:circuit_advanced",
+		"count": 4
+	},
+	"processTime": 500,
+	"recipeColour": {
+		"index": 1
+	}
+}

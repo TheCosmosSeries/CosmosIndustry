@@ -7,15 +7,18 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.core.recipe.SynthesiserRecipe;
 import com.tcn.cosmosindustry.core.recipe.SynthesiserRecipeInput;
 import com.tcn.cosmosindustry.processing.client.container.ContainerSynthesiser;
 import com.tcn.cosmosindustry.processing.core.block.BlockSynthesiserStand;
-import com.tcn.cosmoslibrary.client.interfaces.IBlockEntityClientUpdated.Processing;
+import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated.Processing;
+import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -34,7 +37,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -58,7 +60,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 //@SuppressWarnings("unused")
-public class BlockEntitySynthesiser extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, Processing, IEnergyEntity, RecipeCraftingHolder {
+public class BlockEntitySynthesiser extends BlockEntity implements IBlockInteract, WorldlyContainer, MenuProvider, Processing, IEnergyEntity, RecipeCraftingHolder, IBEUIMode {
 
 	private static final int[] SLOTS_BOTTOM = new int[] { 0 };
 	
@@ -67,35 +69,37 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 //	private int update = 0;
 	private int sound_timer = 0;
 	private int process_time;
-	private int process_speed = IndustryReference.RESOURCE.PROCESSING.SPEED_RATE[0];
+	private int process_speed = IndustryReference.Resource.Processing.SPEED_RATE[0];
 	
 	private int energy_stored = 0;
-	private int energy_capacity = IndustryReference.RESOURCE.PROCESSING.CAPACITY_U[0];
-	private int energy_max_receive = IndustryReference.RESOURCE.PROCESSING.MAX_INPUT_U[0];
-	private int energy_max_extract = IndustryReference.RESOURCE.PROCESSING.MAX_INPUT_U[0];
-	private int rf_tick_rate = IndustryReference.RESOURCE.PROCESSING.RF_TICK_RATE_U[4];
+	private int energy_capacity = IndustryReference.Resource.Processing.CAPACITY_U[0];
+	private int energy_max_receive = IndustryReference.Resource.Processing.MAX_INPUT_U[0];
+	private int energy_max_extract = IndustryReference.Resource.Processing.MAX_INPUT_U[0];
+	private int rf_tick_rate = IndustryReference.Resource.Processing.RF_TICK_RATE_U[4];
 	
 	private boolean hasCompleted;
 
 	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
 	protected final RecipeType<SynthesiserRecipe> recipeType;
 	
+	private EnumUIMode uiMode = EnumUIMode.DARK;
+	
 	public BlockEntitySynthesiser(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_SYNTHESISER.get(), posIn, stateIn);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_SYNTHESISER.get(), posIn, stateIn);
 
-		this.recipeType = ModRecipeManager.RECIPE_TYPE_SYNTHESISING.get();
+		this.recipeType = IndustryRecipeManager.RECIPE_TYPE_SYNTHESISING.get();
 	}
 
 	public void sendUpdates() {
-		if (level != null) {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			BlockState state = this.getBlockState();
 //			BlockSynthesiser block = (BlockSynthesiser) state.getBlock();
 			
-			level.sendBlockUpdated(this.getBlockPos(), state, state, 3);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, 3);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, this.getLevel(), this.getBlockPos(), this.getBlockPos()));
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, this.getLevel(), this.getBlockPos(), this.getBlockPos()));
 			}
 		}
 	}
@@ -119,6 +123,8 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 		compound.put("RecipesUsed", compoundnbt);
 		
 		compound.putBoolean("completed", this.hasCompleted);
+
+		compound.putInt("ui_mode", this.uiMode.getIndex());
 	}
 
 	@Override
@@ -141,6 +147,8 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 		}
 		
 		this.hasCompleted = compound.getBoolean("completed");
+
+		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 	}
 
 	@Override
@@ -258,13 +266,11 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 				return ItemInteractionResult.SUCCESS;
 			} else if (this.getItem(0).getCount() > 0) {
 				playerIn.addItem(this.getItem(0));
-				
 				worldIn.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.6F, 2F, false);
+				
 				return ItemInteractionResult.SUCCESS;
 			}
-		}	
-			
-		else if (!CosmosUtil.holdingWrench(playerIn)) {
+		} else if (!CosmosUtil.holdingWrench(playerIn)) {
 			if (playerIn instanceof ServerPlayer serverPlayer) {
 				serverPlayer.openMenu(this, (packetBuffer) -> { packetBuffer.writeBlockPos( this.getBlockPos()); });
 			}
@@ -656,11 +662,6 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 	}
 	
 	@Override
-	public int getMaxStackSize() {
-		return 1;
-	}
-
-	@Override
 	public ItemStack getItem(int index) {
 		return this.inventoryItems.get(index);
 	}
@@ -678,13 +679,18 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 	}
 
 	@Override
+	public int getMaxStackSize() {
+		return 1;
+	}
+
+	@Override
 	public void setItem(int index, ItemStack stack) {
 		this.inventoryItems.set(index, stack);
-//		
-//		if (stack.getCount() > this.getMaxStackSize()) {
-//			stack.setCount(this.getMaxStackSize());
-//		}
-//		
+		
+		if (stack.getCount() > this.getMaxStackSize()) {
+			stack.setCount(this.getMaxStackSize());
+		}
+		
 		this.sendUpdates();
 	}
 
@@ -871,11 +877,7 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 
 	@Override
 	public boolean canReceive(Direction directionIn) {
-		if (directionIn.getOpposite() != Direction.UP) {
-			return true;
-		} else {
-			return false;
-		}
+		return !directionIn.equals(Direction.UP);
 	}
 
 	@Override
@@ -942,4 +944,31 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;
 	}
+
+	@Override
+	public EnumUIMode getUIMode() {
+		return this.uiMode;
+	}
+
+	@Override
+	public void setUIMode(EnumUIMode modeIn) {
+		this.uiMode = modeIn;
+	}
+
+	@Override
+	public void cycleUIMode() {
+		this.uiMode = EnumUIMode.getNextStateFromState(this.uiMode);
+	}
+
+	@Override
+	public EnumUIHelp getUIHelp() {
+		return EnumUIHelp.HIDDEN;
+	}
+
+	@Override
+	public void setUIHelp(EnumUIHelp modeIn) { }
+
+	@Override
+	public void cycleUIHelp() { }
+	
 }

@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.processing.core.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityCharger;
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
 
@@ -60,7 +60,7 @@ public class BlockCharger extends CosmosBlockRemovableNBT implements EntityBlock
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_CHARGER.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CHARGER.get());
 	}
 
 	@Nullable

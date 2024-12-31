@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:energy_dust"
+	},
+	"result": {
+		"id": "cosmosindustry:energy_ingot"
+	},
+	"experience": 0.35,
+	"cookingtime": 200
+}

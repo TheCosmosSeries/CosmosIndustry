@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"   ",
+		"GCG",
+		"   "
+	],
+	"key": {
+		"C": {
+			"item": "cosmosindustry:block_energy_channel"
+		},
+		"G": {
+			"item": "minecraft:glass"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_energy_channel_transparent"
+	}
+}

@@ -1,7 +1,7 @@
 package com.tcn.cosmosindustry.transport.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.TRANSPORT;
+import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.transport.client.renderer.model.ModelChannel;
 import com.tcn.cosmosindustry.transport.core.fluid.blockentity.AbstractBlockEntityFluidChannel;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
@@ -27,11 +27,11 @@ public class RendererFluidChannel implements BlockEntityRenderer<AbstractBlockEn
 	
 	@Override
 	public void render(AbstractBlockEntityFluidChannel blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-		ResourceLocation channelTexture = blockEntity.getRenderType().isTransparent() ? TRANSPORT.FLUID_TEXTURES[1] : TRANSPORT.FLUID_TEXTURES[0];
-		ResourceLocation shellTexture = blockEntity.getChannelTier().equals(EnumIndustryTier.SURGE) ? TRANSPORT.FLUID_TEXTURES[2] : TRANSPORT.FLUID_TEXTURES[3];
-		ResourceLocation interfaceTexture = TRANSPORT.FLUID_TEXTURES[4];
+		ResourceLocation channelTexture = IndustryReference.Resource.Transport.FLUID_TEXTURES[0];
+		ResourceLocation shellTexture = blockEntity.getChannelTier().equals(EnumIndustryTier.SURGE) ? IndustryReference.Resource.Transport.FLUID_TEXTURES[2] : IndustryReference.Resource.Transport.FLUID_TEXTURES[3];
+		ResourceLocation interfaceTexture = IndustryReference.Resource.Transport.FLUID_TEXTURES[4];
 		
-		RenderType channelType = blockEntity.getRenderType().isTransparent() ? RenderType.entityCutoutNoCull(channelTexture) : RenderType.entitySolid(channelTexture);
+		RenderType channelType = RenderType.entitySolid(channelTexture);
 		RenderType shellType = RenderType.entityCutoutNoCull(shellTexture);
 		RenderType interfaceType = RenderType.entitySolid(interfaceTexture);
 		

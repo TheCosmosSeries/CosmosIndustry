@@ -1,7 +1,5 @@
 package com.tcn.cosmosindustry.transport.core.energy.blockentity;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 
 import com.tcn.cosmosindustry.transport.core.util.TransportUtil;
@@ -12,8 +10,10 @@ import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumRenderType;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelSided;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelType.IChannelEnergy;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelType.IChannelEnergy;
+import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -27,9 +27,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity implements IBlockInteract, IBlockEntityChannelSided, IChannelEnergy, IEnergyEntity {
+abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity implements IBlockInteract, IBlockNotifier, IBEChannelSided, IChannelEnergy, IEnergyEntity {
 	private EnumChannelSideState[] SIDE_STATE_ARRAY = EnumChannelSideState.getStandardArray();
 	
 	private int energy_stored = 0;
@@ -49,9 +51,10 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 	public int last_rf_rate;
 	
 	private EnumIndustryTier tier;
-	private EnumRenderType transparent;
 	
-	public AbstractBlockEntityEnergyChannel(BlockEntityType<?> typeIn, BlockPos posIn, BlockState stateIn, int[] energyInfoIn, EnumIndustryTier tierIn, EnumRenderType transparentIn) {
+	private boolean[] recieved = new boolean[] { false, false, false, false, false, false };
+	
+	public AbstractBlockEntityEnergyChannel(BlockEntityType<?> typeIn, BlockPos posIn, BlockState stateIn, int[] energyInfoIn, EnumIndustryTier tierIn) {
 		super(typeIn, posIn, stateIn);
 		
 		this.energy_capacity = energyInfoIn[0];
@@ -59,7 +62,6 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 		this.energy_max_receive = energyInfoIn[1];
 		
 		this.tier = tierIn;
-		this.transparent = transparentIn;
 		
 		if (this.tier.creative()) {
 			this.setEnergyStored(this.energy_capacity);
@@ -113,14 +115,14 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public void updateRenders() {
-		if (level != null) {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			BlockState state = this.getBlockState();
 			
-			level.sendBlockUpdated(this.getBlockPos(), state, state, 3);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, 3);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, level, this.getBlockPos(), this.getBlockPos()));
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), state.updateShape(Direction.DOWN, state, level, this.getBlockPos(), this.getBlockPos()));
 			}
 		}
 	}
@@ -160,6 +162,10 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 		compound.putInt("west", this.SIDE_STATE_ARRAY[4].getIndex());
 		compound.putInt("east", this.SIDE_STATE_ARRAY[5].getIndex());
 		
+		for (int i = 0; i < recieved.length; i++) {
+			compound.putBoolean(i + "_recieved", this.recieved[i]);
+		}
+		
 		compound.putInt("energy", this.energy_stored);
 	}
 
@@ -177,6 +183,10 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 		this.setSide(Direction.values()[3], EnumChannelSideState.getStateFromIndex(compound.getInt("south")));
 		this.setSide(Direction.values()[4], EnumChannelSideState.getStateFromIndex(compound.getInt("west")));
 		this.setSide(Direction.values()[5], EnumChannelSideState.getStateFromIndex(compound.getInt("east")));
+
+		for (int i = 0; i < recieved.length; i++) {
+			this.recieved[i] = compound.getBoolean(i + "_recieved");
+		}
 		
 		this.energy_stored = compound.getInt("energy");
 	}
@@ -219,35 +229,67 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 	
 	public static void tick(Level levelIn, BlockPos posIn, BlockState stateIn, AbstractBlockEntityEnergyChannel entityIn) {
 		if (!entityIn.getLevel().isClientSide()) {
-			Arrays.stream(Direction.values()).parallel().forEach((d) -> {
-				BlockPos otherPos = entityIn.getBlockPos().offset(d.getNormal());
-				BlockEntity tile = entityIn.getLevel().getBlockEntity(otherPos);
+			entityIn.pushEnergy(Direction.DOWN);
+			entityIn.pushEnergy(Direction.UP);
+			entityIn.pushEnergy(Direction.NORTH);
+			entityIn.pushEnergy(Direction.SOUTH);
+			entityIn.pushEnergy(Direction.EAST);
+			entityIn.pushEnergy(Direction.WEST);
+
+			Direction.stream().parallel().forEach((direction) -> {
+				entityIn.pushEnergy(direction);
+				entityIn.pushEnergy(direction);
+			});
+			Direction.stream().parallel().forEach((direction) -> {
+				entityIn.pushEnergy(direction);
+				entityIn.pushEnergy(direction);
+			});
+			Direction.stream().parallel().forEach((direction) -> {
+				entityIn.pushEnergy(direction);
+				entityIn.pushEnergy(direction);
+			});
+			Direction.stream().parallel().forEach((direction) -> {
+				entityIn.pushEnergy(direction);
+				entityIn.pushEnergy(direction);
+			});
+			Direction.stream().parallel().forEach((direction) -> {
+				entityIn.pushEnergy(direction);
+				entityIn.pushEnergy(direction);
+			});
+			Direction.stream().parallel().forEach((direction) -> {
+				entityIn.pushEnergy(direction);
+				entityIn.pushEnergy(direction);
+			});
+		}
+	}
+	
+	public void pushEnergy(Direction directionIn) {
+		BlockPos otherPos = this.getBlockPos().offset(directionIn.getNormal());
+		BlockEntity tile = this.getLevel().getBlockEntity(otherPos);
+		
+		if (!this.checkRecieveArray(directionIn)) {
+			if (tile != null && !tile.isRemoved()) {
+				EnumChannelSideState state = this.getSide(directionIn);
 				
-				if (tile != null && !tile.isRemoved()) {
-					EnumChannelSideState state = entityIn.getSide(d);
-					
-					if (entityIn.hasEnergy()) {
-						if (state != EnumChannelSideState.INTERFACE_INPUT && state != EnumChannelSideState.DISABLED) {
-							if (!(d.equals(entityIn.getLastFacing()))) {
-								Object object = entityIn.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, d);
-								
-								if (object != null) {
-									if (object instanceof IEnergyStorage storage) {
-										if (storage.canReceive()) {
-											int extract = entityIn.extractEnergy(d, entityIn.getMaxExtract(), true);
-											int actualExtract = storage.receiveEnergy(extract, true);
-											
-											if (actualExtract > 0) {
-												entityIn.extractEnergy(d, storage.receiveEnergy(actualExtract, false), false);
-											}
-										}
+				if (this.hasEnergy() && this.canExtract(directionIn)) {
+					if (state != EnumChannelSideState.INTERFACE_INPUT && state != EnumChannelSideState.DISABLED) {
+						Object object = this.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, directionIn.getOpposite());
+						
+						if (object != null) {
+							if (object instanceof IEnergyStorage storage) {
+								if (storage.canReceive()) {
+									int extract = this.extractEnergy(directionIn, this.getMaxExtract(), true);
+									int actualExtract = storage.receiveEnergy(extract, true);
+									
+									if (actualExtract > 0) {
+										this.extractEnergy(directionIn, storage.receiveEnergy(actualExtract, false), false);
 									}
 								}
 							}
 						}
 					}
 				}
-			});
+			}
 		}
 	}
 	
@@ -257,21 +299,41 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		if (CosmosUtil.holdingWrench(playerIn) && !playerIn.isShiftKeyDown()) {
-			Direction dir = TransportUtil.getDirectionFromHit(pos, hit);
-			if (dir != null) {
-				this.cycleSide(dir, playerIn);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos posIn, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (!levelIn.isClientSide()) {
+			playerIn.sendSystemMessage(ComponentHelper.style(ComponentColour.WHITE, "" + this.getEnergyStored() ));
+			playerIn.sendSystemMessage(ComponentHelper.style(ComponentColour.WHITE, ""
+				+ " D " + this.recieved[0]
+				+ " U " + this.recieved[1]
+				+ " N " + this.recieved[2]
+				+ " S " + this.recieved[3]
+				+ " E " + this.recieved[4]
+				+ " W " + this.recieved[5]
+			));
+		}
+		
+		if (CosmosUtil.holdingWrench(playerIn)) {
+			if (!playerIn.isShiftKeyDown()) {
+				Direction dir = TransportUtil.getDirectionFromHit(posIn, hit);
+				if (dir != null) {
+					this.cycleSide(dir, playerIn);
+				} else {
+					this.cycleSide(hit.getDirection(), playerIn);
+				}
+				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			} else {
-				this.cycleSide(hit.getDirection(), playerIn);
+				if (!levelIn.isClientSide()) {
+					CompatHelper.spawnStack(CompatHelper.generateItemStackFromBlock(state), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+					CosmosUtil.setToAir(levelIn, posIn);
+				}
+				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
-			return ItemInteractionResult.SUCCESS;
 		}
 		return ItemInteractionResult.FAIL;
 	}
 
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) { }
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player player) { }
 /*
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
@@ -369,7 +431,8 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public int receiveEnergy(Direction directionIn, int max_receive, boolean simulate) {
-		this.setLastFacing( directionIn.getOpposite());
+//		this.setLastFacing(directionIn);
+		this.setRecieved(directionIn, true);
 		
 		int storedReceived = Math.min(this.getMaxEnergyStored() - energy_stored, Math.min(this.energy_max_receive, max_receive));
 
@@ -387,12 +450,20 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 				
 		if (!simulate) {
 			if (this.getChannelTier().notCreative()) {
-				this.energy_stored -= storedExtracted;
+				this.energy_stored = this.energy_stored - storedExtracted;
 				this.updateRenders();
 			}
 		}
 
 		return storedExtracted;
+	}
+	
+	public void setRecieved(Direction directionIn, boolean value) {
+		this.recieved[directionIn.get3DDataValue()] = value;
+	}
+	
+	public boolean checkRecieveArray(Direction directionIn) {
+		return this.recieved[directionIn.get3DDataValue()];
 	}
 
 	@Override
@@ -412,7 +483,11 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public boolean canExtract(Direction directionIn) {
-		if (this.getSide(directionIn.getOpposite()).equals(EnumChannelSideState.DISABLED) || this.getSide(directionIn.getOpposite()).equals(EnumChannelSideState.INTERFACE_INPUT)) {
+		if (checkRecieveArray(directionIn)) {
+			return false;
+		}
+		
+		if (this.getSide(directionIn).equals(EnumChannelSideState.DISABLED) || this.getSide(directionIn).equals(EnumChannelSideState.INTERFACE_INPUT)) {
 			return false;
 		}
 		
@@ -421,7 +496,7 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public boolean canReceive(Direction directionIn) {
-		if (this.getSide(directionIn.getOpposite()).equals(EnumChannelSideState.DISABLED) || this.getSide(directionIn.getOpposite()).equals(EnumChannelSideState.INTERFACE_OUTPUT)) {
+		if (this.getSide(directionIn).equals(EnumChannelSideState.DISABLED) || this.getSide(directionIn).equals(EnumChannelSideState.INTERFACE_OUTPUT)) {
 			return false;
 		}
 		
@@ -438,16 +513,38 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 		return EnumConnectionType.ENERGY;
 	}
 	
+	@Override
 	public EnumIndustryTier getChannelTier() {
 		return this.tier;
 	}
 	
 	public EnumRenderType getRenderType() {
-		return this.transparent;
+		return EnumRenderType.OPAQUE;
 	}
 
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;
 	}
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		return null;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+		levelIn.getBlockState(fromPos).isAir();
+		Direction dir = Direction.fromDelta(pos.getX() - fromPos.getX(), pos.getY() - fromPos.getY(), pos.getZ() - fromPos.getZ());
+		
+		if (dir != null) {
+			this.recieved[dir.getOpposite().get3DDataValue()] = false;
+		}
+	}
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
 }

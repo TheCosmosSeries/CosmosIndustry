@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DDD",
+		"DWD",
+		"DDD"
+	],
+	"key": {
+		"D": {
+			"item": "cosmosindustry:energy_dust"
+		},
+		"W": {
+			"item": "cosmosindustry:silicon_wafer"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:energy_wafer"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:zinc_dust"
+	},
+	"result": {
+		"id": "cosmosindustry:zinc_ingot"
+	},
+	"experience": 0.35,
+	"cookingtime": 200
+}

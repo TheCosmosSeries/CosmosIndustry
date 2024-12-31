@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.block.BlockSeparator;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntitySeparator;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -40,7 +40,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("unused")
 public class RendererSeparator implements BlockEntityRenderer<BlockEntitySeparator> {
-	private static final ResourceLocation TEXTURE = IndustryReference.RESOURCE.PROCESSING.SEPARATOR_LOC_BER;
+	private static final ResourceLocation TEXTURE = IndustryReference.Resource.Processing.Render.SEPARATOR;
 	private static final RenderType RENDER_TYPE = RenderType.entityTranslucent(TEXTURE);
 
 	private Internals internals;
@@ -59,7 +59,7 @@ public class RendererSeparator implements BlockEntityRenderer<BlockEntitySeparat
 		Level level = blockEntity.getLevel();
 		BlockState state = blockEntity.getBlockState();
 		
-		if (state.getBlock().equals(ModRegistrationManager.BLOCK_SEPARATOR.get())) {
+		if (state.getBlock().equals(IndustryRegistrationManager.BLOCK_SEPARATOR.get())) {
 			Direction dir = state.getValue(BlockSeparator.FACING);
 			
 			poseStackIn.pushPose();

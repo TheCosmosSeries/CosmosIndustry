@@ -5,8 +5,9 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -23,10 +24,13 @@ import net.minecraft.world.level.Level;
 public class LaserCutterRecipe implements Recipe<RecipeInput> {
 	public final Ingredient input;
 	public final ItemStack result;
+	public final ComponentColour colour;
 
-	public LaserCutterRecipe(Ingredient inputIn, ItemStack resultIn) {
+	public LaserCutterRecipe(Ingredient inputIn, ItemStack resultIn, ComponentColour colourIn) {
 		this.input = inputIn;
 		this.result = resultIn;
+		
+		this.colour = colourIn;
 	}
 
 	@Override
@@ -59,17 +63,17 @@ public class LaserCutterRecipe implements Recipe<RecipeInput> {
 
 	@Override
 	public ItemStack getToastSymbol() {
-		return new ItemStack(ModRegistrationManager.BLOCK_LASER_CUTTER.get());
+		return new ItemStack(IndustryRegistrationManager.BLOCK_LASER_CUTTER.get());
 	}
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModRecipeManager.RECIPE_SERIALIZER_LASERING.get();
+		return IndustryRecipeManager.RECIPE_SERIALIZER_LASERING.get();
 	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return ModRecipeManager.RECIPE_TYPE_LASERING.get();
+		return IndustryRecipeManager.RECIPE_TYPE_LASERING.get();
 	}
 	
 	@Override
@@ -91,13 +95,18 @@ public class LaserCutterRecipe implements Recipe<RecipeInput> {
 		
 		return array;
 	}
-	
+
+	public ComponentColour getRecipeColour() {
+		return this.colour;
+	}
+
 	public static class Serializer implements RecipeSerializer<LaserCutterRecipe> {
 		public static final Serializer INSTANCE = new Serializer();
 		public static final MapCodec<LaserCutterRecipe> CODEC = RecordCodecBuilder.mapCodec(
 	            instance -> instance.group(
 	    			Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(recipe -> recipe.input),
-	    			ItemStack.CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
+	    			ItemStack.CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+					ComponentColour.CODEC.optionalFieldOf("recipeColour", ComponentColour.CYAN).forGetter(recipe -> recipe.colour)
 	            ).apply(instance, LaserCutterRecipe::new)
 	        );
 			
@@ -116,12 +125,13 @@ public class LaserCutterRecipe implements Recipe<RecipeInput> {
 	    }
 	    
 		private static LaserCutterRecipe fromNetwork(RegistryFriendlyByteBuf extraDataIn) {
-			return new LaserCutterRecipe(Ingredient.CONTENTS_STREAM_CODEC.decode(extraDataIn), ItemStack.STREAM_CODEC.decode(extraDataIn));
+			return new LaserCutterRecipe(Ingredient.CONTENTS_STREAM_CODEC.decode(extraDataIn), ItemStack.STREAM_CODEC.decode(extraDataIn), ComponentColour.STREAM_CODEC.decode(extraDataIn));
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf extraDataIn, LaserCutterRecipe recipeIn) {
 			Ingredient.CONTENTS_STREAM_CODEC.encode(extraDataIn, recipeIn.input);
 			ItemStack.STREAM_CODEC.encode(extraDataIn, recipeIn.result);
+			ComponentColour.STREAM_CODEC.encode(extraDataIn, recipeIn.colour);
 		}
 	}
 }

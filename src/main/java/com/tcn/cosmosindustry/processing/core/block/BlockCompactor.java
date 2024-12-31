@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.processing.core.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityCompactor;
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
 
@@ -47,7 +47,7 @@ public class BlockCompactor extends CosmosBlockRemovableNBT implements EntityBlo
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_COMPACTOR.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_COMPACTOR.get());
 	}
 
 	@Nullable
@@ -99,13 +99,13 @@ public class BlockCompactor extends CosmosBlockRemovableNBT implements EntityBlo
 		worldIn.setBlockAndUpdate(pos, state.setValue(FACING, placer.getDirection().getOpposite()));
 	}
 
-	public BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {
-		return p_185499_1_.setValue(FACING, p_185499_2_.rotate(p_185499_1_.getValue(FACING)));
+	public BlockState rotate(BlockState stateIn, Rotation rotationIn) {
+		return stateIn.setValue(FACING, rotationIn.rotate(stateIn.getValue(FACING)));
 	}
 
 	@SuppressWarnings("deprecation")
-	public BlockState mirror(BlockState p_185471_1_, Mirror p_185471_2_) {
-		return p_185471_1_.rotate(p_185471_2_.getRotation(p_185471_1_.getValue(FACING)));
+	public BlockState mirror(BlockState stateIn, Mirror mirrorIn) {
+		return stateIn.rotate(mirrorIn.getRotation(stateIn.getValue(FACING)));
 	}
 
 }

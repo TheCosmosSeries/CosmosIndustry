@@ -3,12 +3,11 @@ package com.tcn.cosmosindustry.processing.client.screen;
 import java.util.Arrays;
 
 import com.ibm.icu.text.DecimalFormat;
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.PROCESSING;
+import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerKiln;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityKiln;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.IS_HOVERING;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntity;
+import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -19,19 +18,21 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
-public class ScreenKiln extends CosmosScreenBlockEntity<ContainerKiln> {
+public class ScreenKiln extends CosmosScreenUIModeBE<ContainerKiln> {
 	
 	public ScreenKiln(ContainerKiln containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);
 		
 		this.setImageDims(176, 177);
-		this.setTexture(PROCESSING.KILN_LOC_GUI);
+		this.setLight(IndustryReference.Resource.Processing.Gui.KILN_LIGHT);
+		this.setDark(IndustryReference.Resource.Processing.Gui.KILN_DARK);
+		this.setUIModeButtonIndex(159, 5);
+		
 		this.setTitleLabelDims(28, 4);
 		this.setInventoryLabelDims(7, 84);
 	}
@@ -49,17 +50,15 @@ public class ScreenKiln extends CosmosScreenBlockEntity<ContainerKiln> {
 	@Override
 	protected void renderBg(GuiGraphics graphicsIn, float ticks, int mouseX, int mouseY) {
 		super.renderBg(graphicsIn, ticks, mouseX, mouseY);
-	
-		BlockEntity entity = this.getBlockEntity();
 		
-		if (entity instanceof BlockEntityKiln blockEntity) {
+		if (this.getBlockEntity() instanceof BlockEntityKiln blockEntity) {
 			if (blockEntity.canProcess(blockEntity.getRecipeUsed(), blockEntity.getLevel().registryAccess())) {
 				int k = blockEntity.getProcessProgressScaled(16);
 				
-				CosmosUISystem.renderScaledElementDownNestled(this, graphicsIn, PROCESSING.KILN_LOC_GUI, this.getScreenCoords(), 99, 39, 176, 0, 16, blockEntity.getProcessProgressScaled(16));
+				CosmosUISystem.Render.renderScaledElementDownNestled(graphicsIn, this.getScreenCoords(), 99, 39, 176, 0, 16, blockEntity.getProcessProgressScaled(16), IndustryReference.Resource.Processing.Gui.KILN_LIGHT);
 			}
 			
-			CosmosUISystem.renderEnergyDisplay(graphicsIn, ComponentColour.RED, blockEntity, this.getScreenCoords(), 54, 17, 16, 60, false);
+			CosmosUISystem.Render.renderEnergyDisplay(graphicsIn, ComponentColour.RED, blockEntity, this.getScreenCoords(), 54, 17, 16, 60, false);
 		}
 	}
 	
@@ -67,38 +66,32 @@ public class ScreenKiln extends CosmosScreenBlockEntity<ContainerKiln> {
 	protected void addButtons() {
 		super.addButtons();
 	}
-	
+
 	@Override
-	public void pushButton(Button button) {
-		super.pushButton(button);
+	public void clickButton(Button button, boolean isLeftClick) {
+		super.clickButton(button, isLeftClick);
 	}
 	
 	@Override
-	public void renderComponentHoverEffect(GuiGraphics graphicsIn, Style style, int mouseX, int mouseY) {
-		BlockEntity entity = this.getBlockEntity();
-		
-		if (entity instanceof BlockEntityKiln) {
-			BlockEntityKiln blockEntity = (BlockEntityKiln) entity;
-			
-			if (IS_HOVERING.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 54,  this.getScreenCoords()[0] + 70,  this.getScreenCoords()[1] + 16,  this.getScreenCoords()[1] + 76)) {
+	public void renderStandardHoverEffect(GuiGraphics graphicsIn, Style style, int mouseX, int mouseY) {
+		if (this.getBlockEntity() instanceof BlockEntityKiln blockEntity) {
+			if (CosmosUISystem.Hovering.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 54,  this.getScreenCoords()[0] + 70,  this.getScreenCoords()[1] + 16,  this.getScreenCoords()[1] + 76)) {
 				DecimalFormat formatter = new DecimalFormat("#,###,###,###");
 				String amount_string = formatter.format(blockEntity.getEnergyStored());
 				String capacity_string = formatter.format(blockEntity.getMaxEnergyStored());
 				
-				Component[] comp = new Component[] { ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
+				Component[] comp = new Component[] {
+					ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
 					ComponentHelper.style2(ComponentColour.RED, amount_string + " / " + capacity_string, "cosmoslibrary.gui.energy_bar.suff")
 				};
 
-				Component[] compProcessing = new Component[] { ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
+				Component[] compProcessing = new Component[] {
+					ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
 					ComponentHelper.style2(ComponentColour.RED, amount_string + " / " + capacity_string, "cosmoslibrary.gui.energy_bar.suff"),
-					ComponentHelper.style2(ComponentColour.PURPLE, "cosmoslibrary.gui.energy.fe_pre",  "" + blockEntity.getRFTickRate(), "cosmoslibrary.gui.energy.fe_rate")
+					ComponentHelper.style3(ComponentColour.PURPLE, "cosmoslibrary.gui.energy.fe_pre", "" + blockEntity.getRFTickRate(), "cosmoslibrary.gui.energy.fe_rate")
 				};
 				
-				if (blockEntity.isProcessing()) {
-					graphicsIn.renderComponentTooltip(this.font, Arrays.asList(compProcessing), mouseX, mouseY);
-				} else {
-					graphicsIn.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
-				}
+				graphicsIn.renderComponentTooltip(this.font, blockEntity.isProcessing() ? Arrays.asList(compProcessing) : Arrays.asList(comp), mouseX, mouseY);
 			}
 		}
 	}

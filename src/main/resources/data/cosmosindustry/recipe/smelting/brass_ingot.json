@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:brass_dust"
+	},
+	"result": {
+		"id": "cosmosindustry:brass_ingot"
+	},
+	"experience": 0.35,
+	"cookingtime": 200
+}

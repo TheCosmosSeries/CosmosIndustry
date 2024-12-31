@@ -7,12 +7,15 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.tcn.cosmosindustry.IndustryReference;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.client.container.ContainerKiln;
 import com.tcn.cosmosindustry.processing.core.block.BlockKiln;
-import com.tcn.cosmoslibrary.client.interfaces.IBlockEntityClientUpdated;
+import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
+import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -33,7 +36,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -62,7 +64,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, IBlockEntityClientUpdated.Furnace, IEnergyEntity, RecipeCraftingHolder, StackedContentsCompatible {
+public class BlockEntityKiln extends BlockEntity implements IBlockInteract, WorldlyContainer, MenuProvider, IBEUpdated.Furnace, IEnergyEntity, RecipeCraftingHolder, StackedContentsCompatible, IBEUIMode {
 
 	private static final int[] SLOTS_TOP = new int[] { 0 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 2, 1 };
@@ -72,33 +74,34 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 
 	private int update = 0;
 	private int process_time;
-	private int process_speed = IndustryReference.RESOURCE.PROCESSING.SPEED_RATE[0];
+	private int process_speed = IndustryReference.Resource.Processing.SPEED_RATE[0];
 	
 	private int energy_stored = 0;
-	private int energy_capacity = IndustryReference.RESOURCE.PROCESSING.CAPACITY[0];
-	private int energy_max_receive = IndustryReference.RESOURCE.PROCESSING.MAX_INPUT[0];
-	private int rf_tick_rate = IndustryReference.RESOURCE.PROCESSING.RF_TICK_RATE[0];
+	private int energy_capacity = IndustryReference.Resource.Processing.CAPACITY[0];
+	private int energy_max_receive = IndustryReference.Resource.Processing.MAX_INPUT[0];
+	private int rf_tick_rate = IndustryReference.Resource.Processing.RF_TICK_RATE[0];
 
 	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
 	protected final RecipeType<SmeltingRecipe> recipeType;
     private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
 	
+	private EnumUIMode uiMode = EnumUIMode.DARK;
+	
 	public BlockEntityKiln(BlockPos pos, BlockState state) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_KILN.get(), pos, state);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_KILN.get(), pos, state);
 		this.recipeType = RecipeType.SMELTING;
         this.quickCheck = RecipeManager.createCheck(RecipeType.SMELTING);
 	}
 
 	public void sendUpdates() {
-		if (level != null) {
+		if (this.getLevel() != null) {
 			this.setChanged();
 			BlockState state = this.getBlockState();
-			BlockKiln block = (BlockKiln) state.getBlock();
 			
-			level.sendBlockUpdated(this.getBlockPos(), state, state, 3);
+			this.getLevel().sendBlockUpdated(this.getBlockPos(), state, state, 3);
 			
-			if (!level.isClientSide) {
-				level.setBlockAndUpdate(this.getBlockPos(), block.updateState(state, this.getLevel(), this.getBlockPos()));
+			if (!this.getLevel().isClientSide()) {
+				this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState());
 			}
 		}
 	}
@@ -114,6 +117,8 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 
 		compound.putInt("energy", this.energy_stored);
 		compound.putInt("rf_rate", this.rf_tick_rate);
+
+		compound.putInt("ui_mode", this.uiMode.getIndex());
 	}
 
 	@Override
@@ -128,6 +133,8 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 		
 		this.energy_stored = compound.getInt("energy");
 		this.rf_tick_rate = compound.getInt("rf_rate");
+
+		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 	}
 
 	@Override
@@ -174,6 +181,7 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 		HolderLookup.Provider provider = levelIn.registryAccess();
 		
 		if (entityIn.canProcess(irecipe, provider) && entityIn.hasEnergy()) {
+			levelIn.setBlock(posIn, stateIn.setValue(BlockKiln.ON, true), 3);
 			entityIn.extractEnergy(Direction.DOWN, entityIn.rf_tick_rate, false);
 			
 			entityIn.process_time++;
@@ -182,13 +190,14 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 			if (entityIn.process_time == entityIn.process_speed) {
 				entityIn.process_time = 0;
 				
-				if (!entityIn.level.isClientSide) {
+				if (!levelIn.isClientSide()) {
 					entityIn.processItem(irecipe, provider);
 					entityIn.sendUpdates();
 				}
 			}
 		} else {
 			entityIn.process_time = 0;
+			levelIn.setBlock(posIn, stateIn.setValue(BlockKiln.ON, false), 3);
 		}
 		
 		if (entityIn.canProcess(irecipe, provider) && entityIn.hasEnergy()) {
@@ -196,33 +205,33 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 			Random rand = new Random();
 			
 			if (rand.nextDouble() < 0.1D) {
-				entityIn.level.playLocalSound(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+				levelIn.playLocalSound(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
 			}
 			
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
 			
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.5, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.FLAME, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.5, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.5, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.FLAME, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.5, 0.0D, 0.0D, 0.0D);
 			
-			entityIn.level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
-			entityIn.level.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.2, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.2, 0.0D, 0.0D, 0.0D);
+			levelIn.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.8, pos.getY() + 0.4, pos.getZ() + 0.8, 0.0D, 0.0D, 0.0D);
 		}
 		
 		int i = entityIn.inventoryItems.get(2).getCount();
-		entityIn.process_speed = IndustryReference.RESOURCE.PROCESSING.SPEED_RATE[i];
+		entityIn.process_speed = IndustryReference.Resource.Processing.SPEED_RATE[i];
 		
 		int j = entityIn.inventoryItems.get(3).getCount();
-		entityIn.energy_capacity = IndustryReference.RESOURCE.PROCESSING.CAPACITY[j];
+		entityIn.energy_capacity = IndustryReference.Resource.Processing.CAPACITY[j];
 		
 		int k = entityIn.inventoryItems.get(4).getCount();
-		entityIn.rf_tick_rate = IndustryReference.RESOURCE.PROCESSING.RF_TICK_RATE[i] - IndustryReference.RESOURCE.PROCESSING.RF_EFF_RATE[k];
+		entityIn.rf_tick_rate = IndustryReference.Resource.Processing.RF_TICK_RATE[i] - IndustryReference.Resource.Processing.RF_EFF_RATE[k];
 		
 		boolean flag = entityIn.update > 0;
 		
@@ -241,18 +250,18 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos posIn, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
 		if (playerIn.isShiftKeyDown()) {
 			if (CosmosUtil.holdingWrench(playerIn)) {
-				if (!levelIn.isClientSide) {
+				if (!levelIn.isClientSide()) {
 					CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
 					CosmosUtil.setToAir(levelIn, posIn);
 				}
-				ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+				ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
 		} else {
 			if (playerIn instanceof ServerPlayer serverPlayer) {
 				serverPlayer.openMenu(this, (packetBuffer) -> packetBuffer.writeBlockPos(this.getBlockPos()));
 			}
 		}
-		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
 
 	@Override
@@ -276,7 +285,7 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 				}
 				
 				int result = itemstack1.getCount() + itemstack.getCount();
-				return result < this.getMaxStackSize() && result < itemstack1.getMaxStackSize();
+				return result <= this.getMaxStackSize() && result <= itemstack1.getMaxStackSize();
 			}
 		}
 	}
@@ -324,7 +333,7 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 	@Nullable
 	@Override
 	public RecipeHolder<?> getRecipeUsed() {
-		return this.level.getRecipeManager().getRecipeFor(this.recipeType, new SingleRecipeInput(this.getItem(0)), this.level).orElse(null);
+		return this.getLevel().getRecipeManager().getRecipeFor(this.recipeType, new SingleRecipeInput(this.getItem(0)), this.level).orElse(null);
 	}
 
 	@Override
@@ -358,7 +367,6 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 			i -= j;
 			levelIn.addFreshEntity(new ExperienceOrb(levelIn, posIn.x, posIn.y, posIn.z, j));
 		}
-
 	}
 
 	@Override
@@ -403,6 +411,11 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 		return ContainerHelper.takeItem(this.inventoryItems, index);
 	}
 
+	@Override
+	public int getMaxStackSize() {
+		return 64;
+	}
+	
 	@Override
 	public void setItem(int index, ItemStack stack) {
 		this.inventoryItems.set(index, stack);
@@ -571,9 +584,9 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 
 	@Override
 	public boolean hasEnergy() {
-		if (this.getEnergyStored() > this.getMaxEnergyStored()) {
-			this.setEnergyStored(this.getMaxEnergyStored());
-		}
+//		if (this.getEnergyStored() > this.getMaxEnergyStored()) {
+//			this.setEnergyStored(this.getMaxEnergyStored());
+//		}
 		return this.energy_stored > 0;
 	}
 
@@ -592,9 +605,9 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 		BlockState state = this.level.getBlockState(this.getBlockPos());
 		
 		if (state.getBlock() instanceof BlockKiln) {
-			Direction facing = state.getValue(BlockKiln.FACING).getOpposite();
+			Direction facing = state.getValue(BlockKiln.FACING);
 			
-			if (directionIn.equals(Direction.DOWN)) {
+			if (directionIn.equals(Direction.UP)) {
 				return false;
 			} else if (directionIn.equals(facing)) {
 				return false;
@@ -640,4 +653,31 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Cont
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;
 	}
+
+	@Override
+	public EnumUIMode getUIMode() {
+		return this.uiMode;
+	}
+
+	@Override
+	public void setUIMode(EnumUIMode modeIn) {
+		this.uiMode = modeIn;
+	}
+
+	@Override
+	public void cycleUIMode() {
+		this.uiMode = EnumUIMode.getNextStateFromState(this.uiMode);
+	}
+
+	@Override
+	public EnumUIHelp getUIHelp() {
+		return EnumUIHelp.HIDDEN;
+	}
+
+	@Override
+	public void setUIHelp(EnumUIHelp modeIn) { }
+
+	@Override
+	public void cycleUIHelp() { }
+	
 }

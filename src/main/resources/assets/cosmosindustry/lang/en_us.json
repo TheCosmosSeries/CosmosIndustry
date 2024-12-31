@@ -1,60 +1,69 @@
 {
-	"itemGroup.cosmosindustry.tools": "Cosmos Industry: Devices",
-	"itemGroup.cosmosindustry.blocks": "Cosmos Industry: Blocks",
-	"itemGroup.cosmosindustry.items": "Cosmos Industry: Items",
+	"itemGroup.cosmosindustry.blocks": "Cosmos Industry Blocks",
+	"itemGroup.cosmosindustry.items": "Cosmos Industry Materials",
+	"itemGroup.cosmosindustry.devices": "Cosmos Industry Devices",
+	"itemGroup.cosmosindustry.tools": "Cosmos Industry Tools",
+	
+	"fluid_type.cosmosindustry.energized_redstone": "Energized Redstone",
+	"fluid_type.cosmosindustry.coolant": "Coolant",
 	
 	"block.cosmosindustry.block_structure": "Machine Structure",
 	"block.cosmosindustry.block_kiln": "Kiln",
 	"block.cosmosindustry.block_grinder": "Grinder",
 	"block.cosmosindustry.block_compactor": "Compactor",
 	"block.cosmosindustry.block_separator": "Separator",
+	"block.cosmosindustry.block_ore_plant": "Ore Plant",
+	"block.cosmosindustry.block_fluid_crafter": "Fluid Crafter",
 	"block.cosmosindustry.block_laser_cutter": "Laser Cutter",
 	"block.cosmosindustry.block_charger": "Charger",
+	
+	"block.cosmosindustry.block_generator_structure": "Generator Structure",
+	"block.cosmosindustry.block_solar_panel": "Solar Panel Generator",
+	"block.cosmosindustry.block_solid_fuel": "Solid Fuel Generator",
+	"block.cosmosindustry.block_liquid_fuel": "Liquid Fuel Generator",
 	
 	"block.cosmosindustry.block_synthesiser": "Synthesiser",
 	"block.cosmosindustry.block_synthesiser_stand": "Synthesiser Stand",
 	
-	"block.cosmosindustry.block_basalt": "Basalt",
-	"block.cosmosindustry.block_basaltcobblestone": "Basalt Cobblestone",
-	"block.cosmosindustry.block_basaltbrick": "Basalt Bricks",
-	"block.cosmosindustry.block_basaltsmooth": "Smooth Basalt",
-	
-	"block.cosmosindustry.block_marble": "Marble",
-	"block.cosmosindustry.block_marblecobblestone": "Marble Cobblestone",
-	"block.cosmosindustry.block_marblebrick": "Marble Bricks",
-	"block.cosmosindustry.block_marblesmooth": "Smooth Marble",
-	
-	"block.cosmosindustry.block_reinforcedstone": "Reinforced Stone",
-	"block.cosmosindustry.block_reinforcedbrick": "Reinforced Bricks",
-	"block.cosmosindustry.block_reinforcedglass": "Reinforced Glass",
-	
-	"block.cosmosindustry.block_witherstone": "Wither Stone",
-	"block.cosmosindustry.block_witherbrick": "Wither Bricks",
-	"block.cosmosindustry.block_witherglass": "Wither Glass",
-	
 	"block.cosmosindustry.block_ore_tin": "Tin Ore",
+	"block.cosmosindustry.block_ore_tin_deepslate": "Deepslate Tin Ore",
 	"block.cosmosindustry.block_ore_silver": "Silver Ore",
+	"block.cosmosindustry.block_ore_silver_deepslate": "Deepslate Silver Ore",
+	"block.cosmosindustry.block_ore_zinc": "Zinc Ore",
+	"block.cosmosindustry.block_ore_zinc_deepslate": "Deepslate Zinc Ore",
 	"block.cosmosindustry.block_ore_silicon": "Silicon Ore",
+	"block.cosmosindustry.block_ore_silicon_deepslate": "Deepslate Silicon Ore",
 	
 	"block.cosmosindustry.block_tin": "Tin Block",
 	"block.cosmosindustry.block_silver": "Silver Block",
+	"block.cosmosindustry.block_zinc": "Zinc Block",
 	"block.cosmosindustry.block_silicon": "Silicon Block",
 	"block.cosmosindustry.block_steel": "Steel Block",
 	"block.cosmosindustry.block_bronze": "Bronze Block",
 	"block.cosmosindustry.block_brass": "Brass Block",
+	"block.cosmosindustry.block_energy": "Energy Block",
 	
 	"block.cosmosindustry.block_energy_channel": "Energy Channel",
 	"block.cosmosindustry.block_energy_channel_transparent": "Transparent Energy Channel",
 	"block.cosmosindustry.block_energy_channel_surge": "Surge Energy Channel",
 	"block.cosmosindustry.block_energy_channel_transparent_surge": "Transparent Surge Energy Channel",
 	
+	"block.cosmosindustry.block_energy_core": "Energy Core",
+	
 	"block.cosmosindustry.block_capacitor": "Energy Capacitor",
 	"block.cosmosindustry.block_capacitor_surge": "Surge Energy Capacitor",
 	"block.cosmosindustry.block_capacitor_creative": "Creative Energy Capacitor",
 	
-	"item.cosmosindustry.copper_ingot": "Copper Ingot",
+	"block.cosmosindustry.block_fluid_tank": "Fluid Tank",
+	"block.cosmosindustry.block_fluid_tank_surge": "Surge Fluid Tank",
+	"block.cosmosindustry.block_fluid_tank_creative": "Creative Fluid Tank",
+	
+	"block.cosmosindustry.block_energized_redstone": "Energized Redstone",
+	"block.cosmosindustry.block_coolant": "Coolant",
+	
 	"item.cosmosindustry.tin_ingot": "Tin Ingot",
 	"item.cosmosindustry.silver_ingot": "Silver Ingot",
+	"item.cosmosindustry.zinc_ingot": "Zinc Ingot",
 	"item.cosmosindustry.silicon_ingot": "Silicon Ingot",
 	"item.cosmosindustry.steel_ingot": "Steel Ingot",
 	"item.cosmosindustry.steel_ingot_unrefined": "Unrefined Steel Ingot",
@@ -65,6 +74,7 @@
 	"item.cosmosindustry.copper_dust": "Copper Dust",
 	"item.cosmosindustry.tin_dust": "Tin Dust",
 	"item.cosmosindustry.silver_dust": "Silver Dust",
+	"item.cosmosindustry.zinc_dust": "Zinc Dust",
 	"item.cosmosindustry.diamond_dust": "Diamond Dust",
 	"item.cosmosindustry.gold_dust": "Gold Dust",
 	"item.cosmosindustry.iron_dust": "Iron Dust",
@@ -78,6 +88,8 @@
 	
 	"item.cosmosindustry.iron_dust_refine": "Refined Iron Dust",
 	"item.cosmosindustry.gold_dust_refine": "Refined Gold Dust",
+	"item.cosmosindustry.iron_dust_clean": "Clean Iron Dust",
+	"item.cosmosindustry.gold_dust_clean": "Clean Gold Dust",
 	
 	"item.cosmosindustry.energy_ingot": "Energy Ingot",
 	"item.cosmosindustry.energy_wafer": "Energy Wafer",
@@ -86,7 +98,7 @@
 	"item.cosmosindustry.copper_plate": "Copper Plate",
 	"item.cosmosindustry.tin_plate": "Tin Plate",
 	"item.cosmosindustry.silver_plate": "Silver Plate",
-	
+	"item.cosmosindustry.zinc_plate": "Zinc Plate",
 	"item.cosmosindustry.bronze_plate": "Bronze Plate",
 	"item.cosmosindustry.steel_plate": "Steel Plate",
 	"item.cosmosindustry.brass_plate": "Brass Plate",
@@ -102,7 +114,9 @@
 	
 	"item.cosmosindustry.silicon": "Silicon",
 	"item.cosmosindustry.silicon_refined": "Refined Silicon",
-	"item.cosmosindustry.silicon_wafer": "Wafer",
+	"item.cosmosindustry.silicon_wafer": "Silicon Wafer",
+	
+	"item.cosmosindustry.bark": "Bark",
 	
 	"item.cosmosindustry.upgrade_base": "Upgrade Base",
 	"item.cosmosindustry.upgrade_speed": "Speed Upgrade",
@@ -113,10 +127,17 @@
 	"item.cosmosindustry.upgrade_fluid_capacity": "Fluid Capacity Upgrade",
 	"item.cosmosindustry.upgrade_fluid_efficiency": "Fluid Efficiency Upgrade",
 	
-	"item.cosmosindustry.rubber": "Rubber",
+	"item.cosmosindustry.rubber_raw": "Raw Rubber",
+	"item.cosmosindustry.rubber": "Processed Rubber",
 	"item.cosmosindustry.rubber_insulation": "Rubber Insulation",
 	"item.cosmosindustry.steel_rod": "Steel Rod",
 	"item.cosmosindustry.tool_rod": "Tool Rod",
+	
+	"item.cosmosindustry.solar_module": "Solar Module",
+	
+	"item.cosmosindustry.energy_cell": "Energy Cell",
+	"item.cosmosindustry.energized_redstone_bucket": "Energized Redstone Bucket",
+	"item.cosmosindustry.coolant_bucket": "Coolant Bucket",
 	
 	"item.cosmosindustry.machine_wrench": "Machine Wrench",
 	"item.cosmosindustry.machine_hammer": "Machine Hammer",
@@ -125,8 +146,14 @@
 	"cosmosindustry.gui.grinder": "Grinder",
 	"cosmosindustry.gui.compactor": "Compactor",
 	"cosmosindustry.gui.separator": "Separator",
+	"cosmosindustry.gui.ore_plant": "Ore Plant",
+	"cosmosindustry.gui.fluid_crafter": "Fluid Crafter",
 	"cosmosindustry.gui.laser_cutter": "Laser Cutter",
 	"cosmosindustry.gui.charger": "Charger",
+	
+	"cosmosindustry.gui.solarpanel": "Solar Panel Generator",
+	"cosmosindustry.gui.solidfuel": "Solid Fuel Generator",
+	"cosmosindustry.gui.liquidfuel": "Liquid Fuel Generator",
 	
 	"cosmosindustry.gui.synthesiser": "Synthesiser",
 	"cosmosindustry.gui.synthesiser.jei.one": "The Synthesiser is an in-world",
@@ -142,9 +169,22 @@
 	"cosmosindustry.gui.capacitor_surge": "Surge Capacitor",
 	"cosmosindustry.gui.capacitor_creative": "Creative Capacitor",
 	
+	"cosmosindustry.gui.fluidtank": "Fluid Tank",
+	"cosmosindustry.gui.fluidtank_surge": "Surge Fluid Tank",
+	"cosmosindustry.gui.fluidtank_creative": "Creative Fluid Tank",
+	
 	"cosmosindustry.gui.config.name": "Cosmos Industry Config",
 	"cosmosindustry.gui.done": "Done",
 	"cosmosindustry.gui.config.messages": "Debug Messages",
+	
+	"cosmosindustry.gui.button.tank_clear": "Shift-Click to Empty the Fluid Tank.",
+	"cosmosindustry.gui.button.tank_clear_shift": "Warning! This cannot be undone.",
+	
+	"cosmosindustry.gui.button.plant_mode": "Ore Plant Operation Mode",
+	"cosmosindustry.gui.button.plant_mode_info": "Current Mode: ",
+	
+	"cosmosindustry.gui.fluid_bar.pre": "Fluid Stored: ",
+	"cosmosindustry.gui.fluid_bar.suff": " mB.",
 	
 	"cosmosindustry.channel.status.cycle_side": "Side Cycled: ",
 	
@@ -152,6 +192,14 @@
 	"cosmosindustry.integration.jei.grinder_category": "Grinding",
 	"cosmosindustry.integration.jei.separator_category": "Separating",
 	"cosmosindustry.integration.jei.compactor_category": "Compacting",
-	"cosmosindustry.integration.jei.synthesiser_category": "Synthesising"
+	"cosmosindustry.integration.jei.laser_cutter_category": "Lasering",
+	"cosmosindustry.integration.jei.ore_plant_category": "Ore Plant",
+	"cosmosindustry.integration.jei.fluid_crafter_category": "Fluid Crafter",
+	"cosmosindustry.integration.jei.synthesiser_category": "Synthesising",
 	
+	"cosmosindustry.ore_plant.cleaning": "Cleaning",
+	"cosmosindustry.ore_plant.refining": "Refining",
+	
+	"cosmosindustry.fluid_crafter.infusing": "Infusing",
+	"cosmosindustry.fluid_crafter.extracting": "Extracting"
 }

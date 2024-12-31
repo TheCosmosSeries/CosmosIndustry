@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:diamond_dust"
+	},
+	"result": {
+		"id": "minecraft:diamond"
+	},
+	"experience": 0.35,
+	"cookingtime": 400
+}

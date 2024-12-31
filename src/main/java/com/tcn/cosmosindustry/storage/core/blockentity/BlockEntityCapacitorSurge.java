@@ -1,9 +1,10 @@
 package com.tcn.cosmosindustry.storage.core.blockentity;
 
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.STORAGE;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.IndustryReference;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.storage.client.container.ContainerCapacitorSurge;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
 import net.minecraft.core.BlockPos;
@@ -17,12 +18,12 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BlockEntityCapacitorSurge extends AbstractBlockEntityCapacitor {
 
 	public BlockEntityCapacitorSurge(BlockPos posIn, BlockState stateIn) {
-		super(ModRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR_SURGE.get(), posIn, stateIn, STORAGE.ENERGY_SURGE, EnumIndustryTier.SURGE);
+		super(IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CAPACITOR_SURGE.get(), posIn, stateIn, IndustryReference.Resource.Storage.ENERGY_SURGE, EnumIndustryTier.SURGE);
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return ComponentHelper.title("cosmosindustry.gui.capacitor_surge");
+		return ComponentHelper.style(ComponentColour.ORANGE, "", "cosmosindustry.gui.capacitor_surge");
 	}
 	
 	@Override

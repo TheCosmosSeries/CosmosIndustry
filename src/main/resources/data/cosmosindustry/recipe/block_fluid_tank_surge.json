@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" T ",
+		"TCT",
+		" T "
+	],
+	"key": {
+		"T": {
+			"item": "cosmosindustry:block_fluid_tank"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit_advanced"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_fluid_tank_surge"
+	}
+}

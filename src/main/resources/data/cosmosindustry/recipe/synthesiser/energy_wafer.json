@@ -1,0 +1,28 @@
+{
+	"type": "cosmosindustry:synthesising",
+	"focus": {
+		"item": "cosmosindustry:silicon_wafer"
+	},
+	"inputs": [
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:energy_wafer",
+		"count": 4
+	},
+	"processTime": 100,
+	"recipeColour": {
+		"index": 14
+	}
+}

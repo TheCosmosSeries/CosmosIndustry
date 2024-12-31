@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"WSW",
+		"FCF"
+	],
+	"key": {
+		"F": {
+			"item": "minecraft:furnace"
+		},
+		"S": {
+			"item": "cosmosindustry:block_generator_structure"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_solid_fuel"
+	}
+}

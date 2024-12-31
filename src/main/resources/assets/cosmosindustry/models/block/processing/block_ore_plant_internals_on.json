@@ -1,0 +1,52 @@
+{
+    "parent": "block/block",
+    "display": {
+        "gui": {
+            "rotation": [30,135,0],
+            "translation": [0,0,0],
+            "scale":[0.625,0.625,0.625]
+        },
+        "fixed": {
+            "rotation": [0,0,0],
+            "translation": [0,0,0],
+            "scale":[0.5,0.5,0.5]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        }
+	},
+	"textures": {
+		"particle": "cosmosindustry:block/processing/ore_plant/internals_on",
+		"internal": "cosmosindustry:block/processing/ore_plant/internals_on"
+	},
+	"elements": [
+		{
+            "from": [5,6,1],
+            "to": [11,7,7],
+            "faces": {
+                "up": {
+                    "uv": [0,0,6,6],
+                    "texture": "#internal"
+                },
+                 "west": {
+                    "uv": [0,7,6,8],
+                    "texture": "#internal"
+                },
+                "east": {
+                    "uv": [0,7,6,8],
+                    "texture": "#internal"
+                },
+                "north": {
+                    "uv": [0,7,6,8],
+                    "texture": "#internal"
+                },
+                "south": {
+                    "uv": [0,7,6,8],
+                    "texture": "#internal"
+                }
+            }
+        }
+	]
+}

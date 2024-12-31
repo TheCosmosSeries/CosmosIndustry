@@ -12,8 +12,8 @@ import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumRenderType;
 import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelSided;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelType.IChannelEnergy;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelType.IChannelEnergy;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
@@ -37,7 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
-abstract public class AbstractBlockEntityItemChannel extends BlockEntity implements IBlockInteract, IBlockEntityChannelSided, IChannelEnergy, IEnergyEntity {
+abstract public class AbstractBlockEntityItemChannel extends BlockEntity implements IBlockInteract, IBEChannelSided, IChannelEnergy, IEnergyEntity {
 	private EnumChannelSideState[] SIDE_STATE_ARRAY = EnumChannelSideState.getStandardArray();
 	
 	private int energy_stored = 0;

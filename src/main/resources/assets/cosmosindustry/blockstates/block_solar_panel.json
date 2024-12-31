@@ -1,0 +1,25 @@
+{
+	"multipart": [ 
+		{	"when": { "AND": [ { "east": "false", "north": "false", "south": "false", "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/base" } },
+		
+		{	"when": { "AND": [ { "east": "false", "north": "true",  "south": "false", "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/single" } },
+		{	"when": { "AND": [ { "east": "false", "north": "false", "south": "true",  "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/single", "y": 180 } },
+		{	"when": { "AND": [ { "east": "true",  "north": "false", "south": "false", "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/single", "y":  90 } },
+		{	"when": { "AND": [ { "east": "false", "north": "false", "south": "false", "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/single", "y": -90 } },
+		
+        {   "when": { "AND": [ { "east": "true",  "north": "false", "south": "false", "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/double", "y": 90 } },
+        {   "when": { "AND": [ { "east": "false", "north": "true",  "south": "true",  "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/double" } },
+        
+        {   "when": { "AND": [ { "east": "true",  "north": "true",  "south": "false", "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/double_angle" } },
+        {   "when": { "AND": [ { "east": "true",  "north": "false", "south": "true",  "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/double_angle", "y": 90 } },
+        {   "when": { "AND": [ { "east": "false", "north": "true",  "south": "false", "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/double_angle", "y": -90 } },
+        {   "when": { "AND": [ { "east": "false", "north": "false", "south": "true",  "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/double_angle", "y": 180 } },
+        
+        {   "when": { "AND": [ { "east": "true",  "north": "true",  "south": "true",  "west": "false" } ] }, "apply": { "model": "cosmosindustry:block/production/solar/triple", "y": 90 } },
+        {   "when": { "AND": [ { "east": "true",  "north": "false", "south": "true",  "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/triple", "y": 180 } },
+        {   "when": { "AND": [ { "east": "true",  "north": "true",  "south": "false", "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/triple" } },
+        {   "when": { "AND": [ { "east": "false", "north": "true",  "south": "true",  "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/triple", "y": -90 } },
+
+		{	"when": { "AND": [ { "east": "true",  "north": "true",  "south": "true",  "west": "true"  } ] }, "apply": { "model": "cosmosindustry:block/production/solar/quad" } }
+	]
+}

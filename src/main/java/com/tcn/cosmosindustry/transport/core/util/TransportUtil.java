@@ -1,10 +1,10 @@
 package com.tcn.cosmosindustry.transport.core.util;
 
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.TRANSPORT;
+import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
 import com.tcn.cosmoslibrary.common.enums.EnumConnectionType;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelSided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
 
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class TransportUtil {
 	
-	public static EnumChannelSideState getStateForConnection(Direction facing, BlockPos pos, Level levelIn, IBlockEntityChannelSided tile) {
+	public static EnumChannelSideState getStateForConnection(Direction facing, BlockPos pos, Level levelIn, IBEChannelSided tile) {
 		EnumConnectionType type = tile.getChannelType();
 		EnumIndustryTier tier = tile.getChannelTier();
 		
@@ -34,7 +34,7 @@ public class TransportUtil {
 		} 
 		
 		else if (entityOffset != null) {
-			if (entityOffset instanceof IBlockEntityChannelSided channelOffset) {
+			if (entityOffset instanceof IBEChannelSided channelOffset) {
 				EnumConnectionType typeOffset = channelOffset.getChannelType();
 				EnumIndustryTier tierOffset = channelOffset.getChannelTier();
 				
@@ -58,9 +58,9 @@ public class TransportUtil {
 			}
 
 			else if (tile.getChannelType().equals(EnumConnectionType.ENERGY)) {
-				Object object = levelIn.getCapability(Capabilities.EnergyStorage.BLOCK, posOffset, facing);
+				Object object = levelIn.getCapability(Capabilities.EnergyStorage.BLOCK, posOffset, facing.getOpposite());
 				
-				if ( object != null) {
+				if (object != null) {
 					if (object instanceof IEnergyStorage storage) {
 						if (storage.canReceive() || storage.canExtract()) {
 							if (tile.getSide(facing).equals(EnumChannelSideState.INTERFACE_NO_CONN)) {
@@ -80,7 +80,7 @@ public class TransportUtil {
 			} else if (tile.getChannelType().equals(EnumConnectionType.FLUID)) {
 				if (tile instanceof IFluidHandler fluidHandler) {
 					if (entityOffset != null) {
-						Object object = levelIn.getCapability(Capabilities.FluidHandler.BLOCK, posOffset, facing);
+						Object object = levelIn.getCapability(Capabilities.FluidHandler.BLOCK, posOffset, facing.getOpposite());
 						
 						if ( object != null) {
 							if (object instanceof IFluidHandler fluid) {
@@ -111,7 +111,7 @@ public class TransportUtil {
 	
 	public static Direction getDirectionFromHit(BlockPos pos, BlockHitResult hit) {
 		for (Direction dir : Direction.values()) {
-			if (CosmosUtil.isInBounds(TRANSPORT.BOUNDING_BOXES_INTERFACE[dir.get3DDataValue()], pos, hit.getLocation())) {
+			if (CosmosUtil.isInBounds(IndustryReference.Resource.Transport.BOUNDING_BOXES_INTERFACE[dir.get3DDataValue()], pos, hit.getLocation())) {
 				return dir;
 			}
 		}

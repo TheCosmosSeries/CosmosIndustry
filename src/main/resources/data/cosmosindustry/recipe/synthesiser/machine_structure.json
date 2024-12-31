@@ -1,0 +1,27 @@
+{
+	"type": "cosmosindustry:synthesising",
+	"focus": {
+		"item": "cosmosindustry:block_steel"
+	},
+	"inputs": [
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:iron_plate"
+		},
+		{
+			"item": "cosmosindustry:iron_plate"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:block_structure"
+	},
+	"processTime": 200,
+	"recipeColour": {
+		"index": 8
+	}
+}

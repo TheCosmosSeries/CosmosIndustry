@@ -1,0 +1,14 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "minecraft:acacia_log"
+	},
+	"result": {
+		"id": "minecraft:acacia_planks",
+		"count": 5
+	},
+	"secondaryResult": {
+		"id": "cosmosindustry:bark",
+		"count": 2
+	}
+}

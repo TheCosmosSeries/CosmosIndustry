@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.transport.core.energy.block;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.transport.core.energy.blockentity.BlockEntityChannelCreativeEnergy;
 
 import net.minecraft.core.BlockPos;
@@ -27,7 +27,7 @@ public class BlockChannelCreativeEnergy extends AbstractBlockEnergyChannel imple
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModRegistrationManager.BLOCK_ENTITY_TYPE_CHANNEL_ENERGY_CREATIVE.get());
+		return createTicker(levelIn, entityTypeIn, IndustryRegistrationManager.BLOCK_ENTITY_TYPE_CHANNEL_ENERGY_CREATIVE.get());
 	}
 
 	@Nullable

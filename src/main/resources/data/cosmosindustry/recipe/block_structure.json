@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"PGP",
+		"ESE",
+		"PCP"
+	],
+	"key": {
+		"G": {
+			"item": "minecraft:glass_pane"
+		},
+		"P": {
+			"item": "cosmosindustry:iron_plate"
+		},
+		"S": {
+			"item": "cosmosindustry:block_steel"
+		},
+		"E": {
+			"item": "cosmosindustry:energy_ingot"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_structure"
+	}
+}

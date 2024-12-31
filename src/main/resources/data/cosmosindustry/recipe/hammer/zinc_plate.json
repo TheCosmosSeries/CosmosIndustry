@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"H",
+		"I"
+	],
+	"key": {
+		"H": {
+			"item": "cosmosindustry:machine_hammer"
+		},
+		"I": {
+			"item": "cosmosindustry:zinc_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:zinc_plate"
+	}
+}

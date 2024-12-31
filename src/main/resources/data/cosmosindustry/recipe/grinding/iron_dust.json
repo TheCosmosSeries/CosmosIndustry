@@ -1,0 +1,9 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "minecraft:iron_ingot"
+	},
+	"result": {
+		"id": "cosmosindustry:iron_dust"
+	}
+}

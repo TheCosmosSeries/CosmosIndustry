@@ -1,6 +1,6 @@
 package com.tcn.cosmosindustry.processing.client.container;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.client.container.slot.SlotEnergyItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotUpgrade;
@@ -24,7 +24,7 @@ public class ContainerCharger extends CosmosContainerMenuBlockEntity {
 	}
 
 	public ContainerCharger(int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModRegistrationManager.CONTAINER_TYPE_CHARGER.get(), indexIn, playerInventoryIn, accessIn, posIn);
+		super(IndustryRegistrationManager.CONTAINER_TYPE_CHARGER.get(), indexIn, playerInventoryIn, accessIn, posIn);
 
 		/**@EnergyItem Slots*/
 		this.addSlot(new SlotEnergyItem(contentsIn, 0, 78,  17));
@@ -40,9 +40,9 @@ public class ContainerCharger extends CosmosContainerMenuBlockEntity {
 		this.addSlot(new SlotEnergyItem(contentsIn, 8, 122, 61));
 		
 		/**@Upgrades Slots*/
-		this.addSlot(new SlotUpgrade(contentsIn, 9, 34, 17, ModRegistrationManager.UPGRADE_SPEED.get()));
-		this.addSlot(new SlotUpgrade(contentsIn, 10, 34, 39, ModRegistrationManager.UPGRADE_CAPACITY.get()));
-		this.addSlot(new SlotUpgrade(contentsIn, 11, 34, 61, ModRegistrationManager.UPGRADE_EFFICIENCY.get()));
+		this.addSlot(new SlotUpgrade(contentsIn, 9, 34, 17, IndustryRegistrationManager.UPGRADE_SPEED.get()));
+		this.addSlot(new SlotUpgrade(contentsIn, 10, 34, 39, IndustryRegistrationManager.UPGRADE_CAPACITY.get()));
+		this.addSlot(new SlotUpgrade(contentsIn, 11, 34, 61, IndustryRegistrationManager.UPGRADE_EFFICIENCY.get()));
 		
 		/*
 		this.addSlotToContainer(new Slot(invPlayer, 39, 173, 6));
@@ -87,7 +87,7 @@ public class ContainerCharger extends CosmosContainerMenuBlockEntity {
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModRegistrationManager.BLOCK_CHARGER.get());
+		return stillValid(this.access, playerIn, IndustryRegistrationManager.BLOCK_CHARGER.get());
 	}
 	
 	@Override

@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"values": [
+		"cosmosindustry:block_ore_tin",
+		"cosmosindustry:block_ore_tin_deepslate",
+		"cosmosindustry:block_ore_silver",
+		"cosmosindustry:block_ore_silver_deepslate",
+		"cosmosindustry:block_ore_zinc",
+		"cosmosindustry:block_ore_zinc_deepslate"
+	]
+}

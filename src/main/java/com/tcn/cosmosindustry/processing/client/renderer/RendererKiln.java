@@ -4,7 +4,7 @@ import org.joml.Quaternionf;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.core.block.BlockKiln;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityKiln;
 
@@ -42,7 +42,7 @@ public class RendererKiln implements BlockEntityRenderer<BlockEntityKiln> {
 		Level level = blockEntity.getLevel();
 		BlockState state = blockEntity.getBlockState();
 		
-		if (state.getBlock().equals(ModRegistrationManager.BLOCK_KILN.get())) {
+		if (state.getBlock().equals(IndustryRegistrationManager.BLOCK_KILN.get())) {
 			Direction dir = state.getValue(BlockKiln.FACING);
 			
 			if (blockEntity.getProcessTime(0) > (blockEntity.getProcessSpeed() - 10)) {

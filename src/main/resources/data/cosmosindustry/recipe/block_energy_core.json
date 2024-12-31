@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"WWW",
+		"WWW",
+		"WWW"
+	],
+	"key": {
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_energy_core"
+	}
+}

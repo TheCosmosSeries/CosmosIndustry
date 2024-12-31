@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"CC",
+		"CT"
+	],
+	"key": {
+		"C": {
+			"item": "cosmosindustry:copper_dust"
+		},
+		"T": {
+			"item": "cosmosindustry:tin_dust"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:bronze_dust",
+		"count": 4
+	}
+}

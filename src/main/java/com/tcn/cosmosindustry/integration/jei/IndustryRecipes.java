@@ -33,7 +33,6 @@ public class IndustryRecipes {
 	}
 	
 	private static <C extends RecipeInput, T extends Recipe<C>> Collection<RecipeHolder<T>> getRecipes(RecipeManager recipeManager, RecipeType<T> recipeType) {
-		List<RecipeHolder<T>> recipes = recipeManager.getAllRecipesFor(recipeType);
-		return (Collection<RecipeHolder<T>>) recipes;
+		return recipeManager.getAllRecipesFor(recipeType);
 	}
 }

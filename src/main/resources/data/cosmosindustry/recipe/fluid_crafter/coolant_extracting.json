@@ -1,0 +1,13 @@
+{
+	"type": "cosmosindustry:fluid_crafter",
+	"input": {
+		"item": "minecraft:ice"
+	},
+	"fluid":{
+		"id": "cosmosindustry:coolant",
+		"amount": 1000
+	},
+	"mode": {
+		"index": 1
+	}
+}

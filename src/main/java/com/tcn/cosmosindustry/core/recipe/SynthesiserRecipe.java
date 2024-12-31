@@ -7,8 +7,8 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 
 import net.minecraft.core.HolderLookup;
@@ -29,8 +29,7 @@ public class SynthesiserRecipe implements Recipe<RecipeInput> {
 	public final int processTime;
 	public final ComponentColour colour;
 
-	public SynthesiserRecipe(Ingredient focusIn, List<Ingredient> inputsIn, ItemStack resultIn, int processTimeIn,
-			ComponentColour colourIn) {
+	public SynthesiserRecipe(Ingredient focusIn, List<Ingredient> inputsIn, ItemStack resultIn, int processTimeIn, ComponentColour colourIn) {
 		this.focus = focusIn;
 		this.inputs = inputsIn;
 		this.result = resultIn;
@@ -105,17 +104,17 @@ public class SynthesiserRecipe implements Recipe<RecipeInput> {
 
 	@Override
 	public ItemStack getToastSymbol() {
-		return new ItemStack(ModRegistrationManager.BLOCK_SYNTHESISER.get());
+		return new ItemStack(IndustryRegistrationManager.BLOCK_SYNTHESISER.get());
 	}
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModRecipeManager.RECIPE_SERIALIZER_SYNTHESISING.get();
+		return IndustryRecipeManager.RECIPE_SERIALIZER_SYNTHESISING.get();
 	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return ModRecipeManager.RECIPE_TYPE_SYNTHESISING.get();
+		return IndustryRecipeManager.RECIPE_TYPE_SYNTHESISING.get();
 	}
 
 	@Override

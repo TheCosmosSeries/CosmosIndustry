@@ -1,6 +1,6 @@
 package com.tcn.cosmosindustry.processing.client.container;
 
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.energy.item.CosmosEnergyItem;
 
@@ -22,7 +22,7 @@ public class ContainerSynthesiserStand extends CosmosContainerMenuBlockEntity {
 	}
 
 	public ContainerSynthesiserStand(int indexIn, Inventory playerInventoryIn, Container tile, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModRegistrationManager.CONTAINER_TYPE_SYNTHESISER_STAND.get(), indexIn, playerInventoryIn, accessIn, posIn);
+		super(IndustryRegistrationManager.CONTAINER_TYPE_SYNTHESISER_STAND.get(), indexIn, playerInventoryIn, accessIn, posIn);
 		
 		/**@Inputslot / @OutputSlot*/
 		this.addSlot(new Slot(tile, 0, 80, 60));
@@ -64,7 +64,7 @@ public class ContainerSynthesiserStand extends CosmosContainerMenuBlockEntity {
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModRegistrationManager.BLOCK_SYNTHESISER_STAND.get());
+		return stillValid(this.access, playerIn, IndustryRegistrationManager.BLOCK_SYNTHESISER_STAND.get());
 	}
 
 	@Override

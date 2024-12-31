@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"RRR",
+		"EPE",
+		"RRR"
+	],
+	"key": {
+		"E": {
+			"item": "cosmosindustry:energy_ingot"
+		},
+		"P": {
+			"item": "cosmosindustry:iron_plate"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_energy_channel",
+		"count": 6
+	}
+}

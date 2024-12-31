@@ -3,12 +3,11 @@ package com.tcn.cosmosindustry.processing.client.screen;
 import java.util.Arrays;
 
 import com.ibm.icu.text.DecimalFormat;
-import com.tcn.cosmosindustry.IndustryReference.RESOURCE.PROCESSING;
+import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerCharger;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityCharger;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.IS_HOVERING;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntity;
+import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -20,13 +19,12 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
-public class ScreenCharger extends CosmosScreenBlockEntity<ContainerCharger> {
+public class ScreenCharger extends CosmosScreenUIModeBE<ContainerCharger> {
 
 	private CosmosButtonWithType increaseButton; private int[] IBI = new int[] { 33, 18 };
 	private CosmosButtonWithType decreaseButton; private int[] DBI = new int[] { 33, 48 };
@@ -35,7 +33,11 @@ public class ScreenCharger extends CosmosScreenBlockEntity<ContainerCharger> {
 		super(containerIn, playerInventoryIn, titleIn);
 		
 		this.setImageDims(176, 177);
-		this.setTexture(PROCESSING.CHARGER_LOC_GUI);
+		this.setLight(IndustryReference.Resource.Processing.Gui.CHARGER_LIGHT);
+		this.setDark(IndustryReference.Resource.Processing.Gui.CHARGER_DARK);
+		this.setUIModeButtonIndex(164, 4);
+		this.setUIModeButtonSmall();
+		
 		this.setTitleLabelDims(28, 4);
 		this.setInventoryLabelDims(7, 84);
 	}
@@ -53,12 +55,9 @@ public class ScreenCharger extends CosmosScreenBlockEntity<ContainerCharger> {
 	@Override
 	protected void renderBg(GuiGraphics graphicsIn, float ticks, int mouseX, int mouseY) {
 		super.renderBg(graphicsIn, ticks, mouseX, mouseY);
-		BlockEntity entity = this.getBlockEntity();
 		
-		if (entity instanceof BlockEntityCharger) {
-			BlockEntityCharger tileEntity = (BlockEntityCharger) entity;
-			
-			CosmosUISystem.renderEnergyDisplay(graphicsIn, ComponentColour.RED, tileEntity, this.getScreenCoords(), 56, 17, 16, 60, false);
+		if (this.getBlockEntity() instanceof BlockEntityCharger blockEntity) {
+			CosmosUISystem.Render.renderEnergyDisplay(graphicsIn, ComponentColour.RED, blockEntity, this.getScreenCoords(), 56, 17, 16, 60, false);
 		}
 	}
 	
@@ -66,23 +65,22 @@ public class ScreenCharger extends CosmosScreenBlockEntity<ContainerCharger> {
 	protected void addButtons() {
 		super.addButtons();
 	}
+
+	@Override
+	public void clickButton(Button button, boolean isLeftClick) {
+		super.clickButton(button, isLeftClick);
+	}
 	
 	@Override
-	protected void pushButton(Button button) {	}
-	
-	@Override
-	public void renderComponentHoverEffect(GuiGraphics graphicsIn, Style style, int mouseX, int mouseY) {
-		BlockEntity entity = this.getBlockEntity();
-		
-		if (entity instanceof BlockEntityCharger) {
-			BlockEntityCharger tileEntity = (BlockEntityCharger) entity;
-			
-			if (IS_HOVERING.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 56, this.getScreenCoords()[0] + 72, this.getScreenCoords()[1] + 17, this.getScreenCoords()[1] + 76)) {
+	public void renderStandardHoverEffect(GuiGraphics graphicsIn, Style style, int mouseX, int mouseY) {
+		if (this.getBlockEntity() instanceof BlockEntityCharger blockEntity) {
+			if (CosmosUISystem.Hovering.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 56, this.getScreenCoords()[0] + 72, this.getScreenCoords()[1] + 17, this.getScreenCoords()[1] + 76)) {
 				DecimalFormat formatter = new DecimalFormat("#,###,###,###");
-				String amount_string = formatter.format(tileEntity.getEnergyStored());
-				String capacity_string = formatter.format(tileEntity.getMaxEnergyStored());
+				String amount_string = formatter.format(blockEntity.getEnergyStored());
+				String capacity_string = formatter.format(blockEntity.getMaxEnergyStored());
 				
-				Component[] comp = new Component[] { ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
+				Component[] comp = new Component[] { 
+					ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.energy_bar.pre"),
 					ComponentHelper.style2(ComponentColour.RED, amount_string + " / " + capacity_string, "cosmoslibrary.gui.energy_bar.suff")
 				};
 				

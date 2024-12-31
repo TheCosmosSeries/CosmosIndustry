@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "cosmosindustry:block_silver"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:silver_ingot",
+		"count": 9
+	}
+}

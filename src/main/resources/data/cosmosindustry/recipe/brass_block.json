@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"III",
+		"III",
+		"III"
+	],
+	"key": {
+		"I": {
+			"item": "cosmosindustry:brass_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_brass"
+	}
+}

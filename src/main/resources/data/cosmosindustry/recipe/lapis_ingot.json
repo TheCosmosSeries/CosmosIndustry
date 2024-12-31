@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"LLL",
+		"LIL",
+		"LLL"
+	],
+	"key": {
+		"L": {
+			"item": "minecraft:lapis_lazuli"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:lapis_ingot",
+		"count": 4
+	}
+}

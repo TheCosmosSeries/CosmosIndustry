@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "cosmosindustry:copper_dust"
+		},
+		{
+			"item": "cosmosindustry:copper_dust"
+		},
+		{			
+			"item": "cosmosindustry:zinc_dust"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:brass_dust",
+		"count": 4
+	}
+}

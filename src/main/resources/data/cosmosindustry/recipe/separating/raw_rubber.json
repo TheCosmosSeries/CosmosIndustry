@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "cosmosindustry:bark"
+	},
+	"result": {
+		"id": "cosmosindustry:rubber_raw",
+		"count": 2
+	}
+}

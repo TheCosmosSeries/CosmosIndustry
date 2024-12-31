@@ -1,0 +1,14 @@
+{
+	"type": "cosmosindustry:grinding",
+	"input": {
+		"item": "minecraft:iron_ore"
+	},
+	"result": {
+		"id": "cosmosindustry:iron_dust",
+		"count": 3
+	},
+	"secondaryResult": {
+		"id": "cosmosindustry:stone_dust",
+		"count": 1
+	}
+}

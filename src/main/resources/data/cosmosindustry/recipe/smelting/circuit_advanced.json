@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:circuit_advanced_raw"
+	},
+	"result": {
+		"id": "cosmosindustry:circuit_advanced"
+	},
+	"experience": 0.35,
+	"cookingtime": 200
+}

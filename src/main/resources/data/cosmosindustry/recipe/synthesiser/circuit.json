@@ -1,0 +1,40 @@
+{
+	"type": "cosmosindustry:synthesising",
+	"focus": {
+		"item": "cosmosindustry:copper_plate"
+	},
+	"inputs": [
+		{
+			"item": "minecraft:copper_ingot"
+		},
+		{
+			"item": "minecraft:copper_ingot"
+		},
+		{
+			"item": "minecraft:iron_ingot"
+		},
+		{
+			"item": "minecraft:iron_ingot"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:energy_dust"
+		},
+		{
+			"item": "cosmosindustry:silicon_refined"
+		},
+		{
+			"item": "cosmosindustry:silicon_refined"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:circuit",
+		"count": 2
+	},
+	"processTime": 250,
+	"recipeColour": {
+		"index": 5
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "minecraft:oak_log"
+	},
+	"result": {
+		"id": "minecraft:oak_planks",
+		"count": 5
+	},
+	"secondaryResult": {
+		"id": "cosmosindustry:bark",
+		"count": 2
+	}
+}

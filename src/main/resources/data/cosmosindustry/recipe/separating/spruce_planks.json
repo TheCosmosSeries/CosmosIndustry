@@ -1,0 +1,14 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "minecraft:spruce_log"
+	},
+	"result": {
+		"id": "minecraft:spruce_planks",
+		"count": 5
+	},
+	"secondaryResult": {
+		"id": "cosmosindustry:bark",
+		"count": 2
+	}
+}

@@ -18,7 +18,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RendererCapacitor implements BlockEntityRenderer<AbstractBlockEntityCapacitor> {
 
-	private static final ResourceLocation TEXTURE = IndustryReference.RESOURCE.STORAGE.CAPACITOR_CONNECTION;
+	private static final ResourceLocation TEXTURE = IndustryReference.Resource.Storage.Render.CAPACITOR_CONNECTION;
 	private static final RenderType RENDER_TYPE = RenderType.entitySolid(TEXTURE);
 	
 	private ModelCapacitorConnection model;

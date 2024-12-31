@@ -1,0 +1,13 @@
+{
+	"type": "cosmosindustry:fluid_crafter",
+	"input": {
+		"item": "minecraft:dirt"
+	},
+	"fluid":{
+		"id": "minecraft:water",
+		"amount": 250
+	},
+	"mode": {
+		"index": 1
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "cosmosindustry:block_energy"
+		}
+	],
+	"result": {
+		"id": "cosmosindustry:energy_ingot",
+		"count": 9
+	}
+}

@@ -5,8 +5,8 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tcn.cosmosindustry.core.management.ModRecipeManager;
-import com.tcn.cosmosindustry.core.management.ModRegistrationManager;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -65,17 +65,17 @@ public class GrinderRecipe implements Recipe<RecipeInput> {
 
 	@Override
 	public ItemStack getToastSymbol() {
-		return new ItemStack(ModRegistrationManager.BLOCK_GRINDER.get());
+		return new ItemStack(IndustryRegistrationManager.BLOCK_GRINDER.get());
 	}
 	
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModRecipeManager.RECIPE_SERIALIZER_GRINDING.get();
+		return IndustryRecipeManager.RECIPE_SERIALIZER_GRINDING.get();
 	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return ModRecipeManager.RECIPE_TYPE_GRINDING.get();
+		return IndustryRecipeManager.RECIPE_TYPE_GRINDING.get();
 	}
 	
 	@Override

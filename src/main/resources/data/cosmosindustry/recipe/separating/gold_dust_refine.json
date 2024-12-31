@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:separating",
+	"input": {
+		"item": "cosmosindustry:gold_dust"
+	},
+	"result": {
+		"id": "cosmosindustry:gold_dust_refine",
+		"count": 2
+	}
+}

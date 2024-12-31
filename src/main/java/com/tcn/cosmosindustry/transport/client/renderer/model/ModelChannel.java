@@ -5,7 +5,7 @@ import java.util.function.Function;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
-import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityChannelSided;
+import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
@@ -179,7 +179,7 @@ public class ModelChannel extends Model {
 		//this.renderBase(poseStack, builder, combinedLightIn, combinedOverlayIn, colour);
 	}
 
-	public void renderBasedOnTile(IBlockEntityChannelSided tile, PoseStack poseStack, VertexConsumer channelBuilder, VertexConsumer shellBuilder, VertexConsumer interfaceBuilder, int combinedLightIn, int combinedOverlayIn, int colour) {
+	public void renderBasedOnTile(IBEChannelSided tile, PoseStack poseStack, VertexConsumer channelBuilder, VertexConsumer shellBuilder, VertexConsumer interfaceBuilder, int combinedLightIn, int combinedOverlayIn, int colour) {
 		if (tile.getStateForConnection(Direction.UP).equals(EnumChannelSideState.AIR) && tile.getStateForConnection(Direction.DOWN).equals(EnumChannelSideState.AIR)
 				&& tile.getStateForConnection(Direction.NORTH).equals(EnumChannelSideState.AIR) && tile.getStateForConnection(Direction.SOUTH).equals(EnumChannelSideState.AIR)
 				&& tile.getStateForConnection(Direction.EAST).equals(EnumChannelSideState.AIR) && tile.getStateForConnection(Direction.WEST).equals(EnumChannelSideState.AIR)) {

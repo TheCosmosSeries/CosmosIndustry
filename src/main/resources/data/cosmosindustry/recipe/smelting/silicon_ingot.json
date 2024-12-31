@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "cosmosindustry:silicon_refined"
+	},
+	"result": {
+		"id": "cosmosindustry:silicon_ingot"
+	},
+	"experience": 0.35,
+	"cookingtime": 200
+}
