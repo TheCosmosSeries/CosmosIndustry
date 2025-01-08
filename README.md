@@ -5,7 +5,7 @@
 # Cosmos Industry
 A tech mod that adds various features to Minecraft.
 
-Currently in development for **1.21.1** and **NeoForge**.
+Currently available for **1.21.1** and **NeoForge**.
 
 ### Description
 Cosmos Indsutry is a technology-based mod that adds a variety of ores, machines and tools to Minecraft. Build machines to aid in higher yeild ore processing and construct intricate Energy networks to power your machines!
