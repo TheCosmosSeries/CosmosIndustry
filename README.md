@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/badge/VERSION-1.21.1-FF5F1F?style=for-the-badge) ![Version](https://img.shields.io/badge/Loader-NeoForge-ffa835?style=for-the-badge) ![Repo Size](https://img.shields.io/github/repo-size/TheCosmosSeries/CosmosIndustry?label=REPO%20SIZE&style=for-the-badge) ![Open Issues](https://img.shields.io/github/issues/TheCosmosSeries/CosmosIndustry?style=for-the-badge) ![Closed Issues](https://img.shields.io/github/issues-closed/TheCosmosSeries/CosmosIndustry?color=green&style=for-the-badge)
+![Version](https://img.shields.io/badge/VERSION-1.21.1-3eff8e?style=for-the-badge) ![Version](https://img.shields.io/badge/Loader-NeoForge-ffa835?style=for-the-badge) ![Repo Size](https://img.shields.io/github/repo-size/TheCosmosSeries/CosmosIndustry?label=REPO%20SIZE&style=for-the-badge) ![Open Issues](https://img.shields.io/github/issues/TheCosmosSeries/CosmosIndustry?style=for-the-badge) ![Closed Issues](https://img.shields.io/github/issues-closed/TheCosmosSeries/CosmosIndustry?color=green&style=for-the-badge)
 
 ![cosmos-industry-title](https://github.com/user-attachments/assets/5beb709a-59a5-4c25-9f5e-4cdb6c8ceadb)
 
