@@ -1,5 +1,5 @@
 {
-    "parent": "block/block",
+    "parent": "cosmosindustry:block/storage/capacitor/side_raw",
     "display": {
         "gui": {
             "rotation": [ 30, 135, 0 ],
@@ -13,24 +13,7 @@
         }
     },
     "textures": {
-        "particle": "cosmosindustry:block/storage/capacitor/creative/disabled",
         "face": "cosmosindustry:block/storage/capacitor/creative/disabled",
-        "face_corner": "cosmosindustry:block/storage/capacitor/creative/normal_cutout"
-    },
-    "elements": [
-        {
-            "from": [0, 0, 0],
-            "to": [16, 16, 2.95],
-            "faces": {
-                "north": {
-                    "uv": [0, 0, 16, 16],
-                    "texture": "#face"
-                },
-                "south": {
-                    "uv": [0, 0, 16, 16],
-                    "texture": "#face_corner"
-                }
-            }
-        }
-    ]
+        "face_corner": "cosmosindustry:block/storage/capacitor/normal_cutout"
+    }
 }

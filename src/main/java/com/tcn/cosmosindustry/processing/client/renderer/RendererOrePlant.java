@@ -67,9 +67,7 @@ public class RendererOrePlant implements BlockEntityRenderer<BlockEntityOrePlant
 			if (state.getBlock().equals(IndustryRegistrationManager.BLOCK_ORE_PLANT.get())) {
 				Direction dir = state.getValue(BlockOrePlant.FACING);
 				
-				FluidTank fluidTank = blockEntity.getFluidTank();
-	
-				FluidStack fluid = fluidTank.getFluid();
+				FluidStack fluid = blockEntity.getFluidTank().getFluid();
 				if (fluid.isEmpty()) {
 					return;
 				}
@@ -79,28 +77,19 @@ public class RendererOrePlant implements BlockEntityRenderer<BlockEntityOrePlant
 					return;
 				}
 				
-				IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(renderFluid.defaultFluidState());
-				TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(props.getStillTexture());
-				VertexConsumer builderA = buffer.getBuffer(RenderType.translucent());
-	
+				TextureAtlasSprite sprite = CosmosRendererHelper.getFluidTexture(renderFluid);  //Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(ext.getStillTexture());
+				float[] colours = CosmosRendererHelper.getFluidColours(renderFluid);
+				
 				float[] topValues    = new float[] { 1.10F/16F, 9.10F/16F, 14.9F/16F };
 				float[] sideValuesNS = new float[] { 1.10F/16F, 9.10F/16F, 14.9F/16F };
 				float[] sideValuesEW = new float[] { 1.10F/16F, 6.90F/16F, 9.10F/16F, 14.9F/16F };
 				
-				float[] height = new float[] { 6/16F, 14.9F/16F };
+				float[] height = new float[] { 6.0F/16F, 14.9F/16F };
 				float fillLevel = blockEntity.getFluidFillLevel() / 9F;
 				
 				height[1] = (float) Mth.map(fillLevel, 0, 1, 6/16F, 14.9/16F);
-				
 				float mappedHeight = CosmosRendererHelper.getMappedTextureHeight(sprite, fillLevel * 16);
 				
-				int color = props.getTintColor();
-				
-				float a = 1.0F;
-				float r = (color >> 16 & 0xFF) / 255.0F;
-				float g = (color >> 8 & 0xFF) / 255.0F;
-				float b = (color & 0xFF) / 255.0F;
-
 				poseStackIn.pushPose();
 				if (dir.equals(Direction.SOUTH)) {
 					poseStackIn.mulPose(Axis.YP.rotationDegrees(180));
@@ -113,50 +102,51 @@ public class RendererOrePlant implements BlockEntityRenderer<BlockEntityOrePlant
 					poseStackIn.translate(0, 0, -1F);
 				}
 				
+				VertexConsumer builderA = buffer.getBuffer(RenderType.translucent());
 				poseStackIn.pushPose();
 //				poseStackIn.translate(0,1,0);
 	
 				// Top Face
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[2], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[2], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[1], sprite.getU1(), sprite.getV0(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[1], sprite.getU0(), sprite.getV0(), r, g, b, a);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[2], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[2], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[1], sprite.getU1(), sprite.getV0(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[1], sprite.getU0(), sprite.getV0(), colours);
 				
 				// Bottom Face of Top
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[2], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[2], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[1], sprite.getU1(), sprite.getV0(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[1], sprite.getU0(), sprite.getV0(), r, g, b, a);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[2], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[2], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[0], height[1], topValues[1], sprite.getU1(), sprite.getV0(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, topValues[2], height[1], topValues[1], sprite.getU0(), sprite.getV0(), colours);
 				
 				
 				// Front Faces [NORTH - SOUTH]
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[0], sideValuesNS[1], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[0], sideValuesNS[1], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[1], sideValuesNS[1], sprite.getU1(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[1], sideValuesNS[1], sprite.getU0(), sprite.getV0() + mappedHeight, r, g, b, a);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[0], sideValuesNS[1], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[0], sideValuesNS[1], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[1], sideValuesNS[1], sprite.getU1(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[1], sideValuesNS[1], sprite.getU0(), sprite.getV0() + mappedHeight, colours);
 	
 				// Back Faces
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[1], sideValuesNS[1], sprite.getU0(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[1], sideValuesNS[1], sprite.getU1(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[0], sideValuesNS[1], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[0], sideValuesNS[1], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[0], sideValuesNS[2], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[0], sideValuesNS[2], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[1], sideValuesNS[2], sprite.getU1(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[1], sideValuesNS[2], sprite.getU0(), sprite.getV0() + mappedHeight, r, g, b, a);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[1], sideValuesNS[1], sprite.getU0(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[1], sideValuesNS[1], sprite.getU1(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[0], sideValuesNS[1], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[0], sideValuesNS[1], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[0], sideValuesNS[2], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[0], sideValuesNS[2], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[0], height[1], sideValuesNS[2], sprite.getU1(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesNS[2], height[1], sideValuesNS[2], sprite.getU0(), sprite.getV0() + mappedHeight, colours);
 	
 				poseStackIn.mulPose(Axis.YP.rotationDegrees(90));
 				poseStackIn.translate(-1f, 0, 0);
 				
 				// Back Faces
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[1], sideValuesEW[0], sprite.getU0(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[1], sideValuesEW[0], sprite.getU1(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[0], sideValuesEW[0], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[0], sideValuesEW[0], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[0], sideValuesEW[3], sprite.getU0(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[0], sideValuesEW[3], sprite.getU1(), sprite.getV1(), r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[1], sideValuesEW[3], sprite.getU1(), sprite.getV0() + mappedHeight, r, g, b, a);
-				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[1], sideValuesEW[3], sprite.getU0(), sprite.getV0() + mappedHeight, r, g, b, a);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[1], sideValuesEW[0], sprite.getU0(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[1], sideValuesEW[0], sprite.getU1(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[0], sideValuesEW[0], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[0], sideValuesEW[0], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[0], sideValuesEW[3], sprite.getU0(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[0], sideValuesEW[3], sprite.getU1(), sprite.getV1(), colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[0], height[1], sideValuesEW[3], sprite.getU1(), sprite.getV0() + mappedHeight, colours);
+				CosmosRendererHelper.addF(builderA, poseStackIn, sideValuesEW[1], height[1], sideValuesEW[3], sprite.getU0(), sprite.getV0() + mappedHeight, colours);
 	
 				poseStackIn.popPose();
 				poseStackIn.popPose();

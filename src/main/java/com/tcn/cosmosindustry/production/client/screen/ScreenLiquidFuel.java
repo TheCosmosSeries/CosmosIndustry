@@ -8,7 +8,7 @@ import com.tcn.cosmosindustry.core.network.packet.PacketEmptyTank;
 import com.tcn.cosmosindustry.production.client.container.ContainerLiquidFuel;
 import com.tcn.cosmosindustry.production.core.blockentity.BlockEntityLiquidFuel;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType.TYPE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -28,7 +28,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("removal")
-public class ScreenLiquidFuel extends CosmosScreenUIModeBE<ContainerLiquidFuel> {
+public class ScreenLiquidFuel extends CosmosScreenBlockEntityUI<ContainerLiquidFuel> {
 
 	private CosmosButtonWithType buttonTankClear; private int[] TBCI = new int[] { 126, 60, 18 };
 	

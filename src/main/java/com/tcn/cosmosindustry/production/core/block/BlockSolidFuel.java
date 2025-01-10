@@ -75,15 +75,21 @@ public class BlockSolidFuel extends CosmosBlockRemovableNBT implements EntityBlo
 	}
 	
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		
-		if (tileEntity instanceof BlockEntitySolidFuel blockEntity) {
-			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySolidFuel blockEntity) {
+			return blockEntity.useItemOn(stackIn, state, levelIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySolidFuel blockEntity) {
+			blockEntity.playerWillDestroy(levelIn, pos, state, player);
+		}
+		return super.playerWillDestroy(levelIn, pos, state, player);
+	}
+	
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction directionIn, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {
 		return stateIn.setValue(FACING, stateIn.getValue(FACING));

@@ -16,16 +16,28 @@
 		"cosmosindustry:block_charger",
 		"cosmosindustry:block_separator",
 		"cosmosindustry:block_laser_cutter",
+		"cosmosindustry:block_ore_plant",
+		"cosmosindustry:block_fluid_crafter",
 		
 		"cosmosindustry:block_synthesiser",
 		"cosmosindustry:block_synthesiser_stand",
 		
+		"cosmosindustry:block_solar_panel",
+		"cosmosindustry:block_solid_fuel",
+		"cosmosindustry:block_liquid_fuel",
+		"cosmosindustry:block_peltier",
+		
 		"cosmosindustry:block_energy_channel",
-		"cosmosindustry:block_energy_channel_transparent",
 		"cosmosindustry:block_energy_channel_surge",
-		"cosmosindustry:block_energy_channel_transparent_surge",
+		
+		"cosmosindustry:block_fluid_channel",
+		"cosmosindustry:block_fluid_channel_surge",
 		
 		"cosmosindustry:block_capacitor",
+		"cosmosindustry:block_capacitor_surge",
+		
+		"cosmosindustry:block_fluid_tank",
+		"cosmosindustry:block_fluid_tank_surge",
 		
 		"cosmosindustry:block_ore_tin",
 		"cosmosindustry:block_ore_tin_deepslate",

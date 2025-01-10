@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.production.client.container.ContainerSolidFuel;
 import com.tcn.cosmosindustry.production.core.blockentity.BlockEntitySolidFuel;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -22,7 +22,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ScreenSolidFuel extends CosmosScreenUIModeBE<ContainerSolidFuel> {
+public class ScreenSolidFuel extends CosmosScreenBlockEntityUI<ContainerSolidFuel> {
 	
 	public ScreenSolidFuel(ContainerSolidFuel containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);

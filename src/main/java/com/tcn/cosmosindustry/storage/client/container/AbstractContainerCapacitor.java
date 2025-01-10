@@ -25,10 +25,10 @@ abstract public class AbstractContainerCapacitor extends CosmosContainerMenuBloc
 	public AbstractContainerCapacitor(MenuType<?> typeIn, int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerLevelAccess accessIn, BlockPos posIn) {
 		super(typeIn, indexIn, playerInventoryIn, accessIn, posIn);
 		
-		/** @Drain Item */
+		/** @Fill Item */
 		this.addSlot(new SlotEnergyItem(contentsIn, 0, 93, 19));
 
-		/** @Fill Item */
+		/** @Drain Item */
 		this.addSlot(new SlotEnergyItem(contentsIn, 1, 93, 63));
 
 		//Player Inventory
@@ -86,11 +86,16 @@ abstract public class AbstractContainerCapacitor extends CosmosContainerMenuBloc
 					}
 				}
 			} else if (indexIn >= 3 && indexIn < this.slots.size()) {
-				if (itemstack.getCapability(Capabilities.EnergyStorage.ITEM) instanceof IEnergyStorage) {
-					if (!this.moveItemStackTo(itemstack, 0, 2, false)) {
-						return ItemStack.EMPTY;
+				if (itemstack.getCapability(Capabilities.EnergyStorage.ITEM) instanceof IEnergyStorage storage) {
+					if (storage.getEnergyStored() < storage.getMaxEnergyStored()) {
+						if (!this.moveItemStackTo(itemstack, 0, 1, false)) {
+							return ItemStack.EMPTY;
+						}
+					} else if (storage.getEnergyStored() == storage.getMaxEnergyStored()) {
+						if (!this.moveItemStackTo(itemstack, 1, 2, false)) {
+							return ItemStack.EMPTY;
+						}
 					}
-				
 					slot.set(ItemStack.EMPTY);
 				} else {
 					if (indexIn >= this.slots.size() - 9 && indexIn < this.slots.size()) {

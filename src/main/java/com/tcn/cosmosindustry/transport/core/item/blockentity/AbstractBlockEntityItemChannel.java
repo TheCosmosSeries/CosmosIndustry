@@ -10,13 +10,13 @@ import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
 import com.tcn.cosmoslibrary.common.enums.EnumConnectionType;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumRenderType;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelType.IChannelEnergy;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

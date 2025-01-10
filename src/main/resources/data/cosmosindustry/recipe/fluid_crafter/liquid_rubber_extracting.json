@@ -1,0 +1,13 @@
+{
+	"type": "cosmosindustry:fluid_crafter",
+	"input": {
+		"item": "cosmosindustry:bark"
+	},
+	"fluid":{
+		"id": "cosmosindustry:rubber",
+		"amount": 750
+	},
+	"mode": {
+		"index": 1
+	}
+}

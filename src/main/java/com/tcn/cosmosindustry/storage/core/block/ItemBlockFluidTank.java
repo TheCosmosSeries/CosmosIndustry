@@ -1,15 +1,14 @@
 package com.tcn.cosmosindustry.storage.core.block;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.tcn.cosmosindustry.storage.client.renderer.FluidTankBEWLR;
 import com.tcn.cosmosindustry.storage.core.blockentity.BlockEntityFluidTank;
 import com.tcn.cosmoslibrary.common.block.CosmosItemBlock;
+import com.tcn.cosmoslibrary.common.capability.IFluidCapItem;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -17,7 +16,6 @@ import com.tcn.cosmoslibrary.common.lib.ComponentHelper.Value;
 import com.tcn.cosmoslibrary.common.nbt.CosmosNBTHelper.Const;
 import com.tcn.cosmoslibrary.registry.gson.object.ObjectFluidTankCustom;
 
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,7 +28,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -39,7 +36,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @SuppressWarnings("deprecation")
-public class ItemBlockFluidTank extends CosmosItemBlock {
+public class ItemBlockFluidTank extends CosmosItemBlock implements IFluidCapItem {
 
 	private String regName;
 	private EnumIndustryTier tier;
@@ -76,7 +73,6 @@ public class ItemBlockFluidTank extends CosmosItemBlock {
 					newName = newName + (i == 0 ? "": " ") + WordUtils.capitalize(splitName[i].replace("_", " "));
 				}
 				
-				
 				int volume = fluidTag.getInt(ObjectFluidTankCustom.NBT_FLUID_VOLUME_KEY);
 				int capacity = fluidTag.getInt(ObjectFluidTankCustom.NBT_FLUID_CAPACITY_KEY);
 				int fillLevel = fluidTag.getInt(ObjectFluidTankCustom.NBT_FILL_LEVEL_KEY);
@@ -92,16 +88,6 @@ public class ItemBlockFluidTank extends CosmosItemBlock {
 				);
 			}
 		}
-	}
-	
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(new IClientItemExtensions() {
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return FluidTankBEWLR.INSTANCE;
-			}
-		});
 	}
 
 	@Override
@@ -221,13 +207,12 @@ public class ItemBlockFluidTank extends CosmosItemBlock {
 			if (action.execute()) {
 				customTank.setFillLevel(this.updateFluidFillLevel(customTank.getFluidTank()));
 				this.saveFluidTank(stackIn, customTank);
+				
+				if (customTank.getFluidTank().isEmpty()) {
+					this.updateCustomName(stackIn, null, true);
+				}
 			}
 		}
-
-		if (customTank.getFluidTank().isEmpty()) {
-			this.updateCustomName(stackIn, null, true);
-		}
-		
 		return fluidStack;
 	}
 
@@ -241,13 +226,12 @@ public class ItemBlockFluidTank extends CosmosItemBlock {
 			if (action.execute()) {
 				customTank.setFillLevel(this.updateFluidFillLevel(customTank.getFluidTank()));
 				this.saveFluidTank(stackIn, customTank);
+				
+				if (customTank.getFluidTank().isEmpty()) {
+					this.updateCustomName(stackIn, null, true);
+				}
 			}
 		}
-		
-		if (customTank.getFluidTank().isEmpty()) {
-			this.updateCustomName(stackIn, null, true);
-		}
-		
 		return fluidStack;
 	}
 	
@@ -352,5 +336,9 @@ public class ItemBlockFluidTank extends CosmosItemBlock {
 		} else {
 			stackIn.remove(DataComponents.CUSTOM_NAME);
 		}
+	}
+	
+	public EnumIndustryTier getTier() {
+		return this.tier;
 	}
 }

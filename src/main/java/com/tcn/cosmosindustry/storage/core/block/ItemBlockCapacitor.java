@@ -2,6 +2,7 @@ package com.tcn.cosmosindustry.storage.core.block;
 
 import com.tcn.cosmosindustry.processing.core.block.ItemBlockMachine;
 import com.tcn.cosmosindustry.storage.core.blockentity.AbstractBlockEntityCapacitor;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapItem;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.energy.interfaces.IEnergyStorageBulk;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 
-public class ItemBlockCapacitor extends ItemBlockMachine {
+public class ItemBlockCapacitor extends ItemBlockMachine implements IEnergyCapItem {
 	
 	private String regName;
 	private EnumIndustryTier tier;
@@ -42,6 +43,7 @@ public class ItemBlockCapacitor extends ItemBlockMachine {
 		return Mth.clamp(Math.round((float) this.getScaledEnergy(stackIn, 13)), 0, 13);
 	}
 	
+	@Override
 	public IEnergyStorageBulk getEnergyCapability(ItemStack stackIn) {
         return new IEnergyStorageBulk() {
         	

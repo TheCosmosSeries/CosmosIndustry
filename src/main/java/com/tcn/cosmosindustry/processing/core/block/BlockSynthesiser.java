@@ -58,22 +58,26 @@ public class BlockSynthesiser extends CosmosBlockRemovableNBT implements EntityB
 	}
 	
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player playerIn) { 
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntitySynthesiser blockEntity) {
-			blockEntity.attack(state, worldIn, pos, playerIn);
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player playerIn) { 
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySynthesiser blockEntity) {
+			blockEntity.attack(state, levelIn, pos, playerIn);
 		}
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntitySynthesiser blockEntity) {
-			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySynthesiser blockEntity) {
+			return blockEntity.useItemOn(stackIn, state, levelIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+	}
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySynthesiser blockEntity) {
+			blockEntity.playerWillDestroy(levelIn, pos, state, player);
+		}
+		return super.playerWillDestroy(levelIn, pos, state, player);
 	}
 	
 	@Override
@@ -87,8 +91,8 @@ public class BlockSynthesiser extends CosmosBlockRemovableNBT implements EntityB
 	}
 	
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {	
-		BlockEntitySynthesiser tile = (BlockEntitySynthesiser) worldIn.getBlockEntity(currentPos);
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {	
+		BlockEntitySynthesiser tile = (BlockEntitySynthesiser) levelIn.getBlockEntity(currentPos);
 
 		return stateIn.setValue(ENERGY, tile.getEnergyScaled(7));
 	}

@@ -57,23 +57,27 @@ public class BlockCompactor extends CosmosBlockRemovableNBT implements EntityBlo
 	
 	@Override
 	public void attack(BlockState state, Level worldIn, BlockPos pos, Player playerIn) { 
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntityCompactor blockEntity) {
+		if (worldIn.getBlockEntity(pos) instanceof BlockEntityCompactor blockEntity) {
 			blockEntity.attack(state, worldIn, pos, playerIn);
 		}
 	}
 
 	@Override
 	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntityCompactor blockEntity) {
+		if (worldIn.getBlockEntity(pos) instanceof BlockEntityCompactor blockEntity) {
 			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.FAIL;
 	}
 
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntityCompactor blockEntity) {
+			blockEntity.playerWillDestroy(levelIn, pos, state, player);
+		}
+		return super.playerWillDestroy(levelIn, pos, state, player);
+	}
+	
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;

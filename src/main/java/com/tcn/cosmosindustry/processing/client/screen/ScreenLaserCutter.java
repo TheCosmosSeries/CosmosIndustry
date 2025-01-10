@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerLaserCutter;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityLaserCutter;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -23,14 +23,14 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
-public class ScreenLaserCutter extends CosmosScreenUIModeBE<ContainerLaserCutter> {
+public class ScreenLaserCutter extends CosmosScreenBlockEntityUI<ContainerLaserCutter> {
 	
 	public ScreenLaserCutter(ContainerLaserCutter containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);
 		
 		this.setImageDims(176, 177);
 		this.setLight(IndustryReference.Resource.Processing.Gui.LASER_CUTTER_LIGHT);
-		this.setDark(IndustryReference.Resource.Processing.Gui.LASER_CUTTER_LIGHT);
+		this.setDark(IndustryReference.Resource.Processing.Gui.LASER_CUTTER_DARK);
 		this.setUIModeButtonIndex(159, 5);
 		
 		this.setTitleLabelDims(28, 4);

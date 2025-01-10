@@ -3,13 +3,14 @@ package com.tcn.cosmosindustry.storage.core.blockentity;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapBE;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumSideState;
 import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBESided;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
@@ -17,6 +18,7 @@ import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
 import com.tcn.cosmoslibrary.energy.CosmosEnergyUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,9 +36,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,7 +48,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-abstract public class AbstractBlockEntityCapacitor extends BlockEntity implements IBlockInteract, Container, WorldlyContainer, MenuProvider, IEnergyEntity, IBESided, IBEUpdated.Storage, IBEUIMode {
+abstract public class AbstractBlockEntityCapacitor extends BlockEntity implements IBlockInteract, IBlockNotifier, Container, WorldlyContainer, MenuProvider, IEnergyEntity, IBESided, IBEUpdated.Storage, IBEUIMode, IEnergyCapBE {
 
 	private static final int[] SLOTS_TOP = new int[] { 0, 1 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 0, 1 };
@@ -60,7 +64,6 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	private EnumSideState[] SIDE_STATE_ARRAY = EnumSideState.getStandardArray();
 	
 	private EnumIndustryTier tier;
-	private final int chargeRate = 50000;
 	
 	private EnumUIMode uiMode = EnumUIMode.DARK;
 
@@ -89,7 +92,7 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 
 	@Override
 	public void sendUpdates(boolean update) {
-		sendUpdates();
+		this.sendUpdates();
 	}
 	
 	@Override
@@ -189,8 +192,8 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	}
 	
 	public static void tick(Level levelIn, BlockPos posIn, BlockState stateIn, AbstractBlockEntityCapacitor entityIn) {
-		entityIn.drainItem(0);
-		entityIn.chargeItem(1);
+		entityIn.chargeItem(0);
+		entityIn.drainItem(1);
 		
 		if (!entityIn.getLevel().isClientSide()) {
 			entityIn.pushEnergy(Direction.DOWN);
@@ -201,7 +204,7 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 			entityIn.pushEnergy(Direction.WEST);
 		}
 		
-		if (entityIn.tier.equals(EnumIndustryTier.CREATIVE)) {
+		if (entityIn.tier.creative()) {
 			if (entityIn.getEnergyStored() < entityIn.getMaxEnergyStored()) {
 				entityIn.setEnergyStored(entityIn.getMaxEnergyStored());
 			}
@@ -250,11 +253,11 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 			}
 		
 			if (levelIn.isClientSide()) {
-				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+				return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			} else {
 				if (playerIn instanceof ServerPlayer serverPlayer) {
 					serverPlayer.openMenu(this, (packetBuffer) -> { packetBuffer.writeBlockPos(this.getBlockPos()); });
-					return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+					return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 				}
 			}
 		} else {
@@ -266,19 +269,34 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 				ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
 		}
-		return ItemInteractionResult.FAIL;
+		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
+	
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos posIn, BlockState state, Player player) {
+		if (!levelIn.isClientSide()) {
+			if (!player.getAbilities().instabuild) {
+				CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+			}
+		}
+		return state;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
 
 	public void chargeItem(int indexIn) {
 		if (!this.getItem(indexIn).isEmpty()) {
-			Object object = this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM);
-			
-			if (object instanceof IEnergyStorage energyItem) {
-				if (this.chargeRate > 0) {
-					if (this.hasEnergy()) {
-						if (energyItem.canReceive()) {
-							energyItem.receiveEnergy(this.extractEnergy(Direction.DOWN, Math.min(this.getMaxReceive(), this.chargeRate), false), false);
-						}
+			if (this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM) instanceof IEnergyStorage energyItem) {
+				if (this.hasEnergy()) {
+					if (energyItem.canReceive()) {
+						this.extractEnergy(Direction.DOWN, energyItem.receiveEnergy(this.getMaxExtract(), false), false);
 					}
 				}
 			}
@@ -287,13 +305,11 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	
 	public void drainItem(int indexIn) {
 		if (!this.getItem(indexIn).isEmpty()) {
-			Object object = this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM);
-		
-			if (object instanceof IEnergyStorage energyItem) {
-				if (this.chargeRate > 0) {
+			if (this.getItem(indexIn).getCapability(Capabilities.EnergyStorage.ITEM) instanceof IEnergyStorage energyItem) {
+				if (!CosmosEnergyUtil.isEnergyFull(this.getEnergyCapability(Direction.DOWN))) {
 					if (CosmosEnergyUtil.hasEnergy(energyItem)) {
 						if (energyItem.canExtract()) {
-							energyItem.extractEnergy(this.receiveEnergy(Direction.DOWN, Math.min(this.getMaxExtract(), this.chargeRate), false), false);
+							this.receiveEnergy(Direction.DOWN, energyItem.extractEnergy(this.getMaxReceive(), false), false);
 						}
 					}
 				}
@@ -385,7 +401,8 @@ abstract public class AbstractBlockEntityCapacitor extends BlockEntity implement
 	}
 	*/
 	
-	public IEnergyStorage createEnergyProxy(@Nullable Direction directionIn) {
+	@Override
+	public IEnergyStorage getEnergyCapability(@Nullable Direction directionIn) {
         return new IEnergyStorage() {
         	
             @Override

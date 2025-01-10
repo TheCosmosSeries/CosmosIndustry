@@ -9,15 +9,18 @@ import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.production.client.container.ContainerLiquidFuel;
 import com.tcn.cosmosindustry.production.core.block.BlockLiquidFuel;
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapBE;
+import com.tcn.cosmoslibrary.common.capability.IFluidCapBE;
 import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.IFluidStorage;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.registry.gson.object.ObjectFluidTankCustom;
 
 import net.minecraft.core.BlockPos;
@@ -35,12 +38,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -54,7 +59,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 @SuppressWarnings("removal")
-public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract, WorldlyContainer, MenuProvider, IFluidHandler, IFluidStorage, IBEUpdated.Fluid, IBEUpdated.Production, IEnergyEntity, IBEUIMode {
+public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract, IBlockNotifier, WorldlyContainer, MenuProvider, IFluidHandler, IFluidStorage, IBEUpdated.Fluid, IBEUpdated.Production, IEnergyEntity, IBEUIMode, IEnergyCapBE, IFluidCapBE {
 
 	private NonNullList<ItemStack> inventoryItems = NonNullList.<ItemStack>withSize(8, ItemStack.EMPTY);
 	
@@ -66,7 +71,7 @@ public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract
 	
 	private int energy_stored = 0;
 	private int energy_capacity = IndustryReference.Resource.Production.CAPACITY[0];
-	private int energy_max_extract = IndustryReference.Resource.Production.MAX_OUTPUT[0];
+	private int energy_max_extract = IndustryReference.Resource.Production.MAX_OUTPUT;
 	private int energyMaxProduce = IndustryReference.Resource.Production.RF_TICK_RATE[0];
 	
 	private int fluidCapacity = IndustryReference.Resource.Production.FLUID_CAPACITY[0];
@@ -222,14 +227,13 @@ public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract
 			entityIn.sendUpdates();
 		}
 
-		entityIn.energyMaxProduce = IndustryReference.Resource.Production.RF_TICK_RATE[entityIn.inventoryItems.get(0).getCount()];
+		entityIn.energyMaxProduce = IndustryReference.Resource.Production.RF_TICK_RATE[entityIn.inventoryItems.get(2).getCount()] * (1 + entityIn.inventoryItems.get(0).getCount());
 		entityIn.energy_capacity = IndustryReference.Resource.Production.CAPACITY[entityIn.inventoryItems.get(1).getCount()];
-		entityIn.energy_max_extract = IndustryReference.Resource.Production.MAX_OUTPUT[entityIn.inventoryItems.get(2).getCount()];
 		
 		entityIn.fluidUsageRate = IndustryReference.Resource.Production.FLUID_USAGE_RATE[entityIn.inventoryItems.get(5).getCount()];
 		entityIn.fluidCapacity = IndustryReference.Resource.Production.FLUID_CAPACITY[entityIn.inventoryItems.get(6).getCount()];
 		entityIn.updateFluidTankCapacity(entityIn.fluidCapacity);
-		entityIn.produceTimeMax = IndustryReference.Resource.Production.FLUID_PRODUCE_TIME[entityIn.inventoryItems.get(7).getCount()];
+//		entityIn.produceTimeMax = IndustryReference.Resource.Production.FLUID_PRODUCE_TIME[entityIn.inventoryItems.get(7).getCount()];
 	}
 
 	public void pushEnergy(Direction directionIn) {
@@ -307,6 +311,25 @@ public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract
 		}
 		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos posIn, BlockState state, Player player) {
+		if (!levelIn.isClientSide()) {
+			if (!player.getAbilities().instabuild) {
+				CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+			}
+		}
+		return state;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
 
 	@Override
 	public void clearContent() { }
@@ -387,7 +410,8 @@ public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract
 		return new ContainerLiquidFuel(idIn, playerInventoryIn, this, ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()), this.getBlockPos());
 	}
 
-	public IEnergyStorage createEnergyProxy(@Nullable Direction directionIn) {
+	@Override
+	public IEnergyStorage getEnergyCapability(@Nullable Direction directionIn) {
         return new IEnergyStorage() {
         	
             @Override
@@ -702,7 +726,8 @@ public class BlockEntityLiquidFuel extends BlockEntity implements IBlockInteract
 		this.updateFluidFillLevel();
 	}
 	
-	public IFluidHandler createFluidProxy(@Nullable Direction directionIn) {
+	@Override
+	public IFluidHandler getFluidCapability(@Nullable Direction directionIn) {
 		return new IFluidHandler() {
 
 			@Override

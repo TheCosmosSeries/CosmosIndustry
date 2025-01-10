@@ -7,6 +7,7 @@ import com.tcn.cosmosindustry.core.recipe.GrinderRecipe;
 import com.tcn.cosmosindustry.core.recipe.LaserCutterRecipe;
 import com.tcn.cosmosindustry.core.recipe.OrePlantRecipe;
 import com.tcn.cosmosindustry.core.recipe.SeparatorRecipe;
+import com.tcn.cosmosindustry.core.recipe.SolidifierRecipe;
 import com.tcn.cosmosindustry.core.recipe.SynthesiserRecipe;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -42,6 +43,9 @@ public class IndustryRecipeManager {
 
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FluidCrafterRecipe>> RECIPE_SERIALIZER_FLUID_CRAFTER = RECIPE_SERIALIZERS.register("fluid_crafter", () -> new FluidCrafterRecipe.Serializer());
 	public static final DeferredHolder<RecipeType<?>, RecipeType<FluidCrafterRecipe>> RECIPE_TYPE_FLUID_CRAFTER = RECIPE_TYPES.register("fluid_crafter", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(CosmosIndustry.MOD_ID, "fluid_crafter")));
+
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<SolidifierRecipe>> RECIPE_SERIALIZER_SOLIDIFIER = RECIPE_SERIALIZERS.register("solidifier", () -> new SolidifierRecipe.Serializer());
+	public static final DeferredHolder<RecipeType<?>, RecipeType<SolidifierRecipe>> RECIPE_TYPE_SOLIDIFIER = RECIPE_TYPES.register("solidifier", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(CosmosIndustry.MOD_ID, "solidifier")));
 
 	public static void register(IEventBus bus) {
 		RECIPE_TYPES.register(bus);

@@ -6,21 +6,26 @@
 	
 	"fluid_type.cosmosindustry.energized_redstone": "Energized Redstone",
 	"fluid_type.cosmosindustry.coolant": "Coolant",
+	"fluid_type.cosmosindustry.rubber": "Liquid Rubber",
 	
 	"block.cosmosindustry.block_structure": "Machine Structure",
 	"block.cosmosindustry.block_kiln": "Kiln",
 	"block.cosmosindustry.block_grinder": "Grinder",
 	"block.cosmosindustry.block_compactor": "Compactor",
 	"block.cosmosindustry.block_separator": "Separator",
+	"block.cosmosindustry.block_laser_cutter": "Laser Cutter",
+	
 	"block.cosmosindustry.block_ore_plant": "Ore Plant",
 	"block.cosmosindustry.block_fluid_crafter": "Fluid Crafter",
-	"block.cosmosindustry.block_laser_cutter": "Laser Cutter",
+	"block.cosmosindustry.block_solidifier": "Solidifier",
+	
 	"block.cosmosindustry.block_charger": "Charger",
 	
 	"block.cosmosindustry.block_generator_structure": "Generator Structure",
 	"block.cosmosindustry.block_solar_panel": "Solar Panel Generator",
 	"block.cosmosindustry.block_solid_fuel": "Solid Fuel Generator",
 	"block.cosmosindustry.block_liquid_fuel": "Liquid Fuel Generator",
+	"block.cosmosindustry.block_peltier": "Peltier Generator",
 	
 	"block.cosmosindustry.block_synthesiser": "Synthesiser",
 	"block.cosmosindustry.block_synthesiser_stand": "Synthesiser Stand",
@@ -60,6 +65,7 @@
 	
 	"block.cosmosindustry.block_energized_redstone": "Energized Redstone",
 	"block.cosmosindustry.block_coolant": "Coolant",
+	"block.cosmosindustry.block_rubber": "Liquid Rubber",
 	
 	"item.cosmosindustry.tin_ingot": "Tin Ingot",
 	"item.cosmosindustry.silver_ingot": "Silver Ingot",
@@ -123,7 +129,7 @@
 	"item.cosmosindustry.upgrade_capacity": "Capacity Upgrade",
 	"item.cosmosindustry.upgrade_efficiency": "Efficiency Upgrade",
 	
-	"item.cosmosindustry.upgrade_fluid_speed": "Fluid Speed Upgrade",
+	"item.cosmosindustry.upgrade_fluid_usage": "Fluid Usage Upgrade",
 	"item.cosmosindustry.upgrade_fluid_capacity": "Fluid Capacity Upgrade",
 	"item.cosmosindustry.upgrade_fluid_efficiency": "Fluid Efficiency Upgrade",
 	
@@ -136,8 +142,12 @@
 	"item.cosmosindustry.solar_module": "Solar Module",
 	
 	"item.cosmosindustry.energy_cell": "Energy Cell",
+	"item.cosmosindustry.energy_cell_surge": "Surge Energy Cell",
+	"item.cosmosindustry.energy_cell_creative": "Creative Energy Cell",
+	
 	"item.cosmosindustry.energized_redstone_bucket": "Energized Redstone Bucket",
 	"item.cosmosindustry.coolant_bucket": "Coolant Bucket",
+	"item.cosmosindustry.rubber_bucket": "Liquid Rubber Bucket",
 	
 	"item.cosmosindustry.machine_wrench": "Machine Wrench",
 	"item.cosmosindustry.machine_hammer": "Machine Hammer",
@@ -146,14 +156,18 @@
 	"cosmosindustry.gui.grinder": "Grinder",
 	"cosmosindustry.gui.compactor": "Compactor",
 	"cosmosindustry.gui.separator": "Separator",
+	"cosmosindustry.gui.laser_cutter": "Laser Cutter",
+	
 	"cosmosindustry.gui.ore_plant": "Ore Plant",
 	"cosmosindustry.gui.fluid_crafter": "Fluid Crafter",
-	"cosmosindustry.gui.laser_cutter": "Laser Cutter",
+	"cosmosindustry.gui.solidifier": "Solidifier",
+	
 	"cosmosindustry.gui.charger": "Charger",
 	
 	"cosmosindustry.gui.solarpanel": "Solar Panel Generator",
 	"cosmosindustry.gui.solidfuel": "Solid Fuel Generator",
 	"cosmosindustry.gui.liquidfuel": "Liquid Fuel Generator",
+	"cosmosindustry.gui.peltier": "Peltier Generator",
 	
 	"cosmosindustry.gui.synthesiser": "Synthesiser",
 	"cosmosindustry.gui.synthesiser.jei.one": "The Synthesiser is an in-world",
@@ -180,11 +194,15 @@
 	"cosmosindustry.gui.button.tank_clear": "Shift-Click to Empty the Fluid Tank.",
 	"cosmosindustry.gui.button.tank_clear_shift": "Warning! This cannot be undone.",
 	
+	"cosmosindustry.gui.button.selected_tank": "Switch the selected tank.",
+	"cosmosindustry.gui.button.selected_tank_info": "Currently selected tank: ",
+	
 	"cosmosindustry.gui.button.plant_mode": "Ore Plant Operation Mode",
 	"cosmosindustry.gui.button.plant_mode_info": "Current Mode: ",
 	
 	"cosmosindustry.gui.fluid_bar.pre": "Fluid Stored: ",
 	"cosmosindustry.gui.fluid_bar.suff": " mB.",
+	"cosmosindustry.gui.fluid_bar.temp": "Temp: ",
 	
 	"cosmosindustry.channel.status.cycle_side": "Side Cycled: ",
 	
@@ -194,8 +212,10 @@
 	"cosmosindustry.integration.jei.compactor_category": "Compacting",
 	"cosmosindustry.integration.jei.laser_cutter_category": "Lasering",
 	"cosmosindustry.integration.jei.ore_plant_category": "Ore Plant",
+	
 	"cosmosindustry.integration.jei.fluid_crafter_category": "Fluid Crafter",
 	"cosmosindustry.integration.jei.synthesiser_category": "Synthesising",
+	"cosmosindustry.integration.jei.solidifier_category": "Solidifier",
 	
 	"cosmosindustry.ore_plant.cleaning": "Cleaning",
 	"cosmosindustry.ore_plant.refining": "Refining",

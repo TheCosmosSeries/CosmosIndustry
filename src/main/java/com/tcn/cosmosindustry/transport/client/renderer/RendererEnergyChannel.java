@@ -22,7 +22,7 @@ public class RendererEnergyChannel implements BlockEntityRenderer<AbstractBlockE
 	private ModelChannel MODEL;
 
 	public RendererEnergyChannel(BlockEntityRendererProvider.Context contextIn) {
-		this.MODEL = new ModelChannel((res) -> RenderType.entityCutoutNoCull(res));
+		this.MODEL = new ModelChannel((res) -> RenderType.entitySolid(res));
 	}
 	
 	@Override

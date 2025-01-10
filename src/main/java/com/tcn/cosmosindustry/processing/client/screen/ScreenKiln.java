@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerKiln;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityKiln;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -23,7 +23,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
-public class ScreenKiln extends CosmosScreenUIModeBE<ContainerKiln> {
+public class ScreenKiln extends CosmosScreenBlockEntityUI<ContainerKiln> {
 	
 	public ScreenKiln(ContainerKiln containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);

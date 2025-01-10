@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.transport.core.energy.blockentity.BlockEntityChannelEnergy;
+import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BlockChannelEnergy extends AbstractBlockEnergyChannel implements EntityBlock {
 	
 	public BlockChannelEnergy(Block.Properties properties) {
-		super(properties, false);
+		super(properties, EnumIndustryTier.NORMAL);
 	}
 
 	@Override

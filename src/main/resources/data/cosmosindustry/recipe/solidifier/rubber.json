@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:solidifier",
+	"fluid":{
+		"id": "cosmosindustry:rubber",
+		"amount": 250
+	},
+	"result": {
+		"id": "cosmosindustry:rubber"
+	}
+}

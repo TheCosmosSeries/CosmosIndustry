@@ -1,0 +1,6 @@
+{
+    "parent": "cosmosindustry:item/energy_cell_surge",
+    "textures": {
+        "layer1": "cosmosindustry:item/storage/energy_3"
+    }
+}

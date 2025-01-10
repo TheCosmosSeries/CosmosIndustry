@@ -11,14 +11,16 @@ import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.processing.client.container.ContainerKiln;
 import com.tcn.cosmosindustry.processing.core.block.BlockKiln;
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapBE;
 import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -43,6 +45,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
@@ -58,13 +61,14 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-public class BlockEntityKiln extends BlockEntity implements IBlockInteract, WorldlyContainer, MenuProvider, IBEUpdated.Furnace, IEnergyEntity, RecipeCraftingHolder, StackedContentsCompatible, IBEUIMode {
+public class BlockEntityKiln extends BlockEntity implements IBlockInteract, IBlockNotifier, WorldlyContainer, MenuProvider, IBEUpdated.Furnace, IEnergyEntity, RecipeCraftingHolder, StackedContentsCompatible, IBEUIMode, IEnergyCapBE {
 
 	private static final int[] SLOTS_TOP = new int[] { 0 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 2, 1 };
@@ -291,6 +295,25 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Worl
 	}
 
 	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos posIn, BlockState state, Player player) {
+		if (!levelIn.isClientSide()) {
+			if (!player.getAbilities().instabuild) {
+				CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+			}
+		}
+		return state;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
+
+	@Override
 	public boolean isProcessing() {
 		return this.hasEnergy() && this.process_time > 0;
 	}
@@ -477,7 +500,8 @@ public class BlockEntityKiln extends BlockEntity implements IBlockInteract, Worl
 	}
 */
 	
-	public IEnergyStorage createEnergyProxy(@Nullable Direction directionIn) {
+	@Override
+	public IEnergyStorage getEnergyCapability(@Nullable Direction directionIn) {
         return new IEnergyStorage() {
             @Override
             public int extractEnergy(int maxExtract, boolean simulate) {

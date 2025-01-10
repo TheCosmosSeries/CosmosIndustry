@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
+import com.tcn.cosmoslibrary.common.capability.IFluidCapBE;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.enums.EnumSideState;
@@ -12,6 +13,7 @@ import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.IFluidStorage;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBESided;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
@@ -35,9 +37,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +56,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 @SuppressWarnings("removal")
-abstract public class AbstractBlockEntityFluidTank extends BlockEntity implements IBlockInteract, WorldlyContainer, MenuProvider, IFluidHandler, IFluidStorage, IBESided, IBEUpdated.Fluid, IBEUIMode {
+abstract public class AbstractBlockEntityFluidTank extends BlockEntity implements IBlockInteract, IBlockNotifier, WorldlyContainer, MenuProvider, IFluidHandler, IFluidStorage, IBESided, IBEUpdated.Fluid, IBEUIMode, IFluidCapBE {
 
 	private static final int[] SLOTS_TOP = new int[] { 0, 1 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 0, 1 };
@@ -134,6 +138,8 @@ abstract public class AbstractBlockEntityFluidTank extends BlockEntity implement
 		this.setSide(Direction.values()[5], EnumSideState.getStateFromIndex(compound.getInt("east")), false);
 
 		this.fluidTank = ObjectFluidTankCustom.readFromNBT(compound.getCompound("fluidTank"));
+		this.fluidTank.getFluidTank().setCapacity(this.fluidCapacity);
+		this.updateFluidFillLevel();
 
 		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 	}
@@ -304,6 +310,25 @@ abstract public class AbstractBlockEntityFluidTank extends BlockEntity implement
 		}
 		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos posIn, BlockState state, Player player) {
+		if (!levelIn.isClientSide()) {
+			if (!player.getAbilities().instabuild) {
+				CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+			}
+		}
+		return state;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
 
 	@Override
 	public void clearContent() { }
@@ -511,7 +536,8 @@ abstract public class AbstractBlockEntityFluidTank extends BlockEntity implement
 		this.updateFluidFillLevel();
 	}
 	
-	public IFluidHandler createFluidProxy(@Nullable Direction directionIn) {
+	@Override
+	public IFluidHandler getFluidCapability(@Nullable Direction directionIn) {
 		return new IFluidHandler() {
 
 			@Override

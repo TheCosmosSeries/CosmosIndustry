@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.storage.core.blockentity.AbstractBlockEntityCapacitor;
 import com.tcn.cosmosindustry.storage.core.blockentity.BlockEntityCapacitorCreative;
+import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class BlockCapacitorCreative extends AbstractBlockCapacitor {
 
 	public BlockCapacitorCreative(Block.Properties properties) {
-		super(properties);
+		super(properties, EnumIndustryTier.CREATIVE);
 	}
 
 	@Override

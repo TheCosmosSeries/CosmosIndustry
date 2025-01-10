@@ -9,7 +9,7 @@ import com.tcn.cosmosindustry.core.network.packet.PacketPlantMode;
 import com.tcn.cosmosindustry.processing.client.container.ContainerOrePlant;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityOrePlant;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType.TYPE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -29,7 +29,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("removal")
-public class ScreenOrePlant extends CosmosScreenUIModeBE<ContainerOrePlant> {
+public class ScreenOrePlant extends CosmosScreenBlockEntityUI<ContainerOrePlant> {
 
 	private CosmosButtonWithType buttonTankClear; private int[] TBCI = new int[] { 122, 60, 18 };
 	private CosmosButtonWithType buttonPlantMode; private int[] BEMI = new int[] { 60,  38, 18 };
@@ -40,7 +40,8 @@ public class ScreenOrePlant extends CosmosScreenUIModeBE<ContainerOrePlant> {
 		this.setImageDims(176, 177);
 		this.setLight(IndustryReference.Resource.Processing.Gui.ORE_PLANT_LIGHT);
 		this.setDark(IndustryReference.Resource.Processing.Gui.ORE_PLANT_DARK);
-		this.setUIModeButtonIndex(159, 5);
+		this.setUIModeButtonIndex(164, 4);
+		this.setUIModeButtonSmall();
 		
 		this.setTitleLabelDims(9, 4);
 		this.setInventoryLabelDims(7, 84);

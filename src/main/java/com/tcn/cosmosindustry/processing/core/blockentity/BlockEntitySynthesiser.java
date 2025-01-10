@@ -14,14 +14,17 @@ import com.tcn.cosmosindustry.core.recipe.SynthesiserRecipeInput;
 import com.tcn.cosmosindustry.processing.client.container.ContainerSynthesiser;
 import com.tcn.cosmosindustry.processing.core.block.BlockSynthesiserStand;
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated.Processing;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapBE;
 import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
+import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -43,6 +46,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -60,7 +64,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 //@SuppressWarnings("unused")
-public class BlockEntitySynthesiser extends BlockEntity implements IBlockInteract, WorldlyContainer, MenuProvider, Processing, IEnergyEntity, RecipeCraftingHolder, IBEUIMode {
+public class BlockEntitySynthesiser extends BlockEntity implements IBlockInteract, IBlockNotifier, WorldlyContainer, MenuProvider, Processing, IEnergyEntity, RecipeCraftingHolder, IBEUIMode, IEnergyCapBE {
 
 	private static final int[] SLOTS_BOTTOM = new int[] { 0 };
 	
@@ -278,7 +282,26 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 		}
 		return ItemInteractionResult.FAIL;
 	}
-	
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos posIn, BlockState state, Player player) {
+		if (!levelIn.isClientSide()) {
+			if (!player.getAbilities().instabuild) {
+				CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+			}
+		}
+		return state;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
+
 	@Override
 	public boolean isProcessing() {
 		return this.hasEnergy() && this.process_time > 0;
@@ -716,7 +739,7 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 
 	@Override
 	public Component getDisplayName() {
-		return ComponentHelper.title("cosmosindustry.gui.synthesiser");
+		return ComponentHelper.style(ComponentColour.ORANGE, "", "cosmosindustry.gui.synthesiser");
 	}
 	
 	@Override
@@ -743,7 +766,8 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 	}
 	*/
 	
-	public IEnergyStorage createEnergyProxy(@Nullable Direction directionIn) {
+	@Override
+	public IEnergyStorage getEnergyCapability(@Nullable Direction directionIn) {
         return new IEnergyStorage() {
         	
             @Override

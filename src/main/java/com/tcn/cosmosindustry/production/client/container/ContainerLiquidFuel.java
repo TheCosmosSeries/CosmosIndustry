@@ -43,7 +43,7 @@ public class ContainerLiquidFuel extends CosmosContainerMenuBlockEntity {
 		});
 
 		/** @FluidUpgrade Slots */
-		this.addSlot(new SlotUpgrade(tile, 5, 149, 17, IndustryRegistrationManager.UPGRADE_FLUID_SPEED.get()));
+		this.addSlot(new SlotUpgrade(tile, 5, 149, 17, IndustryRegistrationManager.UPGRADE_FLUID_USAGE.get()));
 		this.addSlot(new SlotUpgrade(tile, 6, 149, 39, IndustryRegistrationManager.UPGRADE_FLUID_CAPACITY.get()));
 		this.addSlot(new SlotUpgrade(tile, 7, 149, 61, IndustryRegistrationManager.UPGRADE_FLUID_EFFICIENCY.get()));
 		

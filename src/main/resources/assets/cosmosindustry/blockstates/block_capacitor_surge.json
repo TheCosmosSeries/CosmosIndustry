@@ -1,6 +1,6 @@
 {
     "multipart": [
-        {   "apply": { "model": "cosmosindustry:block/storage/capacitor/surge/base" }},
+        {   "apply": { "model": "cosmosindustry:block/storage/capacitor/base" }},
         
         {   "when": { "north": "0" },
             "apply": { "model": "cosmosindustry:block/storage/capacitor/surge/side", "uvlock": true }

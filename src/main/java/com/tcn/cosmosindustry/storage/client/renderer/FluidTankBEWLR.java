@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tcn.cosmosindustry.CosmosIndustry;
-import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.storage.core.block.ItemBlockFluidTank;
 import com.tcn.cosmoslibrary.client.renderer.CosmosRendererHelper;
 import com.tcn.cosmoslibrary.registry.gson.object.ObjectFluidTankCustom;
@@ -16,9 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -41,36 +38,17 @@ public class FluidTankBEWLR extends BlockEntityWithoutLevelRenderer {
 	public void renderByItem(ItemStack stackIn, ItemDisplayContext transformIn, PoseStack poseStackIn, MultiBufferSource buffer, int packedLight, int packedOverlay) {
 		Item item = stackIn.getItem();
 		Minecraft mc = Minecraft.getInstance();
-		ItemRenderer renderer = mc.getItemRenderer();
-		ModelManager manager = mc.getModelManager();
+		
+		ItemBlockFluidTank tankItem = (ItemBlockFluidTank) item;
 
-		this.renderFluid((ItemBlockFluidTank)item, stackIn, poseStackIn, buffer);
-				
-		if (item.equals(IndustryRegistrationManager.ITEMBLOCK_FLUID_TANK.get())) {
-			poseStackIn.pushPose();
-			
-			BakedModel itemModel = manager.getModel(CosmosRendererHelper.getStandalone(CosmosIndustry.MOD_ID, "item/block_fluid_tank_item"));
-			VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffer, itemModel.getRenderTypes(stackIn, true).get(0), true, stackIn.hasFoil());
-			renderer.renderModelLists(itemModel, stackIn, packedLight, packedOverlay, poseStackIn, ivertexbuilder);
-			
-			poseStackIn.popPose();
-		} else if (item.equals(IndustryRegistrationManager.ITEMBLOCK_FLUID_TANK_SURGE.get())) {
-			poseStackIn.pushPose();
-			
-			BakedModel itemModel = manager.getModel(CosmosRendererHelper.getStandalone(CosmosIndustry.MOD_ID, "item/block_fluid_tank_surge_item"));
-			VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffer, itemModel.getRenderTypes(stackIn, true).get(0), true, stackIn.hasFoil());
-			renderer.renderModelLists(itemModel, stackIn, packedLight, packedOverlay, poseStackIn, ivertexbuilder);
-			
-			poseStackIn.popPose();
-		} else if (item.equals(IndustryRegistrationManager.ITEMBLOCK_FLUID_TANK_CREATIVE.get())) {
-			poseStackIn.pushPose();
-			
-			BakedModel itemModel = manager.getModel(CosmosRendererHelper.getStandalone(CosmosIndustry.MOD_ID, "item/block_fluid_tank_creative_item"));
-			VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffer, itemModel.getRenderTypes(stackIn, true).get(0), true, stackIn.hasFoil());
-			renderer.renderModelLists(itemModel, stackIn, packedLight, packedOverlay, poseStackIn, ivertexbuilder);
-			
-			poseStackIn.popPose();
-		}
+		this.renderFluid(tankItem, stackIn, poseStackIn, buffer);
+		
+		String modelLocation = tankItem.getTier().normal() ? "block_fluid_tank_item" : tankItem.getTier().surge() ? "block_fluid_tank_surge_item" : "block_fluid_tank_creative_item";
+		
+		poseStackIn.pushPose();
+		BakedModel itemModel = mc.getModelManager().getModel(CosmosRendererHelper.getStandaloneItem(CosmosIndustry.MOD_ID, modelLocation));
+		mc.getItemRenderer().renderModelLists(itemModel, stackIn, packedLight, packedOverlay, poseStackIn, ItemRenderer.getFoilBufferDirect(buffer, itemModel.getRenderTypes(stackIn, true).get(0), true, stackIn.hasFoil()));
+		poseStackIn.popPose();
 	}
 	
 	private void renderFluid(ItemBlockFluidTank item, ItemStack stackIn, PoseStack poseStackIn, MultiBufferSource buffer) {
@@ -92,8 +70,8 @@ public class FluidTankBEWLR extends BlockEntityWithoutLevelRenderer {
 						return;
 					}
 					
-					IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(renderFluid.defaultFluidState());
-					TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(props.getStillTexture());
+					IClientFluidTypeExtensions props = CosmosRendererHelper.getFluidExtention(renderFluid);  //IClientFluidTypeExtensions.of(renderFluid.defaultFluidState());
+					TextureAtlasSprite sprite = CosmosRendererHelper.getFluidTexture(props);  //Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(props.getStillTexture());
 					VertexConsumer builderA = buffer.getBuffer(RenderType.translucent());
 		
 					float[] values = new float[] { 0.1F/16F, 15.9F/16F };

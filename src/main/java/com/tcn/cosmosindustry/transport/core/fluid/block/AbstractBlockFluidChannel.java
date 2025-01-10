@@ -7,11 +7,13 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.transport.core.fluid.blockentity.AbstractBlockEntityFluidChannel;
 import com.tcn.cosmoslibrary.common.block.CosmosBlockRemovable;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
+import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -34,6 +36,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 abstract public class AbstractBlockFluidChannel extends CosmosBlockRemovable implements EntityBlock {
 	
+	private EnumIndustryTier tier;
+	
 	public static final BooleanProperty DOWN = BooleanProperty.create("down");
 	public static final BooleanProperty UP = BooleanProperty.create("up");
 	public static final BooleanProperty NORTH = BooleanProperty.create("north");
@@ -43,13 +47,13 @@ abstract public class AbstractBlockFluidChannel extends CosmosBlockRemovable imp
 	
 	protected VoxelShape[] BOUNDING_BOXES;
 	
-	public AbstractBlockFluidChannel(Block.Properties properties, boolean surge) {
+	public AbstractBlockFluidChannel(Block.Properties properties, EnumIndustryTier tierIn) {
 		super(properties);
+
+		this.tier = tierIn;
+		this.BOUNDING_BOXES = tier.surge() || tier.creative() ? IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD_SURGE : IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD;
 		
-		this.BOUNDING_BOXES = surge ? IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD_SURGE : IndustryReference.Resource.Transport.BOUNDING_BOXES_STANDARD;
-		
-		this.registerDefaultState(this.defaultBlockState().setValue(NORTH, false).setValue(SOUTH, false).setValue(EAST, false)
-				.setValue(WEST, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
+		this.registerDefaultState(this.defaultBlockState().setValue(NORTH, false).setValue(SOUTH, false).setValue(EAST, false).setValue(WEST, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
 	}
 
 	@Override
@@ -194,5 +198,15 @@ abstract public class AbstractBlockFluidChannel extends CosmosBlockRemovable imp
 		}
 		
 		return false;
+	}
+
+	@Override
+	public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
+        return !this.tier.creative();
+    }
+	
+	@Override
+	public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+		return !this.tier.creative();
 	}
 }

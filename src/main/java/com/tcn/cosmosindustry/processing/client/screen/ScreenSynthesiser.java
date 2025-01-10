@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerSynthesiser;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntitySynthesiser;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -21,7 +21,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ScreenSynthesiser extends CosmosScreenUIModeBE<ContainerSynthesiser> {
+public class ScreenSynthesiser extends CosmosScreenBlockEntityUI<ContainerSynthesiser> {
 		
 	public ScreenSynthesiser(ContainerSynthesiser containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);

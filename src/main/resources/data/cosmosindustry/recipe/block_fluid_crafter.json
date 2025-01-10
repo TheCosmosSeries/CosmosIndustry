@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"PBP",
+		"BSB",
+		"CWC"
+	],
+	"key": {
+		"S": {
+			"item": "cosmosindustry:block_structure"
+		},
+		"B": {
+			"item": "minecraft:bucket"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit_advanced"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		},
+		"P": {
+			"item": "cosmosindustry:steel_plate"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_fluid_crafter"
+	}
+}

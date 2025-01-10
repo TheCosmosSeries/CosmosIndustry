@@ -9,7 +9,7 @@ import com.tcn.cosmosindustry.core.network.packet.PacketPlantMode;
 import com.tcn.cosmosindustry.processing.client.container.ContainerFluidCrafter;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityFluidCrafter;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType.TYPE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -29,7 +29,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @OnlyIn(Dist.CLIENT)
 @SuppressWarnings("removal")
-public class ScreenFluidCrafter extends CosmosScreenUIModeBE<ContainerFluidCrafter> {
+public class ScreenFluidCrafter extends CosmosScreenBlockEntityUI<ContainerFluidCrafter> {
 
 	private CosmosButtonWithType buttonTankClear; private int[] TBCI = new int[] { 120, 60, 18 };
 	private CosmosButtonWithType buttonPlantMode; private int[] BEMI = new int[] { 79, 58, 18 };

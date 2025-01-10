@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"POP",
+		"OSO",
+		"CWC"
+	],
+	"key": {
+		"S": {
+			"item": "cosmosindustry:block_structure"
+		},
+		"O": {
+			"tag": "c:ores"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit_advanced"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		},
+		"P": {
+			"item": "cosmosindustry:steel_plate"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_ore_plant"
+	}
+}

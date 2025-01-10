@@ -1,0 +1,16 @@
+{
+	"type": "cosmosindustry:fluid_crafter",
+	"input": {
+		"item": "minecraft:netherrack"
+	},
+	"result": {
+		"id": "minecraft:magma_block"
+	},
+	"fluid":{
+		"id": "minecraft:lava",
+		"amount": 500
+	},
+	"mode": {
+		"index": 0
+	}
+}

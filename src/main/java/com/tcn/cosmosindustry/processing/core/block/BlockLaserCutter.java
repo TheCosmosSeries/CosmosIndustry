@@ -57,21 +57,25 @@ public class BlockLaserCutter extends CosmosBlockRemovableNBT implements EntityB
 	
 	@Override
 	public void attack(BlockState state, Level levelIn, BlockPos pos, Player playerIn) { 
-	BlockEntity entity = levelIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntityLaserCutter blockEntity) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntityLaserCutter blockEntity) {
 			blockEntity.attack(state, levelIn, pos, playerIn);
 		}
 	}
 
 	@Override
 	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity entity = levelIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntityLaserCutter blockEntity) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntityLaserCutter blockEntity) {
 			return blockEntity.useItemOn(stackIn, state, levelIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.FAIL;
+	}
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntityLaserCutter blockEntity) {
+			blockEntity.playerWillDestroy(levelIn, pos, state, player);
+		}
+		return super.playerWillDestroy(levelIn, pos, state, player);
 	}
 	
 	@Override

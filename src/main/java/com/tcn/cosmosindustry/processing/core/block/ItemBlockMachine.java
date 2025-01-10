@@ -73,8 +73,15 @@ public class ItemBlockMachine extends CosmosItemBlock {
 						.append(ComponentHelper.style(ComponentColour.LIGHT_GRAY, " ]"))
 					);
 				}
+				
+				addCtrlInfo(stack, tooltip, stackTag);
+				
 				tooltip.add(ComponentHelper.ctrlForLessDetails());
 			}
 		}
+	}
+	
+	public void addCtrlInfo(ItemStack stack, List<Component> tooltip, CompoundTag stackTag) {
+		
 	}
 }

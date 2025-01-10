@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.storage.client.container.AbstractContainerCapacitor;
 import com.tcn.cosmosindustry.storage.core.blockentity.AbstractBlockEntityCapacitor;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -24,7 +24,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractScreenCapacitor extends CosmosScreenUIModeBE<AbstractContainerCapacitor> {
+public abstract class AbstractScreenCapacitor extends CosmosScreenBlockEntityUI<AbstractContainerCapacitor> {
 
 	private CosmosButtonWithType increaseButton; private int[] IBI = new int[] { 33, 18 };
 	private CosmosButtonWithType decreaseButton; private int[] DBI = new int[] { 33, 48 };

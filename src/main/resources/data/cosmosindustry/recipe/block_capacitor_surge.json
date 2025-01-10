@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"PSP",
+		"BCB",
+		"PSP"
+	],
+	"key": {
+		"C": {
+			"item": "cosmosindustry:block_energy_core"
+		},
+		"B": {
+			"item": "cosmosindustry:block_capacitor"
+		},
+		"P": {
+			"item": "cosmosindustry:steel_plate"
+		},
+		"S": {
+			"item": "cosmosindustry:circuit_advanced"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_capacitor_surge"
+	}
+}

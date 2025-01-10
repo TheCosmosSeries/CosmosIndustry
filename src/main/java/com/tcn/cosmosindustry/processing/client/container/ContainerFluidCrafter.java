@@ -52,7 +52,7 @@ public class ContainerFluidCrafter extends CosmosContainerMenuBlockEntity {
 		});
 
 		/** @FluidUpgrade Slots */
-		this.addSlot(new SlotUpgrade(tile, 7, 143, 19, IndustryRegistrationManager.UPGRADE_FLUID_SPEED.get()));
+		this.addSlot(new SlotUpgrade(tile, 7, 143, 19, IndustryRegistrationManager.UPGRADE_FLUID_USAGE.get()));
 		this.addSlot(new SlotUpgrade(tile, 8, 143, 39, IndustryRegistrationManager.UPGRADE_FLUID_CAPACITY.get()));
 		this.addSlot(new SlotUpgrade(tile, 9, 143, 59, IndustryRegistrationManager.UPGRADE_FLUID_EFFICIENCY.get()));
 		

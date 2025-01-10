@@ -1,20 +1,22 @@
 package com.tcn.cosmosindustry.storage.core.block;
 
 import com.tcn.cosmosindustry.storage.core.blockentity.AbstractBlockEntityCapacitor;
+import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -22,6 +24,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 abstract public class AbstractBlockCapacitor extends CosmosBlockRemovableNBT implements EntityBlock {
 
+	private EnumIndustryTier tier;
+	
 	public static final IntegerProperty DOWN = IntegerProperty.create("down", 0, 3);
 	public static final IntegerProperty UP = IntegerProperty.create("up", 0, 3);
 	public static final IntegerProperty NORTH = IntegerProperty.create("north", 0, 3);
@@ -29,8 +33,10 @@ abstract public class AbstractBlockCapacitor extends CosmosBlockRemovableNBT imp
 	public static final IntegerProperty WEST = IntegerProperty.create("west", 0, 3);
 	public static final IntegerProperty EAST = IntegerProperty.create("east", 0, 3);
 	
-	public AbstractBlockCapacitor(Block.Properties properties) {
+	public AbstractBlockCapacitor(Block.Properties properties, EnumIndustryTier tierIn) {
 		super(properties);
+		
+		this.tier = tierIn;
 		
 		this.registerDefaultState(this.defaultBlockState()
 			.setValue(DOWN, 0).setValue(UP, 0).setValue(NORTH, 0)
@@ -39,22 +45,26 @@ abstract public class AbstractBlockCapacitor extends CosmosBlockRemovableNBT imp
 	}
 	
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player playerIn) {
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof AbstractBlockEntityCapacitor blockEntity) {
-			blockEntity.attack(state, worldIn, pos, playerIn);
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player playerIn) {
+		if (levelIn.getBlockEntity(pos) instanceof AbstractBlockEntityCapacitor blockEntity) {
+			blockEntity.attack(state, levelIn, pos, playerIn);
 		}
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof AbstractBlockEntityCapacitor blockEntity) {
-			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (levelIn.getBlockEntity(pos) instanceof AbstractBlockEntityCapacitor blockEntity) {
+			return blockEntity.useItemOn(stackIn, state, levelIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.SUCCESS;
+	}
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof AbstractBlockEntityCapacitor blockEntity) {
+			blockEntity.playerWillDestroy(levelIn, pos, state, player);
+		}
+		return super.playerWillDestroy(levelIn, pos, state, player);
 	}
 	
 	@Override
@@ -68,13 +78,25 @@ abstract public class AbstractBlockCapacitor extends CosmosBlockRemovableNBT imp
 	}
 	
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
-		AbstractBlockEntityCapacitor block = (AbstractBlockEntityCapacitor) worldIn.getBlockEntity(currentPos);
-		
-		return stateIn
-			.setValue(DOWN, block.getSide(Direction.DOWN).getIndex()).setValue(UP, block.getSide(Direction.UP).getIndex())
-			.setValue(NORTH, block.getSide(Direction.NORTH).getIndex()).setValue(SOUTH, block.getSide(Direction.SOUTH).getIndex())
-			.setValue(WEST, block.getSide(Direction.WEST).getIndex()).setValue(EAST, block.getSide(Direction.EAST).getIndex()
-		);
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {
+		if (levelIn.getBlockEntity(currentPos) instanceof AbstractBlockEntityCapacitor blockEntity) {
+			return stateIn
+				.setValue(DOWN, blockEntity.getSide(Direction.DOWN).getIndex()).setValue(UP, blockEntity.getSide(Direction.UP).getIndex())
+				.setValue(NORTH, blockEntity.getSide(Direction.NORTH).getIndex()).setValue(SOUTH, blockEntity.getSide(Direction.SOUTH).getIndex())
+				.setValue(WEST, blockEntity.getSide(Direction.WEST).getIndex()).setValue(EAST, blockEntity.getSide(Direction.EAST).getIndex()
+			);
+		} else {
+			return stateIn;
+		}
+	}
+
+	@Override
+	public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
+        return !this.tier.creative();
+    }
+	
+	@Override
+	public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+		return !this.tier.creative();
 	}
 }

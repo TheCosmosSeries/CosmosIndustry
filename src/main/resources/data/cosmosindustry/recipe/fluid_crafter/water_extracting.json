@@ -5,7 +5,7 @@
 	},
 	"fluid":{
 		"id": "minecraft:water",
-		"amount": 250
+		"amount": 100
 	},
 	"mode": {
 		"index": 1

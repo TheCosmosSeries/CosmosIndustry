@@ -16,16 +16,19 @@ import com.tcn.cosmosindustry.processing.client.container.ContainerOrePlant;
 import com.tcn.cosmosindustry.processing.core.block.BlockOrePlant;
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated;
 import com.tcn.cosmoslibrary.client.interfaces.IBEUpdated.ProcessingRecipe;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapBE;
+import com.tcn.cosmoslibrary.common.capability.IFluidCapBE;
 import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.IFluidStorage;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
+import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEUIMode;
 import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.registry.gson.object.ObjectFluidTankCustom;
 
 import io.netty.buffer.ByteBuf;
@@ -48,6 +51,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -57,6 +61,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -70,7 +75,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 @SuppressWarnings("removal")
-public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, ProcessingRecipe, WorldlyContainer, MenuProvider, IFluidHandler, IFluidStorage, IBEUpdated.Fluid, IEnergyEntity, RecipeCraftingHolder, IBEUIMode {
+public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, IBlockNotifier, ProcessingRecipe, WorldlyContainer, MenuProvider, IFluidHandler, IFluidStorage, IBEUpdated.Fluid, IEnergyEntity, RecipeCraftingHolder, IBEUIMode, IEnergyCapBE, IFluidCapBE {
 
 	private static final int[] SLOTS_TOP = new int[] { 0 };
 	private static final int[] SLOTS_BOTTOM = new int[] { 2, 1 };
@@ -78,7 +83,7 @@ public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, 
 	
 	private NonNullList<ItemStack> inventoryItems = NonNullList.<ItemStack>withSize(10, ItemStack.EMPTY);
 
-	public ObjectFluidTankCustom fluidTank = new ObjectFluidTankCustom(new FluidTank(16000), 0);
+	public ObjectFluidTankCustom fluidTank = new ObjectFluidTankCustom(16000, 0);
 
 	private int update = 0;
 	private int process_time;
@@ -340,7 +345,26 @@ public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, 
 		}
 		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
-	
+
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos posIn, BlockState state, Player player) {
+		if (!levelIn.isClientSide()) {
+			if (!player.getAbilities().instabuild) {
+				CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
+			}
+		}
+		return state;
+	}
+
+	@Override
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) { }
+
+	@Override
+	public void neighborChanged(BlockState state, Level levelIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onPlace(BlockState state, Level levelIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
+
 	@Override
 	public boolean isProcessing() {
 		return this.hasEnergy() && this.canProcess(this.getCurrentRecipe(), this.getLevel().registryAccess()) && this.process_time > 0;
@@ -485,7 +509,7 @@ public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, 
 
 	@Override
 	public Component getDisplayName() {
-		return ComponentHelper.title("cosmosindustry.gui.ore_plant");
+		return ComponentHelper.style(ComponentColour.ORANGE, "", "cosmosindustry.gui.ore_plant");
 	}
 
 	@Override
@@ -512,7 +536,8 @@ public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, 
 	}
 */
 
-	public IEnergyStorage createEnergyProxy(@Nullable Direction directionIn) {
+	@Override
+	public IEnergyStorage getEnergyCapability(@Nullable Direction directionIn) {
 		return new IEnergyStorage() {
 			@Override
 			public int extractEnergy(int maxExtract, boolean simulate) {
@@ -850,7 +875,8 @@ public class BlockEntityOrePlant extends BlockEntity implements IBlockInteract, 
 		return this.fluidTank.getFillLevel();
 	}
 	
-	public IFluidHandler createFluidProxy(@Nullable Direction directionIn) {
+	@Override
+	public IFluidHandler getFluidCapability(@Nullable Direction directionIn) {
 		return new IFluidHandler() {
 
 			@Override

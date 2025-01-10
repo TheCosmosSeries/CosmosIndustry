@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.processing.client.container.ContainerCharger;
 import com.tcn.cosmosindustry.processing.core.blockentity.BlockEntityCharger;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -24,7 +24,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
-public class ScreenCharger extends CosmosScreenUIModeBE<ContainerCharger> {
+public class ScreenCharger extends CosmosScreenBlockEntityUI<ContainerCharger> {
 
 	private CosmosButtonWithType increaseButton; private int[] IBI = new int[] { 33, 18 };
 	private CosmosButtonWithType decreaseButton; private int[] DBI = new int[] { 33, 48 };

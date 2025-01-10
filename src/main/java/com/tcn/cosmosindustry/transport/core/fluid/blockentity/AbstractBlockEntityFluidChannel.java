@@ -1,10 +1,9 @@
 package com.tcn.cosmosindustry.transport.core.fluid.blockentity;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 
 import com.tcn.cosmosindustry.transport.core.util.TransportUtil;
+import com.tcn.cosmoslibrary.common.capability.IFluidCapBE;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
 import com.tcn.cosmoslibrary.common.enums.EnumConnectionType;
@@ -41,7 +40,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 @SuppressWarnings("unused")
-abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implements IBlockInteract, IBEChannelSided, IChannelFluid, IFluidHandler {
+abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implements IBlockInteract, IBEChannelSided, IChannelFluid, IFluidHandler, IFluidCapBE {
 	
 	private EnumChannelSideState[] SIDE_STATE_ARRAY = EnumChannelSideState.getStandardArray();
 	
@@ -283,7 +282,8 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 	@Override
 	public void attack(BlockState state, Level levelIn, BlockPos pos, Player player) { }
 	
-	public IFluidHandler createFluidProxy(@Nullable Direction directionIn) {
+	@Override
+	public IFluidHandler getFluidCapability(@Nullable Direction directionIn) {
 		return new IFluidHandler() {
 
 			@Override
@@ -357,10 +357,6 @@ abstract public class AbstractBlockEntityFluidChannel extends BlockEntity implem
 		return this.tier;
 	}
 	
-	public EnumRenderType getRenderType() {
-		return EnumRenderType.OPAQUE;
-	}
-
 	@Override
 	public int getTanks() {
 		return 1;

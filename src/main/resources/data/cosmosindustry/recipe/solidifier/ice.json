@@ -1,0 +1,10 @@
+{
+	"type": "cosmosindustry:solidifier",
+	"fluid":{
+		"id": "minecraft:water",
+		"amount": 1000
+	},
+	"result": {
+		"id": "minecraft:ice"
+	}
+}

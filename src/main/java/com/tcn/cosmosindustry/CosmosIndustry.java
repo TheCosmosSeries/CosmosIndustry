@@ -5,7 +5,7 @@ import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
 import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.core.management.IndustrySoundManager;
 import com.tcn.cosmosindustry.core.management.IndustryWorldgenManager;
-import com.tcn.cosmoslibrary.common.runtime.CosmosConsoleManager;
+import com.tcn.cosmoslibrary.runtime.common.CosmosConsoleManager;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -23,7 +23,7 @@ public class CosmosIndustry {
 	public static CosmosConsoleManager CONSOLE = new CosmosConsoleManager(CosmosIndustry.MOD_ID, true, true);
 	
 	public CosmosIndustry(ModContainer container, IEventBus bus) {
-		container.registerConfig(ModConfig.Type.COMMON, IndustryConfigManager.SPEC, "cosmosindustry-common.toml");
+		container.registerConfig(ModConfig.Type.COMMON, IndustryConfigManager.SPEC, MOD_ID + "-common.toml");
 		
 		IndustryRegistrationManager.register(bus);
 		IndustryWorldgenManager.register(bus);
@@ -42,7 +42,5 @@ public class CosmosIndustry {
 
 	public void onFMLClientSetup(final FMLClientSetupEvent event) {
 		IndustryRegistrationManager.onFMLClientSetup(event);
-		
-		CONSOLE.startup("ClientSetup complete.");
 	}
 }

@@ -1,14 +1,16 @@
 {
 	"type": "minecraft:crafting_shaped",
-	
 	"pattern": [
-		"WWW",
-		"WWW",
-		"WWW"
+		"III",
+		"IBI",
+		"III"
 	],
 	"key": {
-		"W": {
+		"I": {
 			"item": "cosmosindustry:energy_wafer"
+		},
+		"B": {
+			"item": "cosmosindustry:block_energy"
 		}
 	},
 	"result": {

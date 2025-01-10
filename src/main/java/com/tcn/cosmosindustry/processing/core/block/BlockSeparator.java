@@ -56,24 +56,28 @@ public class BlockSeparator extends CosmosBlockRemovableNBT implements EntityBlo
 	}
 	
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player playerIn) { 
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntitySeparator blockEntity) {
-			blockEntity.attack(state, worldIn, pos, playerIn);
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player playerIn) { 
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySeparator blockEntity) {
+			blockEntity.attack(state, levelIn, pos, playerIn);
 		}
 	}
 
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		BlockEntity entity = worldIn.getBlockEntity(pos);
-		
-		if (entity instanceof BlockEntitySeparator blockEntity) {
-			return blockEntity.useItemOn(stackIn, state, worldIn, pos, playerIn, handIn, hit);
+	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySeparator blockEntity) {
+			return blockEntity.useItemOn(stackIn, state, levelIn, pos, playerIn, handIn, hit);
 		}
 		return ItemInteractionResult.FAIL;
 	}
 
+	@Override
+	public BlockState playerWillDestroy(Level levelIn, BlockPos pos, BlockState state, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySeparator blockEntity) {
+			blockEntity.playerWillDestroy(levelIn, pos, state, player);
+		}
+		return super.playerWillDestroy(levelIn, pos, state, player);
+	}
+	
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
@@ -85,7 +89,7 @@ public class BlockSeparator extends CosmosBlockRemovableNBT implements EntityBlo
 	}
 	
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {	
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {	
 		return stateIn.setValue(FACING, stateIn.getValue(FACING));
 	}
 	
@@ -95,8 +99,8 @@ public class BlockSeparator extends CosmosBlockRemovableNBT implements EntityBlo
 	}
 	
 	@Override
-	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		worldIn.setBlockAndUpdate(pos, state.setValue(FACING, placer.getDirection().getOpposite()));
+	public void setPlacedBy(Level levelIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		levelIn.setBlockAndUpdate(pos, state.setValue(FACING, placer.getDirection().getOpposite()));
 	}
 
 	public BlockState rotate(BlockState p_185499_1_, Rotation p_185499_2_) {

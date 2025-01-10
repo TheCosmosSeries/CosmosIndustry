@@ -3,12 +3,11 @@ package com.tcn.cosmosindustry.transport.core.energy.blockentity;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmosindustry.transport.core.util.TransportUtil;
+import com.tcn.cosmoslibrary.common.capability.IEnergyCapBE;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.enums.EnumChannelSideState;
 import com.tcn.cosmoslibrary.common.enums.EnumConnectionType;
 import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
-import com.tcn.cosmoslibrary.common.enums.EnumRenderType;
-import com.tcn.cosmoslibrary.common.interfaces.IEnergyEntity;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBEChannelSided;
@@ -17,6 +16,7 @@ import com.tcn.cosmoslibrary.common.lib.CompatHelper;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
+import com.tcn.cosmoslibrary.energy.interfaces.IEnergyEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,7 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity implements IBlockInteract, IBlockNotifier, IBEChannelSided, IChannelEnergy, IEnergyEntity {
+abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity implements IBlockInteract, IBlockNotifier, IBEChannelSided, IChannelEnergy, IEnergyEntity, IEnergyCapBE {
 	private EnumChannelSideState[] SIDE_STATE_ARRAY = EnumChannelSideState.getStandardArray();
 	
 	private int energy_stored = 0;
@@ -53,6 +53,7 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 	private EnumIndustryTier tier;
 	
 	private boolean[] recieved = new boolean[] { false, false, false, false, false, false };
+	private int lastRecieved = 0;
 	
 	public AbstractBlockEntityEnergyChannel(BlockEntityType<?> typeIn, BlockPos posIn, BlockState stateIn, int[] energyInfoIn, EnumIndustryTier tierIn) {
 		super(typeIn, posIn, stateIn);
@@ -104,13 +105,7 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public boolean canConnect(Direction facing) {
-		EnumChannelSideState state = this.getSide(facing);
-		
-		if (state.equals(EnumChannelSideState.DISABLED)) {
-			return false;
-		}
-		
-		return true;
+		return !this.getSide(facing).equals(EnumChannelSideState.DISABLED);
 	}
 
 	@Override
@@ -260,6 +255,14 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 				entityIn.pushEnergy(direction);
 				entityIn.pushEnergy(direction);
 			});
+			
+			if (entityIn.lastRecieved > 0) {
+				entityIn.lastRecieved--;
+			}
+			
+			if (entityIn.lastRecieved == 0) {
+				entityIn.recieved = new boolean[] { false, false, false, false, false, false };
+			}
 		}
 	}
 	
@@ -300,17 +303,7 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public ItemInteractionResult useItemOn(ItemStack stackIn, BlockState state, Level levelIn, BlockPos posIn, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
-		if (!levelIn.isClientSide()) {
-			playerIn.sendSystemMessage(ComponentHelper.style(ComponentColour.WHITE, "" + this.getEnergyStored() ));
-			playerIn.sendSystemMessage(ComponentHelper.style(ComponentColour.WHITE, ""
-				+ " D " + this.recieved[0]
-				+ " U " + this.recieved[1]
-				+ " N " + this.recieved[2]
-				+ " S " + this.recieved[3]
-				+ " E " + this.recieved[4]
-				+ " W " + this.recieved[5]
-			));
-		}
+		playerIn.sendSystemMessage(ComponentHelper.comp(this.lastRecieved + " " + this.getEnergyStored()));
 		
 		if (CosmosUtil.holdingWrench(playerIn)) {
 			if (!playerIn.isShiftKeyDown()) {
@@ -346,7 +339,9 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 		return super.getCapability(capability, facing);
 	}
 	*/
-	public IEnergyStorage createEnergyProxy(@Nullable Direction directionIn) {
+	
+	@Override
+	public IEnergyStorage getEnergyCapability(@Nullable Direction directionIn) {
         return new IEnergyStorage() {
         	
             @Override
@@ -431,8 +426,8 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 
 	@Override
 	public int receiveEnergy(Direction directionIn, int max_receive, boolean simulate) {
-//		this.setLastFacing(directionIn);
 		this.setRecieved(directionIn, true);
+		this.lastRecieved = 10;
 		
 		int storedReceived = Math.min(this.getMaxEnergyStored() - energy_stored, Math.min(this.energy_max_receive, max_receive));
 
@@ -518,10 +513,6 @@ abstract public class AbstractBlockEntityEnergyChannel extends BlockEntity imple
 		return this.tier;
 	}
 	
-	public EnumRenderType getRenderType() {
-		return EnumRenderType.OPAQUE;
-	}
-
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
 		return null;

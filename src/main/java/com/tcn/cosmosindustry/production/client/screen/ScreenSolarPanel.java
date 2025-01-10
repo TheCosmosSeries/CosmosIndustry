@@ -7,7 +7,7 @@ import com.tcn.cosmosindustry.IndustryReference;
 import com.tcn.cosmosindustry.production.client.container.ContainerSolarPanel;
 import com.tcn.cosmosindustry.production.core.blockentity.BlockEntitySolarPanel;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
@@ -22,7 +22,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ScreenSolarPanel extends CosmosScreenUIModeBE<ContainerSolarPanel> {
+public class ScreenSolarPanel extends CosmosScreenBlockEntityUI<ContainerSolarPanel> {
 	
 	public ScreenSolarPanel(ContainerSolarPanel containerIn, Inventory playerInventoryIn, Component titleIn) {
 		super(containerIn, playerInventoryIn, titleIn);

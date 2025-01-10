@@ -17,19 +17,30 @@ public class IndustryReference {
 		 * ResourceLocations for Base Objects.
 		 */
 		public static class Base {
-			public static final String BLOCKS = RESOURCE + "block/base/";
-			public static final String FLUID = BLOCKS + "fluid/";
+			public static final String BLOCK = RESOURCE + "block/";
+			public static final String BASE = BLOCK + "base/";
 			public static final String ITEMS = RESOURCE + "item/base/";
 			public static final String GUI = RESOURCE + "gui/base/";
+		}
+		
+		public static class Fluid {
+			public static final String BLOCK = RESOURCE + "block/";
+			public static final String FLUID = PRE + "block/fluid/";
+
+			public static final ResourceLocation COOLANT_STILL = ResourceLocation.parse(FLUID + "coolant_still");
+			public static final ResourceLocation COOLANT_FLOW = ResourceLocation.parse(FLUID + "coolant_flow");
 			
-			public static final ResourceLocation FLUID_COOLANT_STILL = ResourceLocation.parse(FLUID + "coolant/coolant_still");
-			public static final ResourceLocation FLUID_COOLANT_FLOWING = ResourceLocation.parse(FLUID + "coolant/coolant_flow");
+			public static final ResourceLocation ENERGIZED_REDSTONE_STILL = ResourceLocation.parse(FLUID + "energized_redstone_still");
+			public static final ResourceLocation ENERGIZED_REDSTONE_FLOW = ResourceLocation.parse(FLUID + "energized_redstone_flow");
 			
-			public static final ResourceLocation FLUID_ENERGIZED_REDSTONE_STILL= ResourceLocation.parse(FLUID + "energized_redstone/energized_redstone_still");
-			public static final ResourceLocation FLUID_ENERGIZED_REDSTONE_FLOWING = ResourceLocation.parse(FLUID + "energized_redstone/energized_redstone_flow");
-			
-			public static final ResourceLocation FLUID_GLOWSTONE_INFUSED_MAGMA_STILL = ResourceLocation.parse(FLUID + "glowstone_infused_magma/glowstone_infused_magma_still");
-			public static final ResourceLocation FLUID_GLOWSTONE_INFUSED_MAGMA_FLOWING = ResourceLocation.parse(FLUID + "glowstone_infused_magma/glowstone_infused_magma_flow");
+			public static final ResourceLocation GLOWSTONE_MAGMA_STILL = ResourceLocation.parse(FLUID + "glowstone_magma_still");
+			public static final ResourceLocation GLOWSTONE_MAGMA_FLOW = ResourceLocation.parse(FLUID + "glowstone_magma_flow");
+
+			public static final ResourceLocation RUBBER_STILL = ResourceLocation.parse(FLUID + "rubber_still");
+			public static final ResourceLocation RUBBER_FLOW = ResourceLocation.parse(FLUID + "rubber_flow");
+
+			public static final ResourceLocation OVERLAY = ResourceLocation.parse(FLUID + "overlay");
+			public static final ResourceLocation OVERLAY_FULL = ResourceLocation.parse(RESOURCE + "misc/underwater.png");
 		}
 		
 		/**
@@ -81,29 +92,35 @@ public class IndustryReference {
 				public static final ResourceLocation CHARGER_LIGHT = ResourceLocation.parse(GUI + "charger/gui.png");
 				public static final ResourceLocation CHARGER_DARK = ResourceLocation.parse(GUI + "charger/gui_dark.png");
 				public static final String CHARGER_NAME = PREFIX + "charger" + SUFFIX;
-				public static final int CHARGER_INDEX = 5;
+//				public static final int CHARGER_INDEX = 5;
 				
 				public static final ResourceLocation ORE_PLANT_LIGHT = ResourceLocation.parse(GUI + "ore_plant/gui.png");
 				public static final ResourceLocation ORE_PLANT_DARK = ResourceLocation.parse(GUI + "ore_plant/gui_dark.png");
 				public static final ResourceLocation ORE_PLANT_JEI = ResourceLocation.parse(GUI + "ore_plant/jei.png");
 				public static final String ORE_PLANT_NAME = PREFIX + "ore_plant" + SUFFIX;
-				public static final int ORE_PLANT_INDEX = 6;
+//				public static final int ORE_PLANT_INDEX = 6;
 				
 				public static final ResourceLocation FLUID_CRAFTER_LIGHT = ResourceLocation.parse(GUI + "fluid_crafter/gui.png");
 				public static final ResourceLocation FLUID_CRAFTER_DARK = ResourceLocation.parse(GUI + "fluid_crafter/gui_dark.png");
 				public static final ResourceLocation FLUID_CRAFTER_JEI = ResourceLocation.parse(GUI + "fluid_crafter/jei.png");
 				public static final String FLUID_CRAFTER_NAME = PREFIX + "fluid_crafter" + SUFFIX;
-				public static final int FLUID_CRAFTER_INDEX = 7;
+//				public static final int FLUID_CRAFTER_INDEX = 7;
+
+				public static final ResourceLocation SOLIDIFIER_LIGHT = ResourceLocation.parse(GUI + "solidifier/gui.png");
+				public static final ResourceLocation SOLIDIFIER_DARK = ResourceLocation.parse(GUI + "solidifier/gui_dark.png");
+				public static final ResourceLocation SOLIDIFIER_JEI = ResourceLocation.parse(GUI + "solidifier/jei.png");
+				public static final String SOLIDIFIER_NAME = PREFIX + "solidifier" + SUFFIX;
+//				public static final int SOLIDIFIER_INDEX = 8;
 				
 				public static final ResourceLocation SYNTHESISER_LIGHT = ResourceLocation.parse(GUI + "synthesiser/gui.png");
 				public static final ResourceLocation SYNTHESISER_DARK = ResourceLocation.parse(GUI + "synthesiser/gui_dark.png");
 				public static final ResourceLocation SYNTHESISER_JEI = ResourceLocation.parse(GUI + "synthesiser/jei.png");
 				public static final ResourceLocation SYNTHESISER_JEI_LASER = ResourceLocation.parse(GUI + "synthesiser/laser.png");
 				public static final String SYNTHESISER_NAME = PREFIX + "synthesiser" + SUFFIX;
-				public static final int SYNTHESISER_INDEX = 8;
+//				public static final int SYNTHESISER_INDEX = 9;
 				
 				public static final String SYNTHESISER_STAND = PREFIX + "synthesiser_stand" + SUFFIX;
-				public static final int SYNTHESISER_STAND_INDEX = 9;
+				public static final int SYNTHESISER_STAND_INDEX = 10;
 	
 				public static final int[] LASER_JEI_ARRAY_X = new int[] { 0, 0, 0, 0, 60, 60, 60, 60, 120, 120, 120, 120,180, 180, 180, 180 };
 				public static final int[] LASER_JEI_ARRAY_Y = new int[] { 0, 60, 120, 180, 0, 60, 120, 180, 0, 60, 120, 180, 0, 60, 120, 180 };
@@ -172,11 +189,12 @@ public class IndustryReference {
 				public static final ResourceLocation SOLAR_PANEL = ResourceLocation.parse(BER + "solar_panel.png");
 				public static final ResourceLocation SOLID_FUEL = ResourceLocation.parse(BER + "solid_fuel.png");
 				public static final ResourceLocation LIQUID_FUEL = ResourceLocation.parse(BER + "liquid_fuel.png");
+				public static final ResourceLocation PELTIER = ResourceLocation.parse(BER + "peltier.png");
 			}
 			
 			/** Values */
 			public static final int[] CAPACITY = new int[] { 100000, 200000, 300000, 400000, 500000 };
-			public static final int[] MAX_OUTPUT = new int[] { 500, 1000, 1500, 2000, 2500 };
+			public static final int MAX_OUTPUT = 1500;
 			public static final int[] RF_TICK_RATE = new int[] { 60, 100, 140, 180, 220 };
 			public static final int[] SPEED_RATE = new int[] { 100, 150, 200, 250, 300 };
 
@@ -210,13 +228,13 @@ public class IndustryReference {
 				public static final ResourceLocation CAPACITOR_CONNECTION = ResourceLocation.parse(BLOCKS + "capacitor/connection.png");
 			}
 			
-			public static final int[] ENERGY = new int[] { 20000000, 100000 };
-			public static final int[] ENERGY_SURGE = new int[] { 50000000, 500000 };
+			public static final int[] ENERGY = new int[] { 50000000, 100000 };
+			public static final int[] ENERGY_SURGE = new int[] { 120000000, 500000 };
 			public static final int[] ENERGY_CREATIVE = new int[] { 200000000, 1000000 };
 
 			public static final int FLUID_CAPACITY = 64000;
-			public static final int FLUID_CAPACITY_S = 128000;
-			public static final int FLUID_CAPACITY_C = 256000;
+			public static final int FLUID_CAPACITY_S = 256000;
+			public static final int FLUID_CAPACITY_C = 512000;
 		}
 		
 		/**
@@ -247,10 +265,8 @@ public class IndustryReference {
 			public static VoxelShape[] BOUNDING_BOXES_INTERFACE = new VoxelShape[] {
 				Block.box(4.00F, 0.00F, 4.00F, 12.0F, 3.00F, 12.0F), // DOWN
 				Block.box(4.00F, 13.0F, 4.00F, 12.0F, 16.0F, 12.0F), // UP
-				
 				Block.box(4.00F, 4.00F, 0.00F, 12.0F, 12.0F, 3.00F), // NORTH
 				Block.box(4.00F, 4.00F, 13.0F, 12.0F, 12.0F, 16.0F), // SOUTH
-				
 				Block.box(0.00F, 4.00F, 4.00F, 3.00F, 12.0F, 12.0F), // WEST
 				Block.box(13.0F, 4.00F, 4.00F, 16.0F, 12.0F, 12.0F)  // EAST
 			};
@@ -261,11 +277,11 @@ public class IndustryReference {
 			 * Order is: [Base - D-U-N-S-W-E]
 			 */
 			public static VoxelShape[] BOUNDING_BOXES_STANDARD_SURGE = new VoxelShape[] {
-				Block.box(4.50D, 4.50D, 4.50D, 11.5D, 11.5D, 11.5D), //BASE
+				Block.box(4.50D, 4.50D, 4.50D, 11.5D, 11.5D, 11.5D), // BASE
 				Block.box(4.50D, 0.00D, 4.50D, 11.5D, 4.50D, 11.5D), // DOWN
 				Block.box(4.50D, 11.5D, 4.50D, 11.5D, 16.0D, 11.5D), // UP
 				Block.box(4.50D, 4.50D, 0.00D, 11.5D, 11.5D, 4.50D), // NORTH
-				Block.box(4.50D, 4.50D, 11.5D, 11.5D, 11.5D, 16.0D), //SOUTH
+				Block.box(4.50D, 4.50D, 11.5D, 11.5D, 11.5D, 16.0D), // SOUTH
 				Block.box(0.00D, 4.50D, 4.50D, 4.50D, 11.5D, 11.5D), // WEST
 				Block.box(11.5D, 4.50D, 4.50D, 16.0D, 11.5D, 11.5D)  // EAST
 			};
@@ -279,7 +295,7 @@ public class IndustryReference {
 			public static final String BER = RESOURCE + "model/transport/";
 			
 			/** Values */
-			public static final int[] ENERGY = new int[] { 10000, 1000 };
+			public static final int[] ENERGY = new int[] { 10000, 10000 };
 			public static final int[] ENERGY_SURGE = new int[] { 50000, 50000 };
 			public static final int[] ENERGY_CREATIVE = new int[] { 250000, 250000 };
 			

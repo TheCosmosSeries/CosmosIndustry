@@ -28,8 +28,9 @@ public class IndustryConfigManager {
 		builder.push("debug");
 		{
 			debug_message = builder
-						.comment("Whether cosmosindustry can send system messages.")
-						.define("debug_message", true);
+				.comment("Whether cosmosindustry can send system messages.")
+				.define("debug_message", true
+			);
 		}
 		builder.pop();
 	}

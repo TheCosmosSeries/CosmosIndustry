@@ -10,6 +10,7 @@ import net.minecraft.world.level.material.Fluid;
 public final class IndustryFluidTags {
     public static final TagKey<Fluid> ENERGIZED_REDSTONE = create(CosmosIndustry.MOD_ID, "energized_redstone");
     public static final TagKey<Fluid> COOLANT = create(CosmosIndustry.MOD_ID, "coolant");
+    public static final TagKey<Fluid> RUBBER = create(CosmosIndustry.MOD_ID, "rubber");
 
     private IndustryFluidTags() {
     }

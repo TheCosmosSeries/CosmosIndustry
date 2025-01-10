@@ -1,0 +1,7 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "cosmosindustry:item/storage/cell_base_creative",
+		"layer1": "cosmosindustry:item/storage/energy_8"
+	}
+}

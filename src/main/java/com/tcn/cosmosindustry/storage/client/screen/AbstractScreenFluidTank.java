@@ -8,7 +8,7 @@ import com.tcn.cosmosindustry.core.network.packet.PacketEmptyTank;
 import com.tcn.cosmosindustry.storage.client.container.AbstractContainerFluidTank;
 import com.tcn.cosmosindustry.storage.core.blockentity.AbstractBlockEntityFluidTank;
 import com.tcn.cosmoslibrary.client.ui.CosmosUISystem;
-import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenBlockEntityUI;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonWithType.TYPE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -28,7 +28,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @SuppressWarnings({ "removal" })
 @OnlyIn(Dist.CLIENT)
-public abstract class AbstractScreenFluidTank extends CosmosScreenUIModeBE<AbstractContainerFluidTank> {
+public abstract class AbstractScreenFluidTank extends CosmosScreenBlockEntityUI<AbstractContainerFluidTank> {
 
 	private CosmosButtonWithType buttonTankClear; private int[] TBCI = new int[] { 66, 62, 18 };
 
@@ -37,7 +37,7 @@ public abstract class AbstractScreenFluidTank extends CosmosScreenUIModeBE<Abstr
 		
 		this.setImageDims(176, 177);
 		this.setLight(IndustryReference.Resource.Storage.Gui.FLUID_TANK_LIGHT);
-		this.setLight(IndustryReference.Resource.Storage.Gui.FLUID_TANK_DARK);
+		this.setDark(IndustryReference.Resource.Storage.Gui.FLUID_TANK_DARK);
 		this.setUIModeButtonIndex(159, 5);
 		
 		this.setTitleLabelDimsCentered(0, 4);
@@ -104,18 +104,18 @@ public abstract class AbstractScreenFluidTank extends CosmosScreenUIModeBE<Abstr
 					ComponentHelper.style2(ComponentColour.ORANGE, amount_string + " / " + capacity_string, "cosmosindustry.gui.fluid_bar.suff") 
 				};
 				graphicsIn.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
-			}
-		} else if (this.buttonTankClear != null) {
-			if (this.buttonTankClear.isMouseOver(mouseX, mouseY)) {
-				if (this.buttonTankClear.active) {
-					if (!hasShiftDown()) {
-						graphicsIn.renderTooltip(this.font, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"), mouseX, mouseY);
-					} else {
-						Component[] comp = new Component[] { 
-							ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"),
-							ComponentHelper.style(ComponentColour.RED, "bold", "cosmosindustry.gui.button.tank_clear_shift") 
-						};
-						graphicsIn.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
+			}else if (this.buttonTankClear != null) {
+				if (this.buttonTankClear.isMouseOver(mouseX, mouseY)) {
+					if (this.buttonTankClear.active) {
+						if (!hasShiftDown()) {
+							graphicsIn.renderTooltip(this.font, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"), mouseX, mouseY);
+						} else {
+							Component[] comp = new Component[] { 
+								ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"),
+								ComponentHelper.style(ComponentColour.RED, "bold", "cosmosindustry.gui.button.tank_clear_shift") 
+							};
+							graphicsIn.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
+						}
 					}
 				}
 			}
