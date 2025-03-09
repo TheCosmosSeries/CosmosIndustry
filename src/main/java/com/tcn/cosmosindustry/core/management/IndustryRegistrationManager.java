@@ -139,7 +139,7 @@ import com.tcn.cosmoslibrary.common.enums.EnumIndustryTier;
 import com.tcn.cosmoslibrary.common.fluid.CosmosFluidType;
 import com.tcn.cosmoslibrary.common.item.CosmosCraftingItem;
 import com.tcn.cosmoslibrary.common.item.CosmosItem;
-import com.tcn.cosmoslibrary.common.item.CosmosItemTool;
+import com.tcn.cosmoslibrary.common.item.CosmosItemToolBasic;
 import com.tcn.cosmoslibrary.common.item.CosmosItemUpgradeEnergy;
 import com.tcn.cosmoslibrary.common.item.CosmosItemUpgradeFluid;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -199,18 +199,17 @@ public class IndustryRegistrationManager {
 	
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, CosmosIndustry.MOD_ID);
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(BuiltInRegistries.MENU, CosmosIndustry.MOD_ID);
-
 	public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CosmosIndustry.MOD_ID);
 
-	public static final ArrayList<Supplier<? extends ItemLike>> TAB_BLOCKS = new ArrayList<>();
+	public static final ArrayList<Supplier<? extends ItemLike>> TAB_BLOCKS  = new ArrayList<>();
 	public static final ArrayList<Supplier<? extends ItemLike>> TAB_DEVICES = new ArrayList<>();
-	public static final ArrayList<Supplier<? extends ItemLike>> TAB_ITEMS = new ArrayList<>();
-	public static final ArrayList<Supplier<? extends ItemLike>> TAB_TOOLS = new ArrayList<>();
+	public static final ArrayList<Supplier<? extends ItemLike>> TAB_ITEMS   = new ArrayList<>();
+	public static final ArrayList<Supplier<? extends ItemLike>> TAB_TOOLS   = new ArrayList<>();
 
 	public static final Supplier<CreativeModeTab> BLOCKS_GROUP = TABS.register("cosmosindustry.blocks", 
-		() -> CreativeModeTab.builder()
-			.title(ComponentHelper.style(ComponentColour.GRAY, "bold", "itemGroup.cosmosindustry.blocks")).icon(() -> { return new ItemStack(IndustryRegistrationManager.BLOCK_ORE_TIN.get()); })
-			.displayItems((params, output) -> TAB_BLOCKS.forEach(itemLike -> output.accept(itemLike.get()))).build()
+		() -> CreativeModeTab.builder().title(ComponentHelper.style(ComponentColour.GRAY, "bold", "itemGroup.cosmosindustry.blocks")).icon(() -> {
+			return new ItemStack(IndustryRegistrationManager.BLOCK_ORE_TIN.get());
+		}).displayItems((params, output) -> TAB_BLOCKS.forEach(itemLike -> output.accept(itemLike.get()))).build()
 	);
 
 	public static final Supplier<CreativeModeTab> DEVICES_GROUP = TABS.register("cosmosindustry.devices", 
@@ -304,7 +303,7 @@ public class IndustryRegistrationManager {
 	public static final DeferredItem<Item> TOOL_ROD = addToItemTab("tool_rod");
 
 	
-	public static final DeferredItem<Item> MACHINE_WRENCH = addToToolsTab(ITEMS.register("machine_wrench", () -> new CosmosItemTool(new Item.Properties())));
+	public static final DeferredItem<Item> MACHINE_WRENCH = addToToolsTab(ITEMS.register("machine_wrench", () -> new CosmosItemToolBasic(new Item.Properties())));
 	public static final DeferredItem<Item> MACHINE_HAMMER = addToToolsTab(ITEMS.register("machine_hammer", () -> new CosmosCraftingItem(new Item.Properties(), 1, 128, 4, true)));
 
 	public static final DeferredItem<ItemEnergyCell> ENERGY_CELL = addToToolsTab(ITEMS.register("energy_cell", () -> new ItemEnergyCell(new Item.Properties().stacksTo(1), new CosmosEnergyItem.Properties().maxEnergyStored(1000000).maxIO(50000).doesExtract(true), EnumIndustryTier.NORMAL)));
@@ -622,7 +621,7 @@ public class IndustryRegistrationManager {
 			BLOCK_ENTITY_TYPE_CHANNEL_FLUID.get(), BLOCK_ENTITY_TYPE_CHANNEL_FLUID_SURGE.get(), BLOCK_ENTITY_TYPE_CHANNEL_FLUID_CREATIVE.get()
 		);
 
-		CosmosIndustry.CONSOLE.startup("BlockEntityRenderer registration complete.");
+		CosmosIndustry.CONSOLE.startup("BlockEntityRenderer registration complete...");
 	}
 
 	@SubscribeEvent
@@ -658,7 +657,7 @@ public class IndustryRegistrationManager {
 		event.register(CONTAINER_TYPE_FLUID_TANK_SURGE.get(), ScreenFluidTankSurge::new);
 		event.register(CONTAINER_TYPE_FLUID_TANK_CREATIVE.get(), ScreenFluidTankCreative::new);
 		
-		CosmosIndustry.CONSOLE.startup("Menu Screen registration complete.");
+		CosmosIndustry.CONSOLE.startup("Menu Screen registration complete...");
 	}
 	
 	@SubscribeEvent
@@ -689,9 +688,11 @@ public class IndustryRegistrationManager {
 			BUCKET_ENERGIZED_REDSTONE.get(), BUCKET_COOLANT.get(), BUCKET_RUBBER.get()
 		);
 		
-		CosmosRuntime.Server.registerItemFluidCapabilities(event, ITEMBLOCK_FLUID_TANK.get(), ITEMBLOCK_FLUID_TANK_SURGE.get(), ITEMBLOCK_FLUID_TANK_CREATIVE.get());
+		CosmosRuntime.Server.registerItemFluidCapabilities(event, 
+			ITEMBLOCK_FLUID_TANK.get(), ITEMBLOCK_FLUID_TANK_SURGE.get(), ITEMBLOCK_FLUID_TANK_CREATIVE.get()
+		);
 		
-		CosmosIndustry.CONSOLE.startup("Capability registration complete.");
+		CosmosIndustry.CONSOLE.startup("Capability registration complete...");
 	}
 
 	@SubscribeEvent
@@ -702,7 +703,7 @@ public class IndustryRegistrationManager {
 			"block_liquid_fuel_item", "block_peltier_item"
 		);
 		
-		CosmosIndustry.CONSOLE.startup("Additional Model registration complete..");
+		CosmosIndustry.CONSOLE.startup("Additional Model registration complete...");
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -731,10 +732,14 @@ public class IndustryRegistrationManager {
 		ItemProperties.register(ENERGY_CELL.get(), ResourceLocation.parse("energy"), (stack, level, entity, seed) -> { return stack.getItem() instanceof CosmosEnergyStorageItem item ? (float) item.getScaledEnergy(stack, 8) : 0.0F; });
 		ItemProperties.register(ENERGY_CELL_SURGE.get(), ResourceLocation.parse("energy"), (stack, level, entity, seed) -> { return stack.getItem() instanceof CosmosEnergyStorageItem item ? (float) item.getScaledEnergy(stack, 8) : 0.0F; });
 
-		CosmosIndustry.CONSOLE.startup("FMLClientSetup complete.");
+		CosmosIndustry.CONSOLE.startup("FMLClientSetup complete...");
 	}
 	
 	private static Item item() {
+		return item(new Item.Properties());
+	}
+
+	private static Item item(Item.Properties properties) {
 		return new CosmosItem(new Item.Properties());
 	}
 	

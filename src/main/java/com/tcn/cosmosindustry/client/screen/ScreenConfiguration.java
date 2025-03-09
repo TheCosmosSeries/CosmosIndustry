@@ -45,8 +45,7 @@ public final class ScreenConfiguration extends Screen {
 	protected void init() {
 		this.optionsRowList = new CosmosOptionsList(
 			this.minecraft, this.width, this.height,
-			OPTIONS_LIST_TOP_HEIGHT,
-			this.height - OPTIONS_LIST_BOTTOM_OFFSET,
+			OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET,
 			OPTIONS_LIST_ITEM_HEIGHT, 310, new CosmosOptions(Minecraft.getInstance(), new File("."))
 		);
 		

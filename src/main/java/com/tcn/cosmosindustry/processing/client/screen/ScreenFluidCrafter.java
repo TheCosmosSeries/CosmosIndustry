@@ -156,7 +156,7 @@ public class ScreenFluidCrafter extends CosmosScreenBlockEntityUI<ContainerFluid
 
 			else if (this.buttonTankClear != null) {
 				if (this.buttonTankClear.isMouseOver(mouseX, mouseY)) {
-					if (this.buttonTankClear.active) {
+					if (this.buttonTankClear.isActive()) {
 						if (!hasShiftDown()) {
 							graphicsIn.renderTooltip(this.font, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"), mouseX, mouseY);
 						} else {

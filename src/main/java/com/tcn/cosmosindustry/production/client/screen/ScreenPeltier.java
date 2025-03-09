@@ -171,7 +171,7 @@ public class ScreenPeltier extends CosmosScreenBlockEntityUI<ContainerPeltier> {
 
 			else if (this.buttonTankClear1 != null) {
 				if (this.buttonTankClear1.isMouseOver(mouseX, mouseY)) {
-					if (this.buttonTankClear1.active) {
+					if (this.buttonTankClear1.isActive()) {
 						if (!hasShiftDown()) {
 							graphicsIn.renderTooltip(this.font, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"), mouseX, mouseY);
 						} else {
@@ -188,7 +188,7 @@ public class ScreenPeltier extends CosmosScreenBlockEntityUI<ContainerPeltier> {
 
 			else if (this.buttonTankClear2 != null) {
 				if (this.buttonTankClear2.isMouseOver(mouseX, mouseY)) {
-					if (this.buttonTankClear2.active) {
+					if (this.buttonTankClear2.isActive()) {
 						if (!hasShiftDown()) {
 							graphicsIn.renderTooltip(this.font, ComponentHelper.style(ComponentColour.WHITE, "cosmosindustry.gui.button.tank_clear"), mouseX, mouseY);
 						} else {

@@ -2,7 +2,7 @@ package com.tcn.cosmosindustry.processing.client.container;
 
 import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
-import com.tcn.cosmoslibrary.client.container.slot.SlotNumber;
+import com.tcn.cosmoslibrary.client.container.slot.SlotStackSize;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,7 +25,7 @@ public class ContainerSynthesiser extends CosmosContainerMenuBlockEntity {
 		super(IndustryRegistrationManager.CONTAINER_TYPE_SYNTHESISER.get(), indexIn, playerInventoryIn, accessIn, posIn);
 		
 		/** @Inputslot / @OutputSlot */
-		this.addSlot(new SlotNumber(tile, 0, 70, 39, 1));
+		this.addSlot(new SlotStackSize(tile, 0, 70, 39, 1));
 		
 		/**@Inventory*/
 		for (int y = 0; y < 3; y++) {

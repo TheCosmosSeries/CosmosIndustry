@@ -136,7 +136,7 @@ public class FluidCrafterRecipe implements Recipe<RecipeInput> {
         );
 		
 		public static final StreamCodec<RegistryFriendlyByteBuf, FluidCrafterRecipe> STREAM_CODEC = StreamCodec.of(
-				FluidCrafterRecipe.Serializer::toNetwork, FluidCrafterRecipe.Serializer::fromNetwork
+			FluidCrafterRecipe.Serializer::toNetwork, FluidCrafterRecipe.Serializer::fromNetwork
 		);
 		    
 	    @Override

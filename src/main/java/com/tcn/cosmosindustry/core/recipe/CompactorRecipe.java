@@ -31,9 +31,7 @@ public class CompactorRecipe implements Recipe<RecipeInput> {
 
 	@Override
 	public boolean matches(RecipeInput recipeInput, Level levelIn) {
-		boolean flagInput = this.input.test(recipeInput.getItem(0));
-		
-		return flagInput;
+		return this.input.test(recipeInput.getItem(0));
 	}
 
 	@Override
@@ -86,7 +84,6 @@ public class CompactorRecipe implements Recipe<RecipeInput> {
 	
 	public ArrayList<ItemStack> getOutputs() {
 		ArrayList<ItemStack> array = new ArrayList<>();
-		
 		array.add(this.result);
 		return array;
 	}
@@ -101,7 +98,7 @@ public class CompactorRecipe implements Recipe<RecipeInput> {
 	        );
 			
 			public static final StreamCodec<RegistryFriendlyByteBuf, CompactorRecipe> STREAM_CODEC = StreamCodec.of(
-					CompactorRecipe.Serializer::toNetwork, CompactorRecipe.Serializer::fromNetwork
+				CompactorRecipe.Serializer::toNetwork, CompactorRecipe.Serializer::fromNetwork
 			);
 		    
 	    @Override
@@ -120,7 +117,6 @@ public class CompactorRecipe implements Recipe<RecipeInput> {
 
 		private static void toNetwork(RegistryFriendlyByteBuf extraDataIn, CompactorRecipe recipeIn) {
 			Ingredient.CONTENTS_STREAM_CODEC.encode(extraDataIn, recipeIn.input);
-			
 			ItemStack.STREAM_CODEC.encode(extraDataIn, recipeIn.result);
 		}
 	}

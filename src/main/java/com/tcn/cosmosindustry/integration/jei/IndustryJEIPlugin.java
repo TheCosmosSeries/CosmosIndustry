@@ -1,18 +1,52 @@
 package com.tcn.cosmosindustry.integration.jei;
 
 import com.tcn.cosmosindustry.CosmosIndustry;
-import com.tcn.cosmosindustry.core.management.*;
-import com.tcn.cosmosindustry.core.recipe.*;
-import com.tcn.cosmosindustry.integration.jei.category.*;
-import com.tcn.cosmosindustry.processing.client.container.*;
-import com.tcn.cosmosindustry.processing.client.screen.*;
+import com.tcn.cosmosindustry.core.management.IndustryRecipeManager;
+import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
+import com.tcn.cosmosindustry.core.recipe.CompactorRecipe;
+import com.tcn.cosmosindustry.core.recipe.FluidCrafterRecipe;
+import com.tcn.cosmosindustry.core.recipe.GrinderRecipe;
+import com.tcn.cosmosindustry.core.recipe.LaserCutterRecipe;
+import com.tcn.cosmosindustry.core.recipe.OrePlantRecipe;
+import com.tcn.cosmosindustry.core.recipe.SeparatorRecipe;
+import com.tcn.cosmosindustry.core.recipe.SolidifierRecipe;
+import com.tcn.cosmosindustry.core.recipe.SynthesiserRecipe;
+import com.tcn.cosmosindustry.integration.jei.category.CategoryCompactor;
+import com.tcn.cosmosindustry.integration.jei.category.CategoryFluidCrafter;
+import com.tcn.cosmosindustry.integration.jei.category.CategoryGrinder;
+import com.tcn.cosmosindustry.integration.jei.category.CategoryLaserCutter;
+import com.tcn.cosmosindustry.integration.jei.category.CategoryOrePlant;
+import com.tcn.cosmosindustry.integration.jei.category.CategorySeparator;
+import com.tcn.cosmosindustry.integration.jei.category.CategorySolidifier;
+import com.tcn.cosmosindustry.integration.jei.category.CategorySynthesiser;
+import com.tcn.cosmosindustry.processing.client.container.ContainerCompactor;
+import com.tcn.cosmosindustry.processing.client.container.ContainerFluidCrafter;
+import com.tcn.cosmosindustry.processing.client.container.ContainerGrinder;
+import com.tcn.cosmosindustry.processing.client.container.ContainerLaserCutter;
+import com.tcn.cosmosindustry.processing.client.container.ContainerOrePlant;
+import com.tcn.cosmosindustry.processing.client.container.ContainerSeparator;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenCompactor;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenFluidCrafter;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenGrinder;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenKiln;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenLaserCutter;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenOrePlant;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenSeparator;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenSolidifier;
+import com.tcn.cosmosindustry.processing.client.screen.ScreenSynthesiser;
+import com.tcn.cosmoslibrary.integration.jei.CosmosJEIHelper;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.helpers.*;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.registration.*;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -53,7 +87,7 @@ public class IndustryJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
-		IndustryRecipes recipes = new IndustryRecipes();
+		CosmosJEIHelper recipes = CosmosJEIHelper.getInstance();
 		
 		registration.addRecipes(ModJEIRecipeTypes.GRINDING, recipes.getRecipes(RECIPE_CATEGORY_GRINDER, IndustryRecipeManager.RECIPE_TYPE_GRINDING.get()));
 		registration.addRecipes(ModJEIRecipeTypes.SEPARATING, recipes.getRecipes(RECIPE_CATEGORY_SEPARATOR, IndustryRecipeManager.RECIPE_TYPE_SEPARATING.get()));

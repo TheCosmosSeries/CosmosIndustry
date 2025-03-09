@@ -33,9 +33,7 @@ public class GrinderRecipe implements Recipe<RecipeInput> {
 
 	@Override
 	public boolean matches(RecipeInput recipeInputIn, Level levelIn) {
-		boolean flagInput = this.input.test(recipeInputIn.getItem(0));
-		
-		return flagInput;
+		return this.input.test(recipeInputIn.getItem(0));
 	}
 
 	@Override
@@ -113,7 +111,7 @@ public class GrinderRecipe implements Recipe<RecipeInput> {
 	        );
 			
 			public static final StreamCodec<RegistryFriendlyByteBuf, GrinderRecipe> STREAM_CODEC = StreamCodec.of(
-					GrinderRecipe.Serializer::toNetwork, GrinderRecipe.Serializer::fromNetwork
+				GrinderRecipe.Serializer::toNetwork, GrinderRecipe.Serializer::fromNetwork
 			);
 		    
 	    @Override
