@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"IWI",
+		"GBG",
+		"IWI"
+	],
+	"key": {
+		"B": {
+			"item": "cosmosindustry:upgrade_base"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		},
+		"I": {
+			"item": "cosmosindustry:energy_ingot"
+		},
+		"G": {
+			"item": "minecraft:glowstone_dust"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:upgrade_speed"
+	}
+}

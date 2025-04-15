@@ -150,7 +150,6 @@ public class BlockEntitySolidFuel extends BlockEntity implements IBlockInteract,
 	public void onLoad() { }
 	
 	public static void tick(Level levelIn, BlockPos posIn, BlockState stateIn, BlockEntitySolidFuel entityIn) {
-		
 		if (entityIn.burnTime > 0) {
 			entityIn.burnTime--;
 		}

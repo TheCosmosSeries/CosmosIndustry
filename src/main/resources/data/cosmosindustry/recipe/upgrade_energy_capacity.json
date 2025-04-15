@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"IWI",
+		"WBW",
+		"IWI"
+	],
+	"key": {
+		"B": {
+			"item": "cosmosindustry:upgrade_base"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		},
+		"I": {
+			"item": "cosmosindustry:energy_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:upgrade_capacity"
+	}
+}

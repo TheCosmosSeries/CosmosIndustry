@@ -118,6 +118,8 @@
 	"item.cosmosindustry.circuit_advanced_raw": "Surge Circuit (Unfinished)",
 	"item.cosmosindustry.circuit_advanced": "Surge Circuit",
 	
+	"item.cosmosindustry.laser_diode": "Laser Diode",
+	
 	"item.cosmosindustry.silicon": "Silicon",
 	"item.cosmosindustry.silicon_refined": "Refined Silicon",
 	"item.cosmosindustry.silicon_wafer": "Silicon Wafer",
@@ -187,9 +189,10 @@
 	"cosmosindustry.gui.fluidtank_surge": "Surge Fluid Tank",
 	"cosmosindustry.gui.fluidtank_creative": "Creative Fluid Tank",
 	
-	"cosmosindustry.gui.config.name": "Cosmos Industry Config",
+	"cosmosindustry.gui.config.name": "Cosmos Industry Configuration",
 	"cosmosindustry.gui.done": "Done",
-	"cosmosindustry.gui.config.messages": "Debug Messages",
+	"cosmosindustry.gui.config.info_messages": "Info Messages",
+	"cosmosindustry.gui.config.debug_messages": "Debug Messages",
 	
 	"cosmosindustry.gui.button.tank_clear": "Shift-Click to Empty the Fluid Tank.",
 	"cosmosindustry.gui.button.tank_clear_shift": "Warning! This cannot be undone.",

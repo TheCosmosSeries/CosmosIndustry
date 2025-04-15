@@ -85,7 +85,14 @@ public class BlockSolarPanel extends CosmosBlockRemovableNBT implements EntityBl
 		}
 		return super.playerWillDestroy(levelIn, pos, state, player);
 	}
-	
+
+	@Override
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player player) {
+		if (levelIn.getBlockEntity(pos) instanceof BlockEntitySolarPanel blockEntity) {
+			blockEntity.attack(state, levelIn, pos, player);
+		}
+	}
+
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction directionIn, BlockState facingState, LevelAccessor levelIn, BlockPos currentPos, BlockPos facingPos) {
 		return stateIn.setValue(NORTH, this.canSideConnect(levelIn, currentPos, Direction.NORTH))

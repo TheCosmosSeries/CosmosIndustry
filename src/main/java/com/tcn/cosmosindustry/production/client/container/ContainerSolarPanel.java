@@ -80,19 +80,19 @@ public class ContainerSolarPanel extends CosmosContainerMenuBlockEntity {
 			itemstack = itemstack1.copy();
 			
 			if (indexIn >= 0 && indexIn < 3 ) {
-				if (!this.moveItemStackTo(itemstack1, 4, this.slots.size() - 9, false)) {
+				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size() - 9, false)) {
 					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (indexIn > 3 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 3 && indexIn < this.slots.size()) {
 				if (itemstack.getItem() instanceof CosmosItemUpgradeEnergy) {
 					if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
 						if (indexIn < this.slots.size() - 9) {
 							if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 								return ItemStack.EMPTY;
 							}
-						} else if (!this.moveItemStackTo(itemstack1, 5, this.slots.size() - 9, false)) {
+						} else if (!this.moveItemStackTo(itemstack1, 3, this.slots.size() - 9, false)) {
 							return ItemStack.EMPTY;
 						}
 					}
@@ -103,7 +103,7 @@ public class ContainerSolarPanel extends CosmosContainerMenuBlockEntity {
 						return ItemStack.EMPTY;
 					}
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 6, this.slots.size() - 9, false)) {
+					if (!this.moveItemStackTo(itemstack1, 3, this.slots.size() - 9, false)) {
 						return ItemStack.EMPTY;
 					}
 				}

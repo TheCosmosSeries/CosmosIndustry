@@ -1,6 +1,6 @@
 package com.tcn.cosmosindustry;
 
-import com.tcn.cosmosindustry.client.screen.ScreenConfiguration;
+import com.tcn.cosmosindustry.client.screen.IndustryConfigScreen;
 import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmosindustry.production.client.renderer.LiquidFuelBEWLR;
 import com.tcn.cosmosindustry.production.client.renderer.PeltierBEWLR;
@@ -19,7 +19,7 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 public class CosmosIndustryClient {
 
 	public CosmosIndustryClient(ModContainer container) {		
-		CosmosRuntime.Client.regiserConfigScreen(container, ScreenConfiguration::new);
+		CosmosRuntime.Client.regiserConfigScreen(container, IndustryConfigScreen::new);
 	}
 
 	@SubscribeEvent

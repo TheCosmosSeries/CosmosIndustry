@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" G ",
+		"RPR",
+		"IWI"
+	],
+	"key": {
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"R": {
+			"item": "minecraft:end_rod"
+		},
+		"P": {
+			"item": "cosmosindustry:diamond_plate"
+		},
+		"I": {
+			"item": "cosmosindustry:energy_ingot"
+		},
+		"W": {
+			"item": "cosmosindustry:energy_wafer"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:laser_diode",
+		"count": 2
+	}
+}

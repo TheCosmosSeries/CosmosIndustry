@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"IGI",
+		"RBR",
+		"ICI"
+	],
+	"key": {
+		"B": {
+			"item": "cosmosindustry:upgrade_base"
+		},
+		"G": {
+			"item": "minecraft:gold_ingot"
+		},
+		"I": {
+			"item": "cosmosindustry:energy_ingot"
+		},
+		"R": {
+			"item": "minecraft:redstone_block"
+		},
+		"C": {
+			"item": "cosmosindustry:circuit"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:upgrade_efficiency"
+	}
+}

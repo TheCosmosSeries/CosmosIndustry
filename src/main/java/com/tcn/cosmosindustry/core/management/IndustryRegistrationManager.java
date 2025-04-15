@@ -315,6 +315,8 @@ public class IndustryRegistrationManager {
 	public static final DeferredItem<Item> CIRCUIT_ADVANCED_RAW = addToToolsTab(ITEMS.register("circuit_advanced_raw", () -> new CosmosItem(new Item.Properties().stacksTo(8).rarity(RARITY_SURGE))));
 	public static final DeferredItem<Item> CIRCUIT_ADVANCED = addToToolsTab(ITEMS.register("circuit_advanced", () -> new CosmosItem(new Item.Properties().stacksTo(8).rarity(RARITY_SURGE))));
 	
+	public static final DeferredItem<Item> LASER_DIODE = addToToolsTab(ITEMS.register("laser_diode", () -> new CosmosItem(new Item.Properties())));
+	
 	public static final DeferredItem<Item> SOLAR_MODULE = addToToolsTab("solar_module");
 	
 	public static final DeferredItem<Item> UPGRADE_BASE = addToToolsTab(ITEMS.register("upgrade_base", () -> new CosmosItemUpgradeEnergy(new Item.Properties())));
@@ -594,7 +596,6 @@ public class IndustryRegistrationManager {
 		
 		event.registerBlockEntityRenderer(BLOCK_ENTITY_TYPE_SYNTHESISER.get(), RendererSynthesiser::new);
 		event.registerBlockEntityRenderer(BLOCK_ENTITY_TYPE_SYNTHESISER_STAND.get(), RendererSynthesiserStand::new);
-		
 		
 		/** -- Production -- */
 		event.registerBlockEntityRenderer(BLOCK_ENTITY_TYPE_SOLAR_PANEL.get(), RendererSolarPanel::new);

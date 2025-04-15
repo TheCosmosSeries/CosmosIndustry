@@ -85,7 +85,7 @@ abstract public class AbstractContainerCapacitor extends CosmosContainerMenuBloc
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (indexIn >= 3 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 2 && indexIn < this.slots.size()) {
 				if (itemstack.getCapability(Capabilities.EnergyStorage.ITEM) instanceof IEnergyStorage storage) {
 					if (storage.getEnergyStored() < storage.getMaxEnergyStored()) {
 						if (!this.moveItemStackTo(itemstack, 0, 1, false)) {

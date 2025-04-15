@@ -4,7 +4,7 @@ import com.tcn.cosmosindustry.core.management.IndustryRegistrationManager;
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.client.container.slot.SlotEnergyItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotUpgrade;
-import com.tcn.cosmoslibrary.energy.item.CosmosEnergyItem;
+import com.tcn.cosmoslibrary.common.item.CosmosItemUpgradeEnergy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -101,31 +101,33 @@ public class ContainerCharger extends CosmosContainerMenuBlockEntity {
 			itemstack = itemstack1.copy();
 			
 			if (indexIn >= 0 && indexIn < 10) {
-				//this.access.execute((worldIn, posIn) -> { itemstack1.getItem().onCraftedBy(itemstack1, worldIn, playerIn); });
-				
-				if (itemstack.getItem() instanceof CosmosEnergyItem) {
-					if (!this.moveItemStackTo(itemstack1, 0, 10, true)) {
+				if (!this.moveItemStackTo(itemstack1, 12, this.slots.size() - 9, false)) {
+					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (indexIn >= 10 && indexIn < 13) {
-				if (!this.moveItemStackTo(itemstack1, 10, 13, false)) {
-					if (indexIn < 37) {
-						if (!this.moveItemStackTo(itemstack1, 34, 43, false)) {
+			} else if (indexIn >= 12 && indexIn < this.slots.size()) {
+				if (itemstack.getItem() instanceof CosmosItemUpgradeEnergy) {
+					if (!this.moveItemStackTo(itemstack1, 9, 11, false)) {
+						if (indexIn < this.slots.size() - 9) {
+							if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
+								return ItemStack.EMPTY;
+							}
+						} else if (!this.moveItemStackTo(itemstack1, 12, this.slots.size() - 9, false)) {
 							return ItemStack.EMPTY;
 						}
-					} else if (!this.moveItemStackTo(itemstack1, 7, 34, false)) {
+					}
+				}
+				
+				else if (indexIn < this.slots.size() - 9) {
+					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
+						return ItemStack.EMPTY;
+					}
+				} else {
+					if (!this.moveItemStackTo(itemstack1, 12, this.slots.size() - 9, false)) {
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (!this.moveItemStackTo(itemstack1, 7, 43, false)) {
-				return ItemStack.EMPTY;
-			}
-
-			if (itemstack1.isEmpty()) {
-				slot.set(ItemStack.EMPTY);
-			} else {
-				slot.setChanged();
 			}
 			
 			if (itemstack1.getCount() == itemstack.getCount()) {

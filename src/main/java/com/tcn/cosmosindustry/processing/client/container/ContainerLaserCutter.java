@@ -92,13 +92,13 @@ public class ContainerLaserCutter extends CosmosContainerMenuBlockEntity {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 
-			if (indexIn >= 0 && indexIn < 6 ) {
-				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size() - 9, false)) {
+			if (indexIn >= 0 && indexIn < 5 ) {
+				if (!this.moveItemStackTo(itemstack1, 6, this.slots.size() - 9, false)) {
 					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (indexIn >= 6 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 5 && indexIn < this.slots.size()) {
 				if (itemstack.getItem() instanceof CosmosItemUpgradeEnergy) {
 					if (!this.moveItemStackTo(itemstack1, 2, 6, false)) {
 						if (indexIn < this.slots.size() - 9) {

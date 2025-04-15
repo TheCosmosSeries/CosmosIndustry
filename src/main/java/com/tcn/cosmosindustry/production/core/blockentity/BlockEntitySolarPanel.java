@@ -83,8 +83,8 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 		ContainerHelper.saveAllItems(compound, this.inventoryItems, provider);
 		
 		compound.putInt("energy", this.energy_stored);
-
 		compound.putInt("ui_mode", this.uiMode.getIndex());
+		compound.putBoolean("producing", this.isProducing);
 	}
 
 	@Override
@@ -95,8 +95,8 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 		ContainerHelper.loadAllItems(compound, this.inventoryItems, provider);
 		
 		this.energy_stored = compound.getInt("energy");
-
 		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
+		this.isProducing = compound.getBoolean("producing");
 	}
 	
 	@Override
@@ -110,9 +110,7 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
 		CompoundTag tag = new CompoundTag();
-		
 		this.saveAdditional(tag, provider);
-		
 		return tag;
 	}
 	
@@ -140,19 +138,17 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 	public void onLoad() { }
 	
 	public static void tick(Level levelIn, BlockPos posIn, BlockState stateIn, BlockEntitySolarPanel entityIn) {
-		if (entityIn.canProduce()) {
-			entityIn.isProducing = true;
-		}
-
-		if (!entityIn.canProduce()) {
-			entityIn.isProducing = false;
-		}
-		
-		if (entityIn.isProducing()) {
-			entityIn.produceEnergy();
-		}
-
 		if (!entityIn.getLevel().isClientSide()) {
+			if (entityIn.canProduce()) {
+				entityIn.isProducing = true;
+			} else {
+				entityIn.isProducing = false;
+			}
+		
+			if (entityIn.isProducing()) {
+				entityIn.produceEnergy();
+			}
+			
 			entityIn.pushEnergy(Direction.DOWN);
 			entityIn.pushEnergy(Direction.NORTH);
 			entityIn.pushEnergy(Direction.SOUTH);
@@ -190,7 +186,7 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 	}
 
 	@Override
-	public void attack(BlockState state, Level worldIn, BlockPos pos, Player player) { }
+	public void attack(BlockState state, Level levelIn, BlockPos pos, Player player) { }
 
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level levelIn, BlockPos posIn, Player playerIn, BlockHitResult hit) {
@@ -205,14 +201,14 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 					CompatHelper.spawnStack(CompatHelper.generateItemStackOnRemoval(levelIn, this, posIn), levelIn, posIn.getX() + 0.5, posIn.getY() + 0.5, posIn.getZ() + 0.5, 0);
 					CosmosUtil.setToAir(levelIn, posIn);
 				}
-				ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+				ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 			}
 		} else {
 			if (playerIn instanceof ServerPlayer serverPlayer) {
 				serverPlayer.openMenu(this, (packetBuffer) -> packetBuffer.writeBlockPos(this.getBlockPos()));
 			}
 		}
-		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide);
+		return ItemInteractionResult.sidedSuccess(levelIn.isClientSide());
 	}
 
 	@Override
@@ -466,7 +462,7 @@ public class BlockEntitySolarPanel extends BlockEntity implements IBlockInteract
 	
 	@Override
 	public boolean canProduce() {
-		return this.getLevel().canSeeSky(this.getBlockPos()) && this.getLevel().getDayTime() < 13000 && this.getEnergyStored() < this.getMaxEnergyStored();
+		return this.getLevel().canSeeSky(this.getBlockPos()) && this.getLevel().isDay() && this.getEnergyStored() < this.getMaxEnergyStored();
 	}
 
 	@Override

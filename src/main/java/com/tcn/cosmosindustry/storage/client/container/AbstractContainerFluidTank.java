@@ -90,7 +90,7 @@ abstract public class AbstractContainerFluidTank extends CosmosContainerMenuBloc
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (indexIn >= 3 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 2 && indexIn < this.slots.size()) {
 				if (itemstack.getCapability(Capabilities.FluidHandler.ITEM) instanceof IFluidHandler) {
 					if (!this.moveItemStackTo(itemstack, 0, 2, false)) {
 						return ItemStack.EMPTY;

@@ -35,7 +35,7 @@ public class CosmosIndustry {
 	}
 
 	public void onFMLCommonSetup(final FMLCommonSetupEvent event) {
-		CONSOLE = new CosmosConsoleManager(CosmosIndustry.MOD_ID, IndustryConfigManager.getInstance().getDebugMessage(), true);
+		CONSOLE = new CosmosConsoleManager(CosmosIndustry.MOD_ID, IndustryConfigManager.getInstance().getDebugMessage(), IndustryConfigManager.getInstance().getInfoMessage());
 		
 		CONSOLE.startup("CommonSetup complete.");
 	}

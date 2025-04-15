@@ -96,7 +96,7 @@ public class ContainerGrinder extends CosmosContainerMenuBlockEntity {
 			itemstack = itemstack1.copy();
 
 			if (indexIn >= 0 && indexIn < 6 ) {
-				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size() - 9, false)) {
+				if (!this.moveItemStackTo(itemstack1, 6, this.slots.size() - 9, false)) {
 					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 						return ItemStack.EMPTY;
 					}
@@ -108,7 +108,7 @@ public class ContainerGrinder extends CosmosContainerMenuBlockEntity {
 							if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 								return ItemStack.EMPTY;
 							}
-						} else if (!this.moveItemStackTo(itemstack1, 5, this.slots.size() - 9, false)) {
+						} else if (!this.moveItemStackTo(itemstack1, 6, this.slots.size() - 9, false)) {
 							return ItemStack.EMPTY;
 						}
 					}

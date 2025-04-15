@@ -953,7 +953,7 @@ public class BlockEntitySynthesiser extends BlockEntity implements IBlockInterac
 			
 			Object object = this.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, facingPos, facing);
 			if (object != null) {
-				if (object instanceof IEnergyStorage storage) {
+				if (object instanceof IEnergyStorage) {
 					if (facing != Direction.DOWN && facing != Direction.UP) {
 						return true;
 					}

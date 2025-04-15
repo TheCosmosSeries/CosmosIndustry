@@ -90,7 +90,7 @@ public class ContainerSolidFuel extends CosmosContainerMenuBlockEntity {
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (indexIn > 4 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 4 && indexIn < this.slots.size()) {
 				if (itemstack.getItem() instanceof CosmosItemUpgradeEnergy) {
 					if (!this.moveItemStackTo(itemstack1, 1, 4, false)) {
 						if (indexIn < this.slots.size() - 9) {

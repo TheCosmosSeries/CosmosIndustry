@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"III",
+		"PCP",
+		"III"
+	],
+	"key": {
+		"C": {
+			"item": "cosmosindustry:circuit_advanced"
+		},
+		"P": {
+			"item": "cosmosindustry:steel_plate"
+		},
+		"I": {
+			"item": "cosmosindustry:energy_ingot"
+		}
+	},
+	"result": {
+		"id": "cosmosindustry:block_energy_channel_surge",
+		"count": 6
+	}
+}
